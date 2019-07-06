@@ -1,0 +1,25 @@
+{% extends 'home.html' %}
+{% block content %}
+	
+		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		<a style="color: white;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  			<a style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+			</div>
+		</nav>
+	{% if user.is_authenticated %}
+		<center>
+			<div id="home-block" class="jumbotron">
+			  <h1 class="display-4">Hello, {{user.first_name}}!</h1>
+			  <p class="lead">We hope to see you have a great time, hopefully learn something new.</p>
+			  <hr class="my-4">
+			  <p class="lead">
+			    <a class = "links" href="{% url 'ask' %}"> Ask something.</a>
+			    <br>
+				<a class = "links" href="{% url 'view' %}"> Visit questions.</a>
+			  </p>
+			</div>
+		</center>
+	{% else %}
+		<p> You are not logged in. </p>
+	{% endif %}
+{% endblock %}

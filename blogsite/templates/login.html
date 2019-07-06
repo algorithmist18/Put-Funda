@@ -1,0 +1,32 @@
+{% extends 'register_base.html' %}
+{% block content %}
+	{% if forms.errors %}
+		{% for field in forms %}
+			{% for error in field.errors %}
+			<p> {{ error | escape }} </p>
+			{% endfor %}
+		{% endfor %}
+	{% endif %}
+	<div id = "container">	
+		<form id="login" action="{% url 'login' %}" method="post">
+
+		  {% csrf_token %}
+
+		  {{error}}
+		  <br>
+		  <div class="form-group">
+		  	{{form.username.errors}}
+		  	<label for="{{form.username.id_for_label}}">Username:</label>
+		  	{{form.username}}
+		  </div>
+
+		  <div class="form-group">
+		  	{{form.password.errors}}
+		  	<label for="{{form.password.id_for_label}}">Password:</label>
+		  	{{form.password}}
+		  </div>
+		  <input type="submit" class = "btn btn-primary" value="Login"/>
+
+		</form>
+	</div>
+{% endblock %}

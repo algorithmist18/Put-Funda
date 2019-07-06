@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search result</title>
+	</head>
+	<body>
+		<!-- Latest compiled and minified CSS -->
+			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+			<!-- jQuery library -->
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+			<!-- Latest compiled JavaScript -->
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+			
+			<center>
+				{% block content %}
+				{% endblock %}
+			</center>
+
+			<script type="text/javascript" src="{{STATIC_URL}} /static/jquery-3.4.1.js"></script>
+			{% block javascript %}{% endblock %}
+	</body>
+</html>

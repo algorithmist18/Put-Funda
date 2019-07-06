@@ -1,0 +1,45 @@
+{% extends 'user_display_base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+  	<!-- Navbar content -->
+  		<a style="color: white;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+  		<a style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	</nav>
+
+
+	<!-- Block to display user details -->
+
+	<div class = "jumbotron" id="user-display">
+		<p id = "username" > Username : {{user.username}} </p>
+		<p id = "name"> Name : {{user.first_name}} {{user.last_name}} </p>
+		<p id = "loc"> Location : {{user.profile.location}} </p>
+		<p id = "dob"> Birth date : {{user.profile.birth_date}} </p>
+	</div>
+
+	<!-- Block to display user contributions -->
+
+	<div id = "contributions">
+		<p id = "count_questions"> Number of questions asked : {{ no_of_questions }} </p>
+		<p id = "genres"> 
+		{% for genre in genres %}
+			<p> {{ genre }} </p>
+		{% endfor %}
+	</div>
+	
+{% endblock %}
+
+{% block javascript %}
+
+	<!-- JavaScript code -->
+
+	<script>
+		$(document).ready(function()
+		{
+			alert('Hello, world. jQuery is on ;)');
+		});
+	</script>
+
+{% endblock %}
