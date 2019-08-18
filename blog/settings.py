@@ -133,5 +133,9 @@ STATICFILES_DIRS = (
 =======
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+<<<<<<< Updated upstream
+"""
+>>>>>>> Stashed changes
+=======
 """
 >>>>>>> Stashed changes
