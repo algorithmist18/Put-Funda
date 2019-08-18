@@ -1,8 +1,3 @@
-
-<<<<<<< Updated upstream
-=======
-	None.
-
 Things to do:
 
 	Back-end:
@@ -16,8 +11,3 @@ Things to do:
 	#0. Add various links in navigation bars.
 
 	#1. Fix register page, please.
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-
