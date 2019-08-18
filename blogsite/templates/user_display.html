@@ -25,10 +25,59 @@
 		<p id = "count_questions"> Number of questions asked : {{ no_of_questions }} </p>
 		<p id = "genres"> 
 		{% for genre in genres %}
-			<p> {{ genre }} </p>
+			<p> <a href = "view?genre={{genre}}"> {{ genre }} </a> </p>
 		{% endfor %}
 	</div>
-	
+
+	<!--Block to display user questions -->
+	<div id = "question-block">
+	{% for questions in q_list %}
+		<div id = "question">
+			<form id="ans" method="post">
+			{% csrf_token %}
+			<div id = "content">
+				{% if not questions.author %}
+					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="genre={{questions.title}}"> {{questions.title}} </a></p>
+				{% else %}
+					<p class= "question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="view?genre={{questions.title}}"> {{questions.title}} </a></p>
+				{% endif %}
+				</p>
+				<input type = "hidden" name = "questions" value = "{{questions.question}}">
+				<input name = "comment" type = "text">
+				<input type = "submit" name = "act" value = "Submit">
+				<input type = "submit" name = "act" value = "Load">
+			</div> 
+			<div id = "show-answer">
+			{% for k, v in q_times.items %}
+					{% if k == questions.question %}
+						{% if v > 96 %}
+							<input type = "submit" name = "show" value = "Show answer">
+						{% endif %}
+					{% endif %}	
+			{% endfor %}
+			</div>
+			</form>
+			{% if answer != None %}
+				{% if questions.answer == answer %}
+					<p style="margin-top: 10px;" id = "answer"> {{ answer }} </p>
+				{% endif %}
+			{% endif %}
+			<br>
+			<br>
+			{% if comments != None %}
+				<div id = "comments">
+				{% if questions.question == ques %}
+					{% for comment in comments %}
+							<p> _______________________________________________ </p>
+							<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
+							<p id = "comment-content"> {{comment.content}}</p>			
+					{% endfor %}
+				{% endif %}
+				</div>
+			{% endif %}
+		</div>
+	{% endfor %}
+	</div>
 {% endblock %}
 
 {% block javascript %}
@@ -38,7 +87,6 @@
 	<script>
 		$(document).ready(function()
 		{
-			alert('Hello, world. jQuery is on ;)');
 		});
 	</script>
 

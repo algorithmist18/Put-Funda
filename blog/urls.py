@@ -28,5 +28,6 @@ urlpatterns = [
     path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),
+    path('search_users', views.search_users, name = 'search_users'),
     path('search', views.show_search, name = 'show_search')
 ]

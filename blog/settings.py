@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blogsite',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+"""
 # Add these new lines
 """
 STATICFILES_DIRS = (

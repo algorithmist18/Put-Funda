@@ -1,3 +1,4 @@
+#Importing libraries
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import models
@@ -193,7 +194,6 @@ def list_questions(request):
 
 			comments = Comment.objects.filter(question = question).order_by('-time')
 
-			
 			genres = Question.objects.values('title')
 			g = request.GET.get('genre')
 			l = list(genres.values('title'))
@@ -299,24 +299,128 @@ def show_user(request):
 	username = request.GET.get('user') 
 	user = User.objects.get(username = username)
 	print(user.first_name)
-
-	#Get user profile information
-
+	current_time = datetime.datetime.now(timezone.utc)
 	questions = Question.objects.filter(author = user).order_by('-time')
 	print('Number of questions asked by {} = {}'.format(user.first_name, len(questions)))
 	genre_lists = []
+	question_list = []
 
 	for question in questions:
 
+		question_list.append(question)
 		genre_lists.append(question.title)
 
 	genre_lists = set(genre_lists)
+	args = {'user' : user, 'q_list' : question_list, 'no_of_questions' : len(questions), 'genres' : genre_lists}
 
-	for genre in genre_lists:
+	if request.method == 'POST':
 
-		print(genre)
+		#A question has been answered
 
-	return render(request, 'user_display.html', {'user' : user, 'no_of_questions' : len(questions), 'genres' : genre_lists})
+		act = request.POST.get('act')
+		show = request.POST.get('show')
+		
+		#Getting details of question in context
+
+		q = request.POST.get('questions')
+		question = Question.objects.filter(question = q)[0]		
+		q_list = Question.objects.all().order_by('-time')
+
+		question_times = {}
+
+		for elem in q_list:
+			question_times.update({elem.question : (current_time - elem.time).total_seconds() / 3600 })
+
+		#Displaying data according to act variable
+
+		if act == 'Submit':
+
+			genre = request.GET.get('genre')
+
+			if genre != None:
+
+				add_comment(request)
+
+				genres = Question.objects.values('title')
+				g = genre
+				l = list(genres.values('title'))
+				g_list = []
+
+				for d in l:
+					g_list.append(d['title'])
+				g_set = set(g_list)
+				
+				if g != None and g != ' ':
+
+					q_list = Question.objects.filter(title = g).order_by('-time')
+					#args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'author' : author}
+					return HttpResponseRedirect('users?user={}'.format(username))
+
+				else:
+
+					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'author' : author, 'q_times' : question_times}
+					return HttpResponseRedirect('users?user={}'.format(username))
+			else:
+
+				add_comment(request)
+				return HttpResponseRedirect('users?user={}'.format(username))
+
+		elif act == 'Load':
+
+			comments = Comment.objects.filter(question = question).order_by('-time')
+			
+			genres = Question.objects.values('title')
+			g = request.GET.get('genre')
+			l = list(genres.values('title'))
+			g_list = []
+			
+			for d in l:
+				g_list.append(d['title'])
+			g_set = set(g_list)
+			
+			if g != None and g != ' ':
+
+				q_list = Question.objects.filter(title = g).order_by('-time')
+				args.update({'ques' : q, 'q_times' : question_times, 'comments' : comments, 
+				'q_times' : question_times})
+				return render(request, 'user_display.html', args)
+
+			else:
+				args.update({'ques' : q, 'q_times' : question_times, 'comments' : comments, 
+				'q_times' : question_times})
+				return render(request, 'user_display.html', args)
+		else: 
+
+			#Show answer to the question
+			
+			print('Need to show answer to {}'.format(question.question))
+
+			genres = Question.objects.values('title')
+
+			g = request.GET.get('genre')
+			l = list(genres.values('title'))
+
+			g_list = []
+
+			for d in l:
+				g_list.append(d['title'])
+			g_set = set(g_list)
+			
+			if g != None and g != ' ':
+
+				q_list = Question.objects.filter(title = g).order_by('-time')
+				args.update({'ques' : q, 'q_times' : question_times,
+				'q_times' : question_times, 'answer' : question.answer})
+				return render(request, 'user_display.html', args)
+
+			else:
+
+				args.update({'ques' : q, 'q_times' : question_times, 
+				 'answer' : question.answer})
+				return render(request, 'user_display.html', args)
+
+	#Get user profile information
+	return render(request, 'user_display.html', args)
 
 def show_search(request):
 
@@ -372,28 +476,42 @@ def show_search(request):
 		#Taking action according to act variable
 
 		if act == 'Submit':
-
 			#Submit comment
-
 			add_comment(request)
-
 			args = {'q_list' : question_list, 'ques' : q, 'author' : author, 'q_times' : question_times}
 			return render(request, 'search_results.html', args)
 
 		elif act == 'Load':
-
 			#Load comments
-
 			comments = Comment.objects.filter(question = question).order_by('-time')
-
 			args = {'q_list' : question_list, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author}
 			return render(request, 'search_results.html', args)	
 
 		else:
-
 			#Show answer
 			args = {'q_list' : question_list, 'ques' : q, 'answer' : question.answer, 'q_times' : question_times, 'author' : author}
 			return render(request, 'search_results.html', args)
+
+def search_users(request):
+
+	user_name = request.GET.get('q')
+
+	print('User to be searched = {}'.format(user_name))
+
+	users_by_firstname = User.objects.all().filter(first_name = user_name)
+	users_by_lastname = User.objects.all().filter(last_name = user_name)
+
+	user_list = []
+
+	for users in users_by_firstname:
+		user_list.append(users)
+
+	for users in users_by_lastname:
+		user_list.append(users)
+
+	print(user_list)
+
+	return render(request, 'search_user_page.html', {'user_list' : user_list, 'query' : user_name})
 
 #Receiver signals: to check whether user is logged in or not
 @receiver(user_logged_in)
