@@ -2,8 +2,8 @@
 {% block content %}
 	
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		<a style="color: white;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-  			<a style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	  		<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  			<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
 			</div>
 		</nav>
 	{% if user.is_authenticated %}
