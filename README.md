@@ -5,3 +5,6 @@ Politics, Sports or Business, people can register online and ask/answer interest
 
 Try it out [here](https://qnondrum.pythonanywhere.com)
 
+## Pointers
+
+Best suited for desktop. 
