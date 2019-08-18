@@ -124,18 +124,5 @@ STATIC_URL = '/static/'
 """
 # Add these new lines
 """
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-<<<<<<< Updated upstream
-"""
-#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-=======
+#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-<<<<<<< Updated upstream
-"""
->>>>>>> Stashed changes
-=======
-"""
->>>>>>> Stashed changes
