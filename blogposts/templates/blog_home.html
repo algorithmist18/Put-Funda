@@ -1,0 +1,29 @@
+{% extends 'blog_homepage.html' %}
+
+{% block content %}
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href="/users?user={{user.username}}" class="navbar-brand" id="user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+		</div>
+	</nav>
+
+	<!-- Block to display blog-posts --> 
+
+	<center>
+		<p> Welcome, <a href="/users?user={{ user.username }}">{{user.username}}</a>! Write a post <a href="{% url 'post' %}"> here</a>.</p>
+	</center>
+		<div id="container">
+		{% for post in posts %}
+				<div id="post">
+					<span style="margin-left: 20px;"> <a href = "posts?user={{user.username}}&post={{post.title}}&preview={{post.preview}}"
+					> {{post.title}} </a> </span>
+					<p style="margin-left: 20px; margin-top: 20px;"> {{post.preview}} ...  </p>
+					<p style="margin-left: 20px; margin-top: 20px; font-size: 12px;"> by <a href="/users?user={{post.author.username}}"> {{post.author}} </a> at {{ post.time}} </p>
+				</div>
+		{% endfor %}
+		</div>
+	<center>
+		<p style="margin-right: 10px; font-size: 12px;"> Want to visit the Questions section? Here: <a style="font-size: 12px" href="{% url 'view' %}">Questions</a></p>
+	</center>
+{% endblock %}

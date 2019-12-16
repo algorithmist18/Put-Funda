@@ -14,20 +14,12 @@ class Question(models.Model):
 	time = models.DateTimeField(auto_now_add = True, blank = True)
 	author = models.ForeignKey(User, on_delete = models.DO_NOTHING, null = True)
 
-class Post(models.Model):
-
-	title = models.CharField(max_length = 42)
-	content = models.TextField(default = "Hello, world.")
-	author = models.ForeignKey(User, on_delete = models.SET_NULL, null = True)
-	time = models.DateTimeField(auto_now_add = True, blank = True)
-	author = models.ForeignKey(User, on_delete = models.DO_NOTHING)
-
 class Comment(models.Model):
 
 	content = models.TextField()
 	author = models.ForeignKey(User, on_delete = models.SET_NULL, null = True)
 	time = models.DateTimeField(auto_now_add = True, blank = True)
-	question = models.ForeignKey(Question, on_delete = models.DO_NOTHING, default = "What is life?")
+	question = models.ForeignKey(Question, on_delete = models.CASCADE, default = "What is life?")
 
 class Profile(models.Model):
 

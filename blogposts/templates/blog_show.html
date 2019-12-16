@@ -1,0 +1,29 @@
+{% extends 'blog_homepage.html' %}
+
+{% block content %}
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href="/users?user={{user.username}}" class="navbar-brand" id="user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+		</div>
+	</nav>
+
+	<!-- Block to display blog-posts --> 
+
+	<center>
+		<div id="container">
+			<div id="post">
+				<br>
+				<p><a href = "posts?user={{user.username}}&post={{post.title}}&time={{post.preview}}"> {{post.title}} </a></p>
+				<br>
+				<br>
+				<div id = "content" style = "margin-left: 40px; margin-right: 40px;">
+					<p> {{post.content}}  </p>
+				</div>
+				<br>
+				<br>
+				<p style = "font-size: 12px;"> by <a href = "/users?user={{post.author.username}}"> {{post.author}} </a> at {{post.time}} </p>
+			</div>
+		</div>
+	</center>
+{% endblock %}

@@ -3,19 +3,32 @@
 	<div id="block">
 	{% for questions in q_list %}
 		<div id = "question">
+			
 			<form id="ans" method="post">
+
 			{% csrf_token %}
+
 			<div id = "content">
+
 				{% if not questions.author %}
 					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
 				{% else %}
 					<p class= "question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
 				{% endif %}
-				</p>
+
+				<!-- Including delete button -->
+
 				<input type = "hidden" name = "questions" value = "{{questions.question}}">
 				<input name = "comment" type = "text">
 				<input type = "submit" name = "act" value = "Submit">
 				<input type = "submit" name = "act" value = "Load">
+
+				{% if author == questions.author.username %}
+
+					<input type = "submit" name = "act" value = "Delete">
+
+				{% endif %}
+
 			</div> 
 			<div id = "show-answer">
 			{% for k, v in q_times.items %}

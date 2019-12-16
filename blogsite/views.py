@@ -1,4 +1,5 @@
 #Importing libraries
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import models
@@ -13,6 +14,7 @@ from .models import Comment, User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 import datetime
 from datetime import timezone
+
 # Create your views here.
 
 def index(request):
@@ -27,9 +29,8 @@ def homepage(request):
 		
 
 #Function for registering a user
-def register(request):
 
-	print('Control here.')
+def register(request):
 
 	if request.method == 'POST':
 		form = RegisterForm(request.POST)
@@ -106,6 +107,9 @@ def ask(request):
 		print('Invalid question, ignored.')
 		pass
 	else:
+		title = title.strip()
+		question = question.strip() 
+		answer = answer.strip() 
 		q = Question(title = title, question = question, answer = answer, time = datetime.datetime.now(), author = request.user)
 		q.save()
 
@@ -118,10 +122,11 @@ def load_comments(request, ques, comments):
 	g = request.GET.get('genre')
 	l = list(genres.values('title'))
 	g_list = []
+
 	for d in l:
 		g_list.append(d['title'])
 	g_set = set(g_list)
-	#print(comments[0])
+	
 	if g != None and g != ' ':
 		q_list = Question.objects.filter(title = g).order_by('-time')
 		args = {'q_list' : q_list, 'g_list' : g_set, 'question' : ques, 'q_times' : question_times, 'comments' : comments}
@@ -130,14 +135,37 @@ def load_comments(request, ques, comments):
 		args = {'q_list' : q_list, 'g_list' : g_set, 'question' : ques, 'q_times' : question_times, 'comments' : comments}
 		return render(request, 'questions_list_display.html', args)
 
-def render_page(request):
+def delete_question(request): 
 
-	pass
+	# Function to delete a question 
+
+	author = request.user.username # holding the name only 
+	question = request.GET.get('q') 
+	act = request.POST.get('act') 
+
+	question_object = Question.objects.filter(question = question) 
+
+	if request.method == 'POST': 
+
+		if act == "Delete": 
+
+			# Delete question 
+			question_object.delete()
+			return HttpResponseRedirect('view?msg=delete_success')
+
+		else: 
+
+			# Cancel and return 
+			return redirect('view') 
+
+	return HttpResponseRedirect('view?msg=delete_success')  
 
 def list_questions(request):
 
 	author = request.user.username
 	current_time = datetime.datetime.now(timezone.utc)
+
+	print('Author = {}'.format(author))
 
 	if request.method == 'POST':
 
@@ -215,6 +243,20 @@ def list_questions(request):
 				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author}
 				return render(request, 'questions_list_display.html', args)	
 
+
+		elif act == "Delete": 
+
+			# Delete question 
+
+			print("Need to delete question {}".format(q))
+
+			args = {'ques' : question, 'author' : author} 
+
+			# return redirect('delete?q={}')
+
+			return render(request, 'question_delete.html', args)
+
+
 		else: 
 
 			#Show answer to the question
@@ -275,12 +317,12 @@ def list_questions(request):
 			if g != None and g != ' ':
 
 				q_list = Question.objects.filter(title = g).order_by('-time')
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author}
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author}
 				return render(request, 'questions_list_display.html', args)
 
 def add_comment(request):

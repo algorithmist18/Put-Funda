@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <style type="text/css">
 	#logout
 	{
@@ -6,12 +7,19 @@
 	}
 	#logout-button
 	{
-		margin-left: 1150px;
+		margin-left: 510px;
+	}
+	#header
+	{
+		font-size: 12px;
+		color: white;
+		margin-left: 570px;
 	}
 </style>
+
 <html>
 	<head>	
-		<title> Ask a question. </title>
+		<title> Qnondrum | Ask  </title>
 	</head>
 	<body>
 
@@ -25,8 +33,9 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-  			<a class = "navbar-brand" style="color: white;" href="{% url 'home' %}"> Back </a>
-  			<a id ="logout-button" style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+  			<a class = "navbar-brand" style="color: white; font-size: 12px;" href="{% url 'home' %}"> Home </a>
+  			<a class = "navbar-brand" id = "header"> Qnondrum </a> 
+  			<a id ="logout-button" style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
 		</nav>
 
 		<center>
@@ -34,7 +43,7 @@
 				{% csrf_token %}
 				<br>
 				<br>
-					Title:
+					Genre:
 				<br>
 				<br>
 				<input type="text" name="title" required>

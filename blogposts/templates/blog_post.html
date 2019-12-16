@@ -1,0 +1,26 @@
+{% extends 'blog_post_base.html' %}
+
+{% block content %}
+		
+	<center>
+	<div id="post-form" style="margin-top: 70px;">
+		<form method="post" action="{% url 'post' %}">
+			{% csrf_token %}
+			<span>Title:</span>
+			<br>
+			<br>
+				<input type="text" name="title" required>
+			<br>
+			<br>
+				Write a post:
+			<br>
+			<br>
+			<textarea rows = "15" cols = "100" name = "content" required></textarea>
+			<br>
+			<br>
+			<input type="submit" name="action" value="Post" />
+		</form>
+	</div>
+	</center>
+
+{% endblock %}
