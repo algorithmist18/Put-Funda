@@ -13,10 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+# Importing libraries 
+
 from django.contrib import admin
 from django.urls import include, path
 from blogsite import views
 from blogposts import views as post_views
+from quiz import views as quiz_views
+from django.conf import settings 
+from django.conf.urls.static import static 
+
+# URL patterns 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,10 +37,27 @@ urlpatterns = [
     path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),
+    path('edit', views.edit_profile, name = 'edit'),
     path('search_users', views.search_users, name = 'search_users'),
     path('search', views.show_search, name = 'show_search'),
     path('delete', views.delete_question, name = 'delete_q'),
+    path('like_question', views.like_question, name = 'like_q'),
+    path('username-check', views.validate_username, name = 'username_check'),
+    path('email-check', views.validate_email, name = 'email_check'),
+    path('image-check', views.validate_image, name = 'image_check'),  
     path('blogposts/', post_views.display, name = 'blog_home'),
     path('blogposts/post', post_views.post, name = 'post'),
-    path('blogposts/posts', post_views.show_post, name = 'show_post') 
+    path('blogposts/show_post', post_views.show_post, name = 'show_post'),
+    path('blogposts/edit_post', post_views.edit_post, name = 'edit_post'),
+    path('blogposts/delete_post', post_views.delete_post, name = 'delete_post'),
+    path('quiz/', quiz_views.homepage, name = 'quiz_home'),
+    path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
+    path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),
+    path('quiz/view_contest', quiz_views.view_contest, name = 'view_contest'),
+    path('quiz/edit_question', quiz_views.edit_question, name = 'edit_question')
 ]
+
+if settings.DEBUG: 
+
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT) 
+

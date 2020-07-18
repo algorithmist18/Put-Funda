@@ -1,60 +1,116 @@
 <!DOCTYPE html>
+
 <style type="text/css">
+
+	#user-profile
+	{
+		height: 400px;
+		margin-left: 20px;
+		margin-right: 20px;
+	}
+
 	#logout-button
 	{
-		margin-left: 1175px;
+		float: right;
 	}
+
+	#genre-count
+	{
+		margin-left: 50px;
+		font-size: 12px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+
 	#user-display
 	{
 		margin-left: 80px;
 		width: 500px;
 		float: left;
 	}
+
+	#profile-picture
+	{
+		margin-top: 20px;
+		margin-left: 420px;
+		border-color: gray;
+		border-style: solid;
+		border-width: 1px;
+		width: 155px;
+		height: 155px;
+	}
+
+	#text-user-details
+	{
+		float: left;
+		margin-top: 20px;
+	}
+
+	#user-details 
+	{
+		margin-left: 60px;
+		margin-top: 30px;
+		border-style: solid; 
+		border-color: gray;
+		border-width: 1px;
+		width: 600px;
+		height: 300px;
+	}
+
 	#contributions
 	{
 		border-style: solid;
+		border-color: gray;
+		border-width: 1px;
 		width: 300px;
 		float: right;
 		margin-right: 40px;
 	}
-	#username 
-	{
-		font-size: 14px;
-	}
-	#dob
-	{
-		font-size: 14px;
-	}
-	#name
-	{	
-		font-size: 14px;
-	}
-	#loc
-	{
-		font-size: 14px;
-	}
+
 	#question-block
 	{
-		margin-top: 400px;
+		margin-top: 50px;
+		font-size: 12px;
 	}
+
 	#question
 	{
 		border-style: solid;
+		border-color: gray;
+		border-width: 1px;
   		margin-bottom: 100px;
   		margin-right: 170px;
   		margin-left: 80px;
   		width: 900px;
-  		font-family: "Times New Roman", Times, serif;
+  		padding-left: 25px;
+  		padding-top: 25px;
 	}
+
 	.q-content
 	{
-		font-family: "Times New Roman", Times, serif;
-		font-size: 16px;
+		font-size: 12px;
 	}
+
 	.q-time
 	{
-		font-family: "Times New Roman", Times, serif;
 		font-size: 12px;
+	}
+
+	.question-text
+	{
+		font-size: 14px;
+	}
+
+	#chart-div
+	{
+		border-width: 1px;
+		margin-top: 30px;
+		border-color: gray;
+		margin-right: 20px;
+		border-style: solid;
+		float: right;
+		width: 500px;
+		height: 300px;
 	}
 
 </style>
@@ -71,10 +127,11 @@
 
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<div id = "chart_div"></div>
+
 		{% block content %}
 		{% endblock %}
 
-		<script type="text/javascript" src="{{STATIC_URL}} /static/jquery-3.4.1.js"></script>
-		{% block javascript %}{% endblock %}
 	</body>
 </html>

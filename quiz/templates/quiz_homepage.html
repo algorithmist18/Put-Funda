@@ -1,0 +1,60 @@
+{% extends 'quiz_homepage_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+		
+		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  			<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+			</div>
+		</nav>
+	
+	{% if user.is_authenticated %}
+	
+		<center>
+			
+			<div id = "welcome-quiz">
+
+				<!-- List of upcoming contests -->
+
+
+
+			</div>
+
+			<div id = "user-contests">
+
+				<!--List of your contest--> 
+
+				<br>
+
+				<p> Your contests: </p> 
+
+				<br> 
+
+				{% for contest in user_contests %}
+
+					<p> Contest <a href = "{% url 'create_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
+ 
+				{% endfor %}
+
+				<br> 
+
+			</div>	
+
+			<div id = "functions-quiz">
+
+				<!-- Functions of a participant / scheduler --> 
+
+				<p> Schedule a contest <a href = "{% url 'schedule_quiz' %}"> here. </a> </p>
+
+
+			</div>
+		
+		</center>
+	
+	{% else %}
+		<p> You are not logged in. </p>
+	{% endif %}
+
+{% endblock %}

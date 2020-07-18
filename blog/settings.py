@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphos',
     'blogsite',
-    'blogposts'
+    'blogposts',
+    'quiz'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,13 @@ STATIC_URL = '/static/'
 """
 #STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
+
+# For serving files uploaded by user (development) 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+MEDIA_URL = '/media/' 
+
+# Login variables 
+
+LOGIN_URL = 'login'
+ 

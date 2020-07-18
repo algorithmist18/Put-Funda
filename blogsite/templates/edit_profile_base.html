@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+
+	#logout-button
+	{
+		margin-left: 1175px;
+	}
+
+	#genre-count
+	{
+		margin-left: 50px;
+		font-size: 12px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+
+	#user-display
+	{
+		margin-left: 80px;
+		width: 500px;
+		float: left;
+	}
+
+	#profile-picture
+	{
+		float: right;
+		margin-top: 40px;
+		margin-right: 10px;
+	}
+
+	#text-user-details
+	{
+		float: left;
+		margin-top: 20px;
+		margin-left: 20px;
+		border-width: 1px;
+		border-style: solid;
+		border-color: gray;
+	}
+
+	#user-details 
+	{
+		margin-top: 50px;
+		margin-left: 80px;
+		border-style: solid; 
+		border-color: gray;
+		border-width: 1px;
+		width: 650px;
+		height: 350px;
+	}
+
+	#contributions
+	{
+		border-style: solid;
+		border-color: gray;
+		width: 300px;
+		float: right;
+		margin-right: 40px;
+	}
+
+	#chart-div
+	{
+		margin-top: 50px;
+		border-style: solid;
+		margin-left: 750px;
+		width: 500px;
+		height: 300px;
+	}
+
+	#edit-form
+	{
+
+	}
+
+
+	#question-block
+	{
+		margin-top: 50px;
+		font-size: 12px;
+	}
+
+	#question
+	{
+		border-style: solid;
+		border-color: gray;
+  		margin-bottom: 100px;
+  		margin-right: 170px;
+  		margin-left: 80px;
+  		width: 900px;
+  		padding-left: 25px;
+  		padding-top: 25px;
+	}
+
+	.q-content
+	{
+		font-size: 12px;
+	}
+
+	.q-time
+	{
+		font-size: 12px;
+	}
+
+	.question-text
+	{
+		font-size: 14px;
+	}
+
+	#chart-div
+	{
+		margin-top: 50px;
+		border-style: solid;
+		margin-left: 750px;
+		width: 500px;
+		height: 300px;
+	}
+
+	#text-inputs
+	{
+		float: left;
+		font-size: 12px;
+		margin-left: 40px;
+		margin-top: 40px;
+	}
+
+	#avatar-holder
+	{
+		border-width: 1px;
+		border-color: gray;
+		border-style: solid;
+		margin-right: 20px;
+		width: 155px;
+		height: 155px;
+	}
+
+	#image-input
+	{
+		font-size: 12px; 
+		margin-top: 25px;
+		margin-left: 10px;
+	}
+
+</style>
+
+<html>
+	<head>
+		<title> User profile </title> 
+	</head>
+	<body>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<div id = "chart_div"></div>
+
+		{% block content %}
+		{% endblock %}
+
+	</body>
+</html>

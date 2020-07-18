@@ -1,35 +1,68 @@
 {% extends 'user_display_base.html' %}
 {% load staticfiles %}
-
 {% block content %}
+	<!-- Javascript code --> 
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package  
+
+      google.load("visualization", "1", {packages:["corechart"]});
+
+ 	
+ 	</script>
 
 	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
   	<!-- Navbar content -->
-  		<a style="color: white;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-  		<a style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
 	</nav>
-
 
 	<!-- Block to display user details -->
 
-	<div class = "jumbotron" id="user-display">
-		<p id = "username" > Username : {{user.username}} </p>
-		<p id = "name"> Name : {{user.first_name}} {{user.last_name}} </p>
-		<p id = "loc"> Location : {{user.profile.location}} </p>
-		<p id = "dob"> Birth date : {{user.profile.birth_date}} </p>
-	</div>
+	<div id = "user-profile">
 
-	<!-- Block to display user contributions -->
+		<div id = "user-details" style = "float: left;">
 
-	<div id = "contributions">
-		<p id = "count_questions"> Number of questions asked : {{ no_of_questions }} </p>
-		<p id = "genres"> 
-		{% for genre in genres %}
-			<p> <a href = "view?genre={{genre}}"> {{ genre }} </a> </p>
-		{% endfor %}
+			<div id = "text-user-details" style = "font-size: 16px; margin-left: 20px;">
+				<p id = "username" > {{user.username}} </p>
+				<p id = "name"> {{user.first_name}} {{user.last_name}} </p>
+				<p id = "loc" style = "font-size: 12px;"> {{user.profile.location}} </p>
+				<br><br>
+				<p id = "numberOfQuestions" style = "font-size: 12px;"> Number of questions: {{no_of_questions}} </p>
+				<br><br><br>
+			</div>
+
+			<div id = "profile-picture">
+				<center>
+					{% if user.profile.picture %} 
+						<img src = "{{user.profile.picture.url}}" width = "150" height = "150">
+					{% else %}
+						<p> <br> <br> <br> No photo </p>
+					{% endif %}
+				</center>
+			</div>
+
+			<div id = "edit-profile" style = "float: right; margin-top: 90px; margin-right: 25px;">
+					{% if user.username == org_user.username %}
+						<a href = "edit?user={{user.username}}" style = "font-size: 12px; margin-top: 100px;"> Edit profile </a>
+					{% endif %}
+			</div>
+
+		</div>
+
+		<!-- Block to display user contributions -->
+
+		<div id = "chart-div">
+			<br>
+			{{ chart.as_html }}
+		</div>
+
 	</div>
 
 	<!--Block to display user questions -->
+
 	<div id = "question-block">
 	{% for questions in q_list %}
 		<div id = "question">
@@ -37,7 +70,7 @@
 			{% csrf_token %}
 			<div id = "content">
 				{% if not questions.author %}
-					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="genre={{questions.title}}"> {{questions.title}} </a></p>
+					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="genre={{questions.title}}"> {{questions.title}} </a></p>
 				{% else %}
 					<p class= "question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="view?genre={{questions.title}}"> {{questions.title}} </a></p>
 				{% endif %}
@@ -45,12 +78,14 @@
 				<input type = "hidden" name = "questions" value = "{{questions.question}}">
 				<input name = "comment" type = "text">
 				<input type = "submit" name = "act" value = "Submit">
-				<input type = "submit" name = "act" value = "Load">
+				<input type = "submit" name = "act" value = "Show comments">
 			</div> 
 			<div id = "show-answer">
 			{% for k, v in q_times.items %}
 					{% if k == questions.question %}
 						{% if v > 96 %}
+
+							<br>
 							<input type = "submit" name = "show" value = "Show answer">
 						{% endif %}
 					{% endif %}	
@@ -78,16 +113,5 @@
 		</div>
 	{% endfor %}
 	</div>
-{% endblock %}
-
-{% block javascript %}
-
-	<!-- JavaScript code -->
-
-	<script>
-		$(document).ready(function()
-		{
-		});
-	</script>
 
 {% endblock %}

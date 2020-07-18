@@ -11,25 +11,28 @@
 			<div id = "content">
 
 				{% if not questions.author %}
-					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
+					<p class="question-text"> <span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
 				{% else %}
-					<p class= "question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
+					<p class= "question-text"> <span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
+						<strong> posted on {{questions.time}} by </strong>
+						<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> <a href="?genre={{questions.title}}"> {{questions.title}} </a></p>
 				{% endif %}
 
-				<!-- Including delete button -->
 
 				<input type = "hidden" name = "questions" value = "{{questions.question}}">
 				<input name = "comment" type = "text">
-				<input type = "submit" name = "act" value = "Submit">
-				<input type = "submit" name = "act" value = "Load">
-
+				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
 				{% if author == questions.author.username %}
-
-					<input type = "submit" name = "act" value = "Delete">
-
+					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
 				{% endif %}
+				<br>
+				<br>
+				<input class = "show-comments" type = "submit" name = "act" value = "Show comments"> &nbsp; &nbsp; 
+				<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> Like </button>
+				<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
 
 			</div> 
+				
 			<div id = "show-answer">
 			{% for k, v in q_times.items %}
 					{% if k == questions.question %}
@@ -42,13 +45,13 @@
 			</form>
 			{% if answer != None %}
 				{% if questions.answer == answer %}
-					<p style="margin-top: 10px;" id = "answer"> {{ answer }} </p>
+					<p style="margin-top: 10px; font-size: 12px;" id = "answer"> {{ answer }} </p>
 				{% endif %}
 			{% endif %}
 			<br>
 			<br>
 			{% if comments != None %}
-				<div id = "comments">
+				<div class = "comments">
 				{% if questions.question == ques %}
 					{% for comment in comments %}
 							<p> _______________________________________________ </p>
@@ -73,14 +76,33 @@
 {% endblock %}
 
 {% block javascript %}
-	<script>
-		$(document).ready(function(){
-			$("#back").click(function()
+
+
+	<script type="text/javascript">
+
+		$('.like-button').click(function()
+		{
+			// When user clicks like then increment it and then hide the like button 
+
+			var question = $(this).attr('question');
+			var buttons = $('.like-button');
+			var likes = $('.like-count');  
+			var idx = buttons.index(this); 
+
+			$.get('/like_question', {question : question}, function(data)
 			{
-				//Redirect user to previous page
-				alert('Back button clicked.');
-				history.go(-1);
+				$(this).hide(); 
+				likes[idx].innerHTML = '&nbsp; ' + data; 
 			});
-		});
+
+		}); 
+
+		// Smooth scrolling for like, comment, and load buttons 
+
+		$('.show-comments-button').click(function()
+		{
+			$('html, body').animate({scrollTop: $('.comments').offset().top}, 'slow');
+		}); 
+
 	</script>
 {% endblock %}

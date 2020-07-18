@@ -10,4 +10,5 @@ Things to do:
 
 	#0. Add various links in navigation bars.
 
-	#1. Fix register page, please.
+	#1. Link forms and bootstrap. 
+	

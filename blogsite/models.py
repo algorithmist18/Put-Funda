@@ -12,7 +12,14 @@ class Question(models.Model):
 	answer = models.TextField(null = True)
 	genre = models.CharField(max_length = 42)
 	time = models.DateTimeField(auto_now_add = True, blank = True)
-	author = models.ForeignKey(User, on_delete = models.DO_NOTHING, null = True)
+	author = models.ForeignKey(User, on_delete = models.DO_NOTHING, null = True) 
+	likes = models.IntegerField(default = 0) 
+
+class Like(models.Model): 
+
+	user = models.ForeignKey(User, on_delete = models.CASCADE) 
+	question = models.ForeignKey(Question, on_delete = models.CASCADE) 
+	time = models.DateTimeField(auto_now_add = True) 
 
 class Comment(models.Model):
 
@@ -28,6 +35,10 @@ class Profile(models.Model):
 	location = models.CharField(max_length = 25, default='Kolkata')
 	birth_date = models.DateField(null=True, blank=True)
 	is_online = models.BooleanField(default = False)
+
+	# Add image field
+
+	picture = models.ImageField(upload_to = 'images/', max_length = 200, blank = True)  
 
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+
+	#nav
+	{
+		background-color: #34495E;
+		color: white;
+	}
+
+	#logout-button
+	{
+		float: right;
+		margin-right: 20px;
+	}
+
+</style>
+
+<html>
+	
+	<head>
+		<title> Welcome to the Quiz. </title>
+	</head>
+	
+	<body>
+		
+		<!-- Latest compiled and minified CSS -->
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<!-- Navigation bar --> 
+
+		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		
+	  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  		
+	  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+		
+		</nav>
+
+		<!-- Quiz schedule form --> 
+
+		<div id = "quiz-schedule">
+
+			<form method = "post" action = "{% url 'create_contest' %}?contest_id={{id}}">
+					
+				{% csrf_token %} 
+
+				<input type = "text" name = "question"/>
+
+				<br>
+
+				<input type = "text" name = "option_1"/>
+
+				<br> 
+
+				<input type = "text" name = "option_2"/>
+
+				<br> 
+
+				<input type = "text" name = "option_3"/>
+
+				<br> 
+
+				<input type = "text" name = "option_4"/>
+
+				<br> 
+
+				<input type = "text" name = "answer"/>
+
+				<br> 
+
+				<input type = "submit" name = "action" value = "Add question"/>
+
+				<input type = "submit" name = "action" value = "Finish"/>
+
+			</form>
+
+		</div>
+		
+	</body>
+</html>

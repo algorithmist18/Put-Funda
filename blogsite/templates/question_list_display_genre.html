@@ -6,23 +6,25 @@
 			<form id="ans" method="post">
 			{% csrf_token %}
 			<div id = "content">
-
 				{% if not questions.author %}
 					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
 				{% else %}
 					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
 				{% endif %}
-
 				</p>
-
-				<input type="hidden" name = "questions" value="{{questions.question}}">		
-				<input type="text" name="comment">
-				<input type = "submit" name = "act" value = "Submit">
-				<input type = "submit" name = "act" value = "Load">
-
+				<input type = "hidden" name = "questions" value="{{questions.question}}">		
+				<input type = "text"   name = "comment">
+				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
+				{% if author == questions.author.username %}
+					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
+				{% endif %}
+				<br>
+				<br>
+				<input class = "show-comments" type = "submit" name = "act" value = "Show comments"> &nbsp; &nbsp; 
+				<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> Like </button>
+				<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
 			</div>
 				<div id = "show-answer">
-
 				{% for k, v in q_times.items %}
 						{% if k == questions.question %}
 							{% if v > 96 %}
@@ -30,29 +32,27 @@
 							{% endif %}
 						{% endif %}	
 				{% endfor %}
-
 			</form>
 			</div>
-
 			{% if answer != None %}
 				{% if questions.answer == answer %}
-					<p style="margin-top: 10px;" id = "answer"> {{ answer }} </p>
-				{% endif %}
+					<p style = "margin-top: 10px;" id = "answer"> {{ answer }} </p>
+				{% endif %} 
 			{% endif %}
-
 			<br>
 			<br>
 			{% if comments != None %}
 				<div id = "comments">
-
 				{% if questions.question == ques %}
 					{% for comment in comments %}
 						<p> _______________________________________________ </p>
-							<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
+							<p id = "comment-author"> 
+								<a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> 
+								<span id = "comment-time"> {{comment.time}} </span> 
+							</p>
 							<p id = "comment-content"> {{comment.content}}</p>		
 					{% endfor %}
 				{% endif %}
-
 				</div>
 			{% endif %}
 		</div>
@@ -67,4 +67,27 @@
 		{% endif %}
 	{% endfor %}
 	</div>
+
+	<script type="text/javascript">
+		
+		$('.like-button').click(function()
+		{
+			// When user clicks like then increment it and then hide the like button 
+
+			var question = $(this).attr('question');
+			var buttons = $('.like-button');
+			var likes = $('.like-count');  
+			var idx = buttons.index(this); 
+
+			$.get('/like_question', {question : question}, function(data)
+			{
+				$(this).hide(); 
+				likes[idx].innerHTML = ' ' + data; 
+			});
+
+		}); 
+
+	</script>
 {% endblock %}
+
+

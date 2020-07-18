@@ -1,0 +1,41 @@
+{% extends 'blog_homepage.html' %}
+
+{% block content %}
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href="/users?user={{user.username}}" class="navbar-brand" id="user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+		</div>
+	</nav>
+
+	
+
+	<!-- Post container --> 
+
+	<center>
+		<div id="container">
+			<div id="post">
+				<br>
+				<h3 style = "margin-left: 40px; margin-right: 40px;" align="left" >{{post.title}}</h3>
+				<br>
+				<br>
+				<div id = "content" style = "margin-left: 40px; margin-right: 40px;">
+					<p align="left"> {{post.content}}  </p>
+				</div>
+				<br>
+				<br>
+				<p style = "font-size: 12px;"> by <a href = "/users?user={{post.author.username}}"> {{post.author}} </a> at {{post.time}} </p>
+			</div>
+		</div>
+	</center>
+
+	<!-- Block to display blog-posts --> 
+
+	<center>
+
+		<p style="font-size: 12px;"> Are you sure that you want to delete this post? </p>
+		<a style="font-size: 12px;" href = 'delete_post?id={{post.id}}&status=confirm'><button id = "delete_button"> Delete </button></a>
+
+	</center>
+
+{% endblock %}

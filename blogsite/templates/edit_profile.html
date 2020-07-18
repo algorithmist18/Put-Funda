@@ -1,0 +1,150 @@
+{% extends 'edit_profile_base.html' %}
+{% block content %}
+	
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package  
+
+      google.load("visualization", "1", {packages:["corechart"]});
+
+ 	</script>
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+
+  	<!-- Navbar content -->
+
+  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+  		
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+	
+	</nav>
+
+	<!-- Block to display user details -->
+
+		<div id = "user-details" style = "float: left;">
+
+			<div id = "edit-form">
+					
+				<form action="{% url 'edit' %}?user={{user.username}}" enctype="multipart/form-data" method = "POST">
+
+					{% csrf_token %}
+					
+					<div id = "text-inputs">
+
+
+							First name: &nbsp;<input type = "text" value = "{{user.first_name}}" readonly = "readonly"> <br> <br> 
+
+							Last name:	&nbsp;<input type = "text" value = "{{user.last_name}}" readonly = "readonly"> <br><br> 
+
+							DOB: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+
+							<input type = "date" name = "dateOfBirth" value = "{{user.profile.birth_date}}"/> <br><br> 
+
+							Location:&nbsp; &nbsp; &nbsp; 
+
+							<input type = "text" id = "user-location" name = "location" value = "{{user.profile.location}}"/> <br><br>
+
+							<br> <br> <br><br>
+
+							<input type = "submit" value = "Save edits" style = "margin-left: 20px" /> 	
+
+					</div>
+
+					<div id = "profile-picture">
+
+						<div id = "avatar-holder">
+
+							<center>
+
+								{% if user.profile.picture %} 
+
+									<img id = "img-preview" alt = "Your avatar" src = "{{user.profile.picture.url}}" width = "150" height = "150">
+								
+								{% endif %}
+									
+								<!--<img id = "img-preview" width = "150" height = "150" src = "#" alt = "Your image" />-->
+
+							</center>
+
+						</div>
+
+						<input id = "image-input" type = "file" name = "avatar" />
+
+						<br><br>
+
+						<span id = "image-confirm" style = "margin-top: 30px; margin-left: 10px; font-size: 12px;"></span>
+
+						 <br>
+					
+					</div>
+
+				</form>
+				
+			</div>
+
+		</div>
+
+		<script type="text/javascript">
+
+			// Function to preview an image on upload 
+
+			function previewImage(input)
+			{
+				if(input.files && input.files[0])
+				{
+					var fileReader = new FileReader(); 
+
+					fileReader.onload = function (e)
+					{
+						$('#img-preview').attr('src', e.target.result); 
+					}
+
+					fileReader.readAsDataURL(input.files[0]); 
+				}
+			}
+			
+			// Create AJAX calls to validate location 
+
+			// Create AJAX call to validate image 
+
+			function validateImage(e)
+			{
+				var imageFile = $('#image-input').val(); 
+
+				var fileConfirm = $('#image-confirm'); 
+
+				$.get("{% url 'image_check' %}", {imageFile : imageFile},
+
+					function(data)
+					{
+						if(data['valid'] == 'YES')
+						{
+							fileConfirm.html(data['message']);  
+
+							// Show image in the field
+
+							previewImage(e); 
+						}
+						else
+						{	
+							fileConfirm.html(data['message']); 
+						}
+					}
+				);
+
+			}
+
+			function onChange()
+			{
+				// List of inputs to validate 
+
+				$('#image-input').change(function() { validateImage(this) }); 
+
+			}
+
+			$(document).ready(onChange); 
+
+		</script>	
+
+{% endblock %}

@@ -2,13 +2,19 @@
 
 from django.shortcuts import render
 from .models import Post, PostComment, User 
+from .forms import PostForm 
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse 
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required
 def index(request): 
 
 	return render(request, 'blog_homepage.html') 
 
+@login_required
 def post(request): 
 
 	# TODO: Users post here 
@@ -20,14 +26,27 @@ def post(request):
 	context = {}
 	context.update({'author' : author})
 
-	print('Post function called.') 
-
 	if request.method == 'POST': 
 
-		content = request.POST.get('content') 
 		title = request.POST.get('title') 
-		post = Post(author = user, content = content, title = title)
-		post.save() 
+
+		content = request.POST.get('content') 
+
+		anonymous = request.POST.get('anon') 
+
+		print('Anonymous =', anonymous)
+
+		post_object = Post(title = title, content = content, author = author)  
+
+		if anonymous is None:
+
+			post_object.anon = False
+
+		else:
+
+			post_object.anon = True
+
+		post_object.save() 
 
 	# Updating context
 
@@ -46,6 +65,7 @@ def preview(st):
 
 	return preview_st  
 
+@login_required
 def display(request): 
 
 	# Display posts 
@@ -58,6 +78,7 @@ def display(request):
 	authors = {} 
 
 	post_objects = Post.objects.all().order_by('-time') 
+	user = User.objects.all().filter(username = author)[0] 
 
 	for post in post_objects:
 
@@ -71,10 +92,11 @@ def display(request):
 
 	# Updating context 
 
-	context.update({'posts' : posts, 'user' : request.user})
+	context.update({'posts' : posts, 'user' : user})
 
 	return render(request, 'blog_home.html', context)
 
+@login_required
 def show_post(request):
 
 	# Display single post 
@@ -84,6 +106,9 @@ def show_post(request):
 	preview = request.GET.get('preview')
 
 	posts = Post.objects.all().filter(title = post_title)
+	user = User.objects.all().filter(username = author)[0] 
+
+	print(author, user.username) 
 
 	for post in posts: 
 
@@ -91,6 +116,86 @@ def show_post(request):
 
 			break
 			
-	return render(request, 'blog_show.html', {'post' : post})
+	return render(request, 'blog_show.html', {'post' : post, 'author' : user})
 
+@login_required
+def edit_post(request): 
 
+	# Editing a blog post 
+
+	author = request.user
+
+	primary_key = request.GET.get('id') 
+
+	print('Author = ', author) 
+	print('Primary key of blog post = ', primary_key) 
+
+	# Retrieve post 
+
+	post = Post.objects.get(pk = primary_key) 
+
+	if request.method == 'POST': 
+
+		form = PostForm(request.POST, instance = post) 
+
+		if form.is_valid(): 
+
+			# Valid post 
+
+			form.save() 
+			message = 'Blog post updated, successfully.' 
+			print(message) 
+			url = reverse('show_post')
+			return HttpResponseRedirect('{}?user={}&post={}&preview={}'.format(url, author.username, post.title, post.preview)) 
+
+		else: 
+
+			message = 'Uh oh! Blog post could not be updated, try again later.' 
+			print(message) 
+			return render(request, 'blog_home.html') 
+
+	else: 
+
+		post_form = PostForm(instance = post) 
+		return render(request, 'blog_edit.html', {'form' : post_form, 'author' : author, 'id' : primary_key})
+
+@login_required
+def delete_post(request): 
+
+	# Deleting a post 
+
+	author = request.user 
+	status = request.GET.get('status') 
+
+	primary_key = request.GET.get('id') 
+	post = Post.objects.get(pk = primary_key)
+
+	if status is None: 
+
+		# Redirect to confirmation page 
+
+		return render(request, 'delete_post_confirmation.html', {'post' : post, 'author' : author})
+
+	else: 
+
+		if post.author.username == author.username: 
+
+			# Delete post if author is logged in user 
+
+			if status == 'confirm': 
+
+				print('Deleting post right now.') 
+				post.delete() 
+				url = reverse('blog_home')
+				return HttpResponseRedirect(url) 
+
+			else:
+
+				url = reverse('blog_home')
+				return HttpResponseRedirect(url) 
+
+		else: 
+
+			message = 'Uh oh! Logged in user not the author.' 
+			print(message) 
+			return None 
