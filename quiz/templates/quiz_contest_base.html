@@ -14,6 +14,16 @@
 		margin-right: 20px;
 	}
 
+	#quiz-question
+	{
+		margin-top: 100px;
+		font-size: 12px;
+		border-style: solid;
+		border-color: gray;
+		border-width: 1px;
+		width: 500px;
+	}
+
 </style>
 
 <html>
@@ -48,43 +58,56 @@
 
 		<!-- Quiz schedule form --> 
 
-		<div id = "quiz-schedule">
+		<center>
+
+		<div id = "quiz-question">
 
 			<form method = "post" action = "{% url 'create_contest' %}?contest_id={{id}}">
 					
 				{% csrf_token %} 
 
-				<input type = "text" name = "question"/>
+				<br> <br> 
 
-				<br>
+				Question: 
 
-				<input type = "text" name = "option_1"/>
+				<br> <br>
 
-				<br> 
+				<textarea id = "question-input" rows = "5" cols = "70" name = "question" placeholder = "Enter question here" required></textarea>
 
-				<input type = "text" name = "option_2"/>
+				<br> <br>
 
-				<br> 
+				<input type = "text" name = "option_1" placeholder = "Option 1" required />
 
-				<input type = "text" name = "option_3"/>
+				<br> <br>
 
-				<br> 
+				<input type = "text" name = "option_2" placeholder = "Option 2" required />
 
-				<input type = "text" name = "option_4"/>
+				<br> <br>
 
-				<br> 
+				<input type = "text" name = "option_3" placeholder = "Option 3" required />
 
-				<input type = "text" name = "answer"/>
+				<br> <br>
 
-				<br> 
+				<input type = "text" name = "option_4" placeholder = "Option 4" required />
+
+				<br> <br>
+
+				<input type = "text" name = "answer" placeholder = "Answer" required />
+
+				<br> <br>
 
 				<input type = "submit" name = "action" value = "Add question"/>
 
 				<input type = "submit" name = "action" value = "Finish"/>
 
+				<br> <br> 
+
 			</form>
 
 		</div>
 		
+		</center>
+
 	</body>
+
 </html>

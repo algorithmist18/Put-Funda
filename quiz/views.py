@@ -35,13 +35,6 @@ def homepage(request):
 
 	return render(request, 'quiz_homepage.html', args) 
 
-# Method to delete a question 
-
-def delete_question(): 
-
-	pass 
-
-
 # Method to add a question 
 
 def add_question(question, options, contest, answer): 
@@ -203,6 +196,7 @@ def view_contest(request):
 
 # Method to edit question 
 
+@login_required
 def edit_question(request): 
 
 	user = request.user 
@@ -262,5 +256,44 @@ def edit_question(request):
 		return render(request, 'quiz_edit_question.html', args)  
 
 
+# Method to delete a question 
 
+@login_required
+def delete_question(request): 
+
+	user = request.user 
+	question_id = request.GET.get('question_id') 
+
+	# Fetch question from database 
+
+	question = QuizQuestion.objects.get(id = question_id) 
+
+	option_1 = question.option_list[0] 
+	option_2 = question.option_list[1]
+	option_3 = question.option_list[2] 
+	option_4 = question.option_list[3] 
+
+	# Get contest id 
+
+	contest_id = question.contest.id 
+
+	# Update context 
+
+	args = {'user' : user, 'question' : question, 'contest_id' : contest_id, 'option_1' : option_1, 'option_2' : option_2, 'option_3' : option_3, 'option_4' : option_4} 
+
+	if request.method == 'POST': 
+
+		action = request.POST.get('action') 
+
+		if action == 'Confirm delete': 
+
+			# Delete the question  
+
+			question.delete() 
+
+		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
+
+	else: 
+
+		return render(request, 'quiz_delete_question.html', args) 
 

@@ -1,0 +1,65 @@
+{% extends 'quiz_delete_question_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		
+	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  		
+	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+		
+	</nav>
+
+	<!-- Question delete form --> 
+
+	<center>
+
+	<div id = "question-delete">
+
+		<form method = "post" action = "{% url 'delete_question' %}?question_id={{question.id}}">
+			
+			{% csrf_token %}
+
+			<textarea id = "question-input" rows = "5" cols = "70" name = "question" readonly>{{question.question}}</textarea>
+
+			<br> <br> 
+
+			<input type = "text" name = "option_1" value = "{{option_1}}" readonly>
+
+			<br> <br>
+
+			<input type = "text" name = "option_2" value = "{{option_2}}" readonly>
+
+			<br> <br> 
+
+			<input type = "text" name = "option_3" value = "{{option_3}}" readonly>
+
+			<br> <br> 
+
+			<input type = "text" name = "option_4" value = "{{option_4}}" readonly>
+
+			<br> <br> 
+
+			Answer:
+
+			<br><br>
+
+			<input type = "text" name = "answer" value = "{{question.answer}}" readonly>
+
+			<br> <br> 
+
+			<input type = "submit" name = "action" value = "Confirm delete">
+
+			<input type = "submit" name = "action" value = "Back">
+						
+			<br> <br> 
+
+		</form>
+
+	</div>
+
+	</center>
+
+{% endblock %}

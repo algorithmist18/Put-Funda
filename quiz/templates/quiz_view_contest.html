@@ -36,8 +36,11 @@
 
 				<p style = "margin-left: 10px; margin-top: 10px;" > <strong> Answer: </strong> {{question.answer}} </p>
 
-				<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit question </a>
+				<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit </a>
 
+				| 
+
+				<a style = "margin-top: 10px;" href = "{% url 'delete_question' %}?question_id={{question.id}}"> Delete  </a>
 			</div>
 
 		{% endfor %}
