@@ -105,8 +105,6 @@ def create_contest(request):
 
 		action = request.POST.get('action') 
 
-		print(action) 
-
 		if action == 'Add question': 
 
 			# Add question 
@@ -128,8 +126,6 @@ def create_contest(request):
 
 			image = request.FILES.get('image')
 
-			print(question, image) 
-
 			if image is not None: 
 
 				# Assign image to profile 
@@ -142,16 +138,6 @@ def create_contest(request):
 
 			question_object, msg = add_question(question = question, contest = contest, options = options, answer = answer, image = image) 
 
-			print(question_object.image) 
-			
-			if question_object.image == None: 
-
-				print('Quesion does not have an image.') 
-
-			else:
-
-				print('Question does have an image.') 
-
 			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
 		else:
@@ -161,8 +147,6 @@ def create_contest(request):
 			# Check if number of questions are 20 
 
 			msg = is_valid_contest(contest) 
-
-			print(msg) 
 
 			if msg == 'OK': 
 
@@ -205,10 +189,6 @@ def view_contest(request):
 	questions = QuizQuestion.objects.filter(contest = contest)
 
 	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
-
-	for question in questions: 
-
-		print(question.image) 
 
 	if contest.host == user: 
 
