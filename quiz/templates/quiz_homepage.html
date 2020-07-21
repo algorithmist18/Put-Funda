@@ -34,7 +34,7 @@
 
 				{% for contest in user_contests %}
 
-					<p> Contest <a href = "{% url 'create_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
+					<p> Contest <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
  
 				{% endfor %}
 

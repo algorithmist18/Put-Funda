@@ -18,11 +18,22 @@
 
 		{% if show_questions == 'YES' %}
 
-		<p> {{contest.genre}} </p>
+		<p style = "margin-top: 10px; font-size: 16px; margin-left: 20px;"> {{contest.genre}} </p>
 
 		{% for question in questions %}
 
 			<div id = "question">
+
+				{% if question.image %}
+
+				<div id = "image-holder">
+
+					<img id = "img-preview" alt = "Your avatar" width = "200" height = "200" src = "{{question.image.url}}">
+
+				</div>
+
+				{% endif %}
+
 
 				<p style = "margin-left: 10px; margin-top: 10px; margin-right: 10px;"> {{question.question}} </p> 
 
@@ -34,6 +45,7 @@
 
 				{% endfor %}
 
+
 				<p style = "margin-left: 10px; margin-top: 10px;" > <strong> Answer: </strong> {{question.answer}} </p>
 
 				<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit </a>
@@ -41,6 +53,7 @@
 				| 
 
 				<a style = "margin-top: 10px;" href = "{% url 'delete_question' %}?question_id={{question.id}}"> Delete  </a>
+
 			</div>
 
 		{% endfor %}

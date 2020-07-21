@@ -37,13 +37,13 @@ def homepage(request):
 
 # Method to add a question 
 
-def add_question(question, options, contest, answer): 
+def add_question(question, options, contest, answer, image): 
 
-	quiz_question = QuizQuestion(question = question, options = options, answer = answer, contest = contest)  
+	quiz_question = QuizQuestion(question = question, options = options, answer = answer, contest = contest, image = image)    
 
 	quiz_question.save() 
 
-	return 'OK' 
+	return quiz_question, 'OK' 
 
 # Method to schedule a Quiz 
 
@@ -79,13 +79,13 @@ def is_valid_contest(contest):
 
 	no_of_questions = len(questions) 
 
-	if no_of_questions < 3: 
+	if no_of_questions < 10: 
 
 		return 'INVALID_LESSQUESTIONS'
 
 	return 'OK'
 
-# Method to add questions to contest 
+# Method to add questions to a contest 
 
 def create_contest(request): 
 
@@ -111,20 +111,46 @@ def create_contest(request):
 
 			# Add question 
 
-			print('Hello.') 
-
 			question = request.POST.get('question') 
+
+			# Fetching options from request data 
 
 			option_1 = request.POST.get('option_1') 
 			option_2 = request.POST.get('option_2') 
 			option_3 = request.POST.get('option_3') 
 			option_4 = request.POST.get('option_4') 
 
+			# Fetcing answer from request data  
+
 			answer = request.POST.get('answer') 
+
+			# Fetching image from request data 
+
+			image = request.FILES.get('image')
+
+			print(question, image) 
+
+			if image is not None: 
+
+				# Assign image to profile 
+
+				file_storage = FileSystemStorage() 
+				filename = file_storage.save(image.name, image) 
+				file_url = file_storage.url(filename) 
 
 			options = option_1 + ',' + option_2 + ',' + option_3 + ',' + option_4
 
-			msg = add_question(question = question, contest = contest, options = options, answer = answer)
+			question_object, msg = add_question(question = question, contest = contest, options = options, answer = answer, image = image) 
+
+			print(question_object.image) 
+			
+			if question_object.image == None: 
+
+				print('Quesion does not have an image.') 
+
+			else:
+
+				print('Question does have an image.') 
 
 			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
@@ -167,6 +193,7 @@ def create_contest(request):
 
 # Method to view a contest 
 
+@login_required
 def view_contest(request): 
 
 	user = request.user 
@@ -178,6 +205,10 @@ def view_contest(request):
 	questions = QuizQuestion.objects.filter(contest = contest)
 
 	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+
+	for question in questions: 
+
+		print(question.image) 
 
 	if contest.host == user: 
 
@@ -229,6 +260,8 @@ def edit_question(request):
 		option_3 = request.POST.get('option_3') 
 		option_4 = request.POST.get('option_4') 
 
+		image = request.FILES.get('image') 
+		
 		answer = request.POST.get('answer') 
 
 		options = option_1 + ',' + option_2 + ',' + option_3 + ',' + option_4
@@ -243,9 +276,11 @@ def edit_question(request):
 
 		question.answer = answer 
 
-		# Save the question 
+		if image is not None: 
 
-		print('Hello') 
+			question.image = image
+
+		# Save the question 
 
 		question.save() 
 

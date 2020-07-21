@@ -29,7 +29,7 @@
 <html>
 	
 	<head>
-		<title> Welcome to the Quiz. </title>
+		<title> Qnondrum | Create contest </title>
 	</head>
 	
 	<body>
@@ -62,7 +62,7 @@
 
 		<div id = "quiz-question">
 
-			<form method = "post" action = "{% url 'create_contest' %}?contest_id={{id}}">
+			<form method = "post" enctype="multipart/form-data" action = "{% url 'create_contest' %}?contest_id={{id}}">
 					
 				{% csrf_token %} 
 
@@ -90,7 +90,11 @@
 
 				<input type = "text" name = "option_4" placeholder = "Option 4" required />
 
-				<br> <br>
+				<br> <br> 
+
+				<input style = "margin-left: 65px;" type = "file" name = "image" />
+
+				<br>
 
 				<input type = "text" name = "answer" placeholder = "Answer" required />
 
