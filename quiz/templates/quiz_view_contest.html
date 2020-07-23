@@ -68,4 +68,81 @@
 
 	</div>
 
+	<div id = "countdown">
+
+		<p id = "contest-show"> The contest will start in <span id = "time"> </span></p>
+
+	</div>	
+
+	<script type = "text/javascript">
+
+		function onEnter()
+		{
+			var contestTime = "{{contest.time}}"; 
+
+			// Split contest time into tokens 
+
+			var tokens = contestTime.split(" "); 
+
+			// Transforming date-time standards from Django to JavaScript  
+
+			if(tokens[tokens.length - 1] == "p.m.")
+			{
+				var time = tokens[tokens.length - 2]; 
+
+				time[0] = (parseInt(time[0]) + 12).toString(10); 
+
+				tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
+
+				console.log(tokens[tokens.length - 2]); 
+			}
+				
+			var time = ""; 
+
+			for(i=0; i<tokens.length - 1; i++)
+			{
+				time += tokens[i] + " "; 
+			}
+
+			time = time.trim(); 
+
+			var contestTime = new Date(time).getTime(); 
+
+			// Designing the countdown timer 
+
+			var x = setInterval(function()
+			{
+				var currentTime = new Date().getTime(); 
+
+				var distance = contestTime - currentTime;
+
+				// Extract days, hours, minutes and seconds 
+
+				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+				// Display the result  
+
+				if(distance <= 0)
+				{
+					// Go to contest
+
+					 $("<p> Play contest <a href = {% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}> here. </a> </p>").replaceAll("#contest-show"); 
+				}
+				else
+				{
+					// Show waiting time 
+
+					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's'); 
+				}
+
+			}, 1000); 
+		}
+
+		$(document).ready(onEnter); 
+
+	</script>
+
 {% endblock %}

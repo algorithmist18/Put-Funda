@@ -20,7 +20,7 @@ class QuizQuestion(models.Model):
 	question = models.TextField()
 	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True) 
 	options = models.TextField() 
-	answer = models.CharField(max_length = 100) 
+	answer = models.CharField(max_length = 300) 
 	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
 
 	# Method to separate out options 
@@ -34,3 +34,10 @@ class QuizQuestion(models.Model):
 
 	option_list = property(separate) 
 		 
+class Submission(models.Model): 
+
+	user = models.ForeignKey(User, on_delete = models.CASCADE) 
+	time_taken = models.FloatField() 
+	answer = models.CharField(max_length = 300) 
+	question = models.ForeignKey(QuizQuestion, on_delete = models.CASCADE) 
+

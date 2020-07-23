@@ -1,0 +1,41 @@
+{% extends 'quiz_view_contest_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		
+	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  		
+	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+		
+	</nav>
+
+	<!-- Display question --> 
+
+	<div id = "question-contest">
+
+		<form method = "post" action = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{}}">
+
+		<p>{{question.content}}</p>
+
+		{% if question.image %}
+
+		<img name = "question-image" src = "{{question.image.url}}"/> 
+
+		{% endif %}
+
+		{% for option in options %}
+
+			<input type = "radio" id = "option" name = "submission" value = {{option}} />
+			<label for = "option"> {{option}} </label> <br> 
+
+		{% endif %}
+
+		<input type = "submit" name = "action" value = "Submit" /> 
+
+	</div>
+
+
+{% endblock %}

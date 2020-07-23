@@ -1,0 +1,96 @@
+{% extends 'quiz_play_contest_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  		
+	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  		
+	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+		
+	</nav>
+
+	<!-- Display question --> 
+
+	<div id = "contest">
+
+		<form method = "post" action = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}">
+
+			{% csrf_token %}
+
+			<p>{{question.question}}</p>
+
+			{% if question.image %}
+
+			<div id = "image-holder">
+
+				<img name = "question-image" src = "{{question.image.url}}" width = "300" height = "200" /> 
+
+			</div>
+
+			{% endif %}
+
+			{% for option in options %}
+
+				<input type = "radio" id = "option" name = "answer" value = {{option}} />
+				<label for = "option"> {{option}} </label> <br> 
+
+			{% endfor %}
+
+			<input type = "submit" name = "action" value = "Submit" /> 
+
+			<input id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
+
+		</form>
+
+		<p id = "timer" name = "time_taken">0</p> 
+
+	</div>
+	
+	<!-- JavaScript code to handle timer -->
+
+	<script type="text/javascript">
+
+		// Function to countdown till 20 seconds 
+		
+		var currentTime = $('#timer').html(); 
+
+		var elapsedTime = $('#time_taken').val(); 
+
+		currentTime = parseInt(currentTime); 
+
+		function setTime()
+		{
+			currentTime += 1; 
+
+			$('#time_taken').val(currentTime); 
+
+			// Set time 
+
+			$('#timer').html(currentTime.toString(10));
+
+			// Go to next question if timer exceeded 
+
+			if(currentTime == 20)
+			{
+				alert('Time Limit Exceeded'); 
+
+				return; 
+			} 
+
+		}
+
+		function countdownBegin()
+		{
+			setInterval(setTime, 1000);
+		}
+		
+		// Entry point 
+
+		$(document).ready(countdownBegin); 
+
+	</script>
+
+{% endblock %}

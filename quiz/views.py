@@ -8,7 +8,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from quiz.forms import QuizForm
-from quiz.models import QuizQuestion, Contest
+from quiz.models import QuizQuestion, Contest, Submission
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
@@ -87,6 +87,7 @@ def is_valid_contest(contest):
 
 # Method to add questions to a contest 
 
+@login_required
 def create_contest(request): 
 
 	# Getting user and contest ID 
@@ -188,7 +189,7 @@ def view_contest(request):
 
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions, 'first_question' : questions[0]}  
 
 	if contest.host == user: 
 
@@ -311,4 +312,93 @@ def delete_question(request):
 	else: 
 
 		return render(request, 'quiz_delete_question.html', args) 
+
+
+# Method to fetch next question 
+
+def fetch_next_question(question, user): 
+
+	contest = question.contest 
+
+	questions = QuizQuestion.objects.filter(contest = contest)  
+
+	# Find questions which have already been submitted by user 
+
+	for i in range(len(questions)): 
+
+		if questions[i].id == question.id: 
+
+			break 
+
+	if i == len(questions) - 1: 
+
+		# Contest finished
+
+		message = 'FINISH' 
+		next_question = None
+
+	else: 
+
+		# Contest is on
+
+		message = 'CONTINUE'
+		next_question = questions[i + 1]  
+
+	return message, next_question 
+
+
+@login_required
+def play_contest(request): 
+
+	# Fetch data from request 
+
+	user = request.user 
+	question_id = request.GET.get('question_id')
+	contest_id = request.GET.get('contest_id') 
+
+	contest = Contest.objects.get(id = contest_id) 
+
+	# Fetch data from database call 
+
+	question = QuizQuestion.objects.get(id = question_id) 
+
+	args = {'user' : user, 'question' : question, 'options' : question.option_list, 'contest' : contest} 
+
+	if request.method == 'POST': 
+
+		# Fetch request data 
+
+		answer = request.POST.get('answer') 
+		question_id = request.GET.get('question_id') 
+		time_taken = request.POST.get('time_taken') 
+
+		# Fetch question 
+
+		question = QuizQuestion.objects.get(id = question_id) 
+
+		# Create submission object 
+
+		submission = Submission(user = user, question = question, answer = answer, time_taken = time_taken) 
+		submission.save() 
+
+		# Route to next question 
+
+		message, next_question = fetch_next_question(question, user) 
+
+		if message == 'FINISH': 
+
+			return redirect('quiz_home') 
+
+		else:
+
+			# Update context
+
+			args['question'] = next_question
+			args['options'] = next_question.option_list 
+
+			return render(request, 'quiz_play_contest.html', args) 
+
+	else: 
+
+		return render(request, 'quiz_play_contest.html', args) 
 
