@@ -18,8 +18,20 @@
 
 				<!-- List of upcoming contests -->
 
+				<br> 
 
+				<p> List of all contests: </p>
 
+				<br>
+
+				{% for contest in contests %}
+
+				<p> Contest <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
+
+				{% endfor %}
+
+				<br> 
+				
 			</div>
 
 			<div id = "user-contests">
@@ -56,5 +68,16 @@
 	{% else %}
 		<p> You are not logged in. </p>
 	{% endif %}
+
+	<script type="text/javascript">
+		
+		function newWindow()
+		{
+			console.log('Control here.'); 
+			window.open("{% url 'view_contest' %}?contest_id={{contest.id}}"); 
+			window.focus(); 
+		}
+
+	</script>
 
 {% endblock %}

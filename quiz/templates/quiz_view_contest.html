@@ -74,6 +74,8 @@
 
 	</div>	
 
+	<p> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
+	
 	<script type = "text/javascript">
 
 		function onEnter()
@@ -129,7 +131,7 @@
 				{
 					// Go to contest
 
-					 $("<p> Play contest <a href = {% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}> here. </a> </p>").replaceAll("#contest-show"); 
+					 $("<p> Play contest <a onclick = 'newWindow()'> here. </a> </p>").replaceAll("#contest-show"); 
 				}
 				else
 				{
@@ -142,6 +144,18 @@
 		}
 
 		$(document).ready(onEnter); 
+
+		function newWindow()
+		{
+			// Setting time to zero 
+			
+			localStorage.storedTime = 0;  
+			
+			// Open new popup window 
+
+			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}", "Play contest", 
+						directories=0, titlebar=0, toolbar=0, menubar=0, width=400, height=350); 
+		}
 
 	</script>
 

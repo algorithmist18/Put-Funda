@@ -18,6 +18,26 @@ from datetime import timezone
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
+from django.db.models import Min, Max, Count, Q 
+from functools import cmp_to_key 
+
+# Class to represent custom data structure 
+
+class ContestUser: 
+
+	# Variables 
+
+	def __init__(self, username, correct_answers, time_taken): 
+
+		self.username = username 
+		self.correct_answers = correct_answers
+		self.time_taken = time_taken 
+
+# Method to compare two users 
+
+def compare(x): 
+
+	return x.correct_answers, -x.time_taken 
 
 # Create your views here.
 
@@ -29,9 +49,11 @@ def homepage(request):
 
 	user_contests = Contest.objects.filter(host = user) 
 
+	contests = Contest.objects.all() 
+
 	# Update the context for this page 
 
-	args = {'user_contests' : user_contests}
+	args = {'user_contests' : user_contests, 'contests' : contests}
 
 	return render(request, 'quiz_homepage.html', args) 
 
@@ -252,9 +274,7 @@ def edit_question(request):
 		# Edit the question
 
 		question.question = question_content 
-
 		question.options = options 
-
 		question.answer = answer 
 
 		if image is not None: 
@@ -313,7 +333,6 @@ def delete_question(request):
 
 		return render(request, 'quiz_delete_question.html', args) 
 
-
 # Method to fetch next question 
 
 def fetch_next_question(question, user): 
@@ -326,7 +345,11 @@ def fetch_next_question(question, user):
 
 	for i in range(len(questions)): 
 
-		if questions[i].id == question.id: 
+		if i < len(questions) - 1:
+		
+			submission = Submission.objects.filter(user = user, question = questions[i + 1]) 
+
+		if questions[i].id == question.id and len(submission) == 0: 
 
 			break 
 
@@ -346,7 +369,6 @@ def fetch_next_question(question, user):
 
 	return message, next_question 
 
-
 @login_required
 def play_contest(request): 
 
@@ -361,6 +383,16 @@ def play_contest(request):
 	# Fetch data from database call 
 
 	question = QuizQuestion.objects.get(id = question_id) 
+	submissions = Submission.objects.filter(user = user, question = question) 
+	contest_questions = QuizQuestion.objects.filter(contest = contest) 
+
+	if len(submissions) == len(contest_questions): 
+
+		return redirect('quiz_home') 
+
+	index = len(submissions) 
+
+	question = contest_questions[index] 
 
 	args = {'user' : user, 'question' : question, 'options' : question.option_list, 'contest' : contest} 
 
@@ -372,14 +404,28 @@ def play_contest(request):
 		question_id = request.GET.get('question_id') 
 		time_taken = request.POST.get('time_taken') 
 
+		time_taken = int(time_taken) / 1000
+
+		if answer == None: 
+
+			answer = "" 
+
+		print(answer, time_taken)
+
 		# Fetch question 
 
 		question = QuizQuestion.objects.get(id = question_id) 
 
-		# Create submission object 
+		# Check if user has submitted this question before 
 
-		submission = Submission(user = user, question = question, answer = answer, time_taken = time_taken) 
-		submission.save() 
+		submissions = Submission.objects.filter(user = user, question = question) 
+
+		if len(submissions) == 0:
+
+			# Create submission object 
+
+			submission = Submission(user = user, question = question, answer = answer, time_taken = time_taken) 
+			submission.save() 
 
 		# Route to next question 
 
@@ -396,9 +442,82 @@ def play_contest(request):
 			args['question'] = next_question
 			args['options'] = next_question.option_list 
 
+			print('Redirecting')
+
 			return render(request, 'quiz_play_contest.html', args) 
 
 	else: 
 
 		return render(request, 'quiz_play_contest.html', args) 
 
+# Method to return a list of users which participated in the contest 
+	
+def users_in_contest(contest): 
+
+	users_set = set([]) 
+
+	submissions = Submission.objects.filter(question__contest = contest)  
+
+	for submission in submissions: 
+
+		users_set.add(submission.user) 
+
+	return users_set 
+
+# Method to return leaderboard for a contest 
+
+@login_required
+def display_leaderboard(request): 
+
+	# Fetch required data 
+
+	original_user = request.user 
+	contest_id = request.GET.get('contest_id') 
+	contest = Contest.objects.get(id = contest_id) 
+
+	#submisssions = Submission.objects.get(contest = contest) 
+
+	# Design leaderboard from submissions 
+
+	contest_users = [] 
+
+	users = users_in_contest(contest) 
+
+	for user in users: 
+
+		user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
+
+		correct_answers = 0 
+		time_taken = 0 
+
+		for submission in user_submissions: 
+
+			given_answer = submission.answer 
+			correct_answer = submission.question.answer 
+
+			if correct_answer == given_answer: 
+
+				correct_answers += 1 
+				time_taken += submission.time_taken 
+
+
+		contest_user = ContestUser(user.username, correct_answers, time_taken) 
+		contest_users.append(contest_user) 
+	
+	print(contest_users) 
+
+	# Sort the submissions
+
+	contest_users = sorted(sorted(contest_users, key = lambda x: x.time_taken), key = lambda x: x.correct_answers, reverse = True)  
+	
+	for user in contest_users: 
+
+		print(user.username, user.correct_answers, user.time_taken) 
+
+	# Update context 
+
+	args = {} 
+
+	args.update({'user' : original_user, 'contest' : contest, 'users' : contest_users})
+
+	return render(request, 'quiz_display_leaderboard.html', args) 

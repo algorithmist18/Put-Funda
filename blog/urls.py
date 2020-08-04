@@ -56,7 +56,8 @@ urlpatterns = [
     path('quiz/view_contest', quiz_views.view_contest, name = 'view_contest'),
     path('quiz/edit_question', quiz_views.edit_question, name = 'edit_question'),
     path('quiz/delete_question', quiz_views.delete_question, name = 'delete_question'),
-    path('quiz/play_contest', quiz_views.play_contest, name = 'play_contest')
+    path('quiz/play_contest', quiz_views.play_contest, name = 'play_contest'),
+    path('quiz/leaderboard', quiz_views.display_leaderboard, name = 'leaderboard') 
 ]
 
 if settings.DEBUG: 

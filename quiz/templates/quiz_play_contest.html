@@ -22,6 +22,8 @@
 
 			<p>{{question.question}}</p>
 
+			<input style = "float: right;" id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
+
 			{% if question.image %}
 
 			<div id = "image-holder">
@@ -34,48 +36,74 @@
 
 			{% for option in options %}
 
-				<input type = "radio" id = "option" name = "answer" value = {{option}} />
+				<input type = "radio" id = "option" name = "answer" value = "{{option}}" />
 				<label for = "option"> {{option}} </label> <br> 
 
 			{% endfor %}
 
-			<input type = "submit" name = "action" value = "Submit" /> 
+			<br>
+			<br>
 
-			<input id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
+			<input id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
 
 		</form>
 
-		<p id = "timer" name = "time_taken">0</p> 
+		<p id = "timer">0</p> 
 
 	</div>
-	
+
 	<!-- JavaScript code to handle timer -->
 
 	<script type="text/javascript">
 
 		// Function to countdown till 20 seconds 
 		
+		var currentDate = new Date(); 
 		var currentTime = $('#timer').html(); 
-
-		var elapsedTime = $('#time_taken').val(); 
-
-		currentTime = parseInt(currentTime); 
 
 		function setTime()
 		{
-			currentTime += 1; 
-
-			$('#time_taken').val(currentTime); 
+			currentTime = Number(currentTime) + 1; 
 
 			// Set time 
 
-			$('#timer').html(currentTime.toString(10));
+			console.log('Current time = ' + currentTime); 
+
+			$('#timer').html(currentTime);
+			$('#time_taken').val(currentTime.toString(10)); 
 
 			// Go to next question if timer exceeded 
 
 			if(currentTime == 20)
 			{
-				alert('Time Limit Exceeded'); 
+				console.log("Time limit exceeded."); 
+
+				// Create a POST request and send it to server 
+
+				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'}; 
+				const URL = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}"; 
+
+				// Redirecting with a form submission
+				
+				var form = document.createElement('form'); 
+
+				document.body.appendChild(form); 
+
+				form.method = 'post';
+				form.action = URL; 
+
+				for(var name in data)
+				{
+					var input = document.createElement('input'); 
+
+					input.type = 'hidden'; 
+					input.name = name; 
+					input.value = data[name]; 
+
+					form.appendChild(input); 
+				}
+
+				form.submit();
 
 				return; 
 			} 
@@ -90,6 +118,17 @@
 		// Entry point 
 
 		$(document).ready(countdownBegin); 
+
+		// Clear cache on submit 
+		
+		$("#submit-button").click(function()
+		{
+			// Clear storage time for next question 
+
+			var newDate = new Date(); 
+
+			$('#time_taken').val(newDate - currentDate); 
+		}); 
 
 	</script>
 

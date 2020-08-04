@@ -1,0 +1,37 @@
+{% extends 'quiz_display_leaderboard_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+		
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	</nav>
+
+	<!-- Display leaderboard here -->
+
+	<center>
+
+		<div id = "leaderboard">
+
+			<table style="width:800px;">
+			  <tr>
+			   <th>Username</th>
+			   <th>Correct Answers</th>
+			   <th>Time taken(secs)</th>
+			  </tr>
+			  {% for u in users %}
+			  <tr>
+			  	<td>{{u.username}}</td>
+			  	<td>{{u.correct_answers}}</td>
+			  	<td>{{u.time_taken}}</td>
+			  </tr>
+			  {% endfor %}
+			</table>
+
+		</div>
+
+	</center>
+
+{% endblock %}	
