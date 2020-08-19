@@ -11,33 +11,80 @@
 			<div id = "content">
 
 				{% if not questions.author %}
-					<p class="question-text"> <span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
+					
+				<p class="question-text"> 
+					
+					<span class = "question-content"> {{questions.question}} </span> 
+					
+					<h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> 
+					
+					<a href="{{question.title}}"> {{questions.title}} </a>
+					
+					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+						<i class = "fas fa-arrow-up"></i>
+					</button>
+					
+					<span class = "like-count">{{ questions.likes }}</span>
+				</p>
+
 				{% else %}
-					<p class= "question-text"> <span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
-						<strong> posted on {{questions.time}} by </strong>
-						<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> <a href="?genre={{questions.title}}"> {{questions.title}} </a></p>
+
+				<p class= "question-text"> <span class = "question-content">
+					
+					<span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
+					
+					<strong> posted on {{questions.time}} by </strong>
+						
+					<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
+
+					<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
+
+					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+						<i class = "fas fa-arrow-up"></i>
+					</button>
+
+					<span class = "like-count">{{ questions.likes }}</span>
+
+				</p>
+
 				{% endif %}
 
 
 				<input type = "hidden" name = "questions" value = "{{questions.question}}">
-				<input name = "comment" type = "text">
+				<!--<input row = "20" name = "comment" type = "text" placeholder = "Write a comment...">-->
+				{% if comments != None %}
+					<div class = "comments">
+					{% if questions.question == ques %}
+						{% for comment in comments %}
+								<p> _______________________________________________ </p>
+								<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
+								<p id = "comment-content"> {{comment.content}}</p>			
+						{% endfor %}
+					{% else %}
+					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<br>
+					{% endif %}
+					</div>
+				{% else %}
+					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<br>
+				{% endif %}
+				<br>
+				<textarea cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
+				<br>
 				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
 				{% if author == questions.author.username %}
 					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
 				{% endif %}
 				<br>
 				<br>
-				<input class = "show-comments" type = "submit" name = "act" value = "Show comments"> &nbsp; &nbsp; 
-				<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> Like </button>
-				<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
-
 			</div> 
 				
 			<div id = "show-answer">
 			{% for k, v in q_times.items %}
 					{% if k == questions.question %}
 						{% if v > 96 %}
-							<input type = "submit" name = "show" value = "Show answer">
+							<input type = "submit" name = "show" value = "Show answer"><br>
 						{% endif %}
 					{% endif %}	
 			{% endfor %}
@@ -45,22 +92,11 @@
 			</form>
 			{% if answer != None %}
 				{% if questions.answer == answer %}
-					<p style="margin-top: 10px; font-size: 12px;" id = "answer"> {{ answer }} </p>
+				<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
 				{% endif %}
 			{% endif %}
 			<br>
 			<br>
-			{% if comments != None %}
-				<div class = "comments">
-				{% if questions.question == ques %}
-					{% for comment in comments %}
-							<p> _______________________________________________ </p>
-							<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-							<p id = "comment-content"> {{comment.content}}</p>			
-					{% endfor %}
-				{% endif %}
-				</div>
-			{% endif %}
 		</div>
 	{% endfor %}
 	</div>
@@ -84,6 +120,8 @@
 		{
 			// When user clicks like then increment it and then hide the like button 
 
+			console.log('Like button clicked.'); 
+
 			var question = $(this).attr('question');
 			var buttons = $('.like-button');
 			var likes = $('.like-count');  
@@ -92,17 +130,23 @@
 			$.get('/like_question', {question : question}, function(data)
 			{
 				$(this).hide(); 
-				likes[idx].innerHTML = '&nbsp; ' + data; 
+				likes[idx].innerHTML = data; 
 			});
 
 		}); 
 
 		// Smooth scrolling for like, comment, and load buttons 
 
-		$('.show-comments-button').click(function()
+		$("#show-comments").click(function()
 		{
-			$('html, body').animate({scrollTop: $('.comments').offset().top}, 'slow');
-		}); 
+			var elem = document.getElementById('#show-comments'); 
+
+			console.log(elem.offsetTop);
+
+			$('html, body').animate({scrollDown: $(this).offset().top}, 1000); 
+
+		}); 		
 
 	</script>
+
 {% endblock %}

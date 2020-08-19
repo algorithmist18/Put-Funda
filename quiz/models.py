@@ -18,23 +18,12 @@ class Contest(models.Model):
 class QuizQuestion(models.Model): 
 
 	question = models.TextField()
-	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True) 
-	options = models.TextField() 
+	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
+	guess = models.TextField()
 	answer = models.TextField() 
 	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
 
-	# Method to separate out options 
-
-	def separate(self): 
-
-		option_list = self.options.split(',') 
-		
-		return option_list 
-
-
-	option_list = property(separate) 
-		 
-class Submission(models.Model): 
+class Submission(models.Model): 	
 
 	user = models.ForeignKey(User, on_delete = models.CASCADE) 
 	time_taken = models.FloatField() 

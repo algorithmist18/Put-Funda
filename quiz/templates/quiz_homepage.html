@@ -17,22 +17,55 @@
 			<div id = "welcome-quiz">
 
 				<!-- List of upcoming contests -->
-
-				<br> 
-
-				<p> List of all contests: </p>
-
-				<br>
-
-				{% for contest in contests %}
-
-				<p> Contest <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
-
-				{% endfor %}
-
-				<br> 
 				
+				<center>
+
+					<br> 
+
+					<p> List of all contests: </p>
+
+					<br>
+
+						<table class = "table">
+							
+							<center>
+
+								<thead>
+								    <tr>
+								      <th scope="col">Contest ID</th>
+								      <th scope="col">Genre</th>
+								      <th scope="col">Host</th>
+								      <th scope="col">Time</th>
+								    </tr>
+								</thead>
+
+								<tbody>
+									
+									{% for contest in contests %}
+
+									<tr>
+										<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
+										<td>{{contest.genre}}</td>
+										<td><a href = "{% url 'show_user' %}?user={{contest.host.username}}">{{contest.host}}</a></td>
+										<td>{{contest.time}}</td>
+									</tr>
+
+									{% endfor %}
+
+
+								</tbody>
+
+							</center>
+
+						</table>
+
+					<br> 
+
+				</center>
+					
 			</div>
+
+		</center>
 
 			<div id = "user-contests">
 
@@ -47,23 +80,23 @@
 				{% for contest in user_contests %}
 
 					<p> Contest <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
- 
+	 
 				{% endfor %}
 
 				<br> 
 
 			</div>	
 
-			<div id = "functions-quiz">
+			<center>
+				<div id = "functions-quiz">
 
-				<!-- Functions of a participant / scheduler --> 
+					<!-- Functions of a participant / scheduler --> 
 
-				<p> Schedule a contest <a href = "{% url 'schedule_quiz' %}"> here. </a> </p>
+					<p> Schedule a contest <a href = "{% url 'schedule_quiz' %}"> here. </a> </p>
 
 
-			</div>
-		
-		</center>
+				</div>
+			</center>
 	
 	{% else %}
 		<p> You are not logged in. </p>

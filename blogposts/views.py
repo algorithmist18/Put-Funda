@@ -29,9 +29,7 @@ def post(request):
 	if request.method == 'POST': 
 
 		title = request.POST.get('title') 
-
 		content = request.POST.get('content') 
-
 		anonymous = request.POST.get('anon') 
 
 		print('Anonymous =', anonymous)
@@ -134,6 +132,12 @@ def edit_post(request):
 
 	post = Post.objects.get(pk = primary_key) 
 
+	if author != post.author:
+
+		url = reverse('blog_home')
+		return HttpResponseRedirect(url) 
+
+
 	if request.method == 'POST': 
 
 		form = PostForm(request.POST, instance = post) 
@@ -169,6 +173,11 @@ def delete_post(request):
 
 	primary_key = request.GET.get('id') 
 	post = Post.objects.get(pk = primary_key)
+
+	if author != post.author:
+
+		url = reverse('blog_home')
+		return HttpResponseRedirect(url) 
 
 	if status is None: 
 

@@ -14,12 +14,22 @@
 		margin-right: 20px;
 	}
 
+	#quiz-schedule
+	{
+		border-style: solid;
+		border-color: gray;
+		border-width: 1px;
+		width: 500px;
+		font-size: 12px;
+		margin-top: 50px;
+	}
+
 </style>
 
 <html>
 	
 	<head>
-		<title> Welcome to the Quiz. </title>
+		<title> Qnondrum | Schedule a Quiz. </title>
 	</head>
 	
 	<body>
@@ -48,23 +58,32 @@
 
 		<!-- Quiz schedule form --> 
 
-		<div id = "quiz-schedule">
 
-			<form method = "post" action = "{% url 'schedule_quiz' %}">
+		<center>
+
+			<p style = "margin-top: 50px; font-size: 12px;"> Schedule the Quiz timings here. </p>
+
+
+			<div id = "quiz-schedule">
+
+				<form method = "post" action = "{% url 'schedule_quiz' %}">
 					
-				{% csrf_token %} 
+					<br>
 
-				<input type = "text" name = "genre"/>
+					{% csrf_token %} 
 
-				<input type = "date" name = "date" required/>
+					Genre: <br><br><input type = "text" name = "genre" placeholder = "Genre" /><br><br>
 
-				<input type = "time" name = "time" required/>
+					Date: <br><br><input type = "date" name = "date" required/><br><br>
 
-				<input type = "submit" name = "Schedule"/>
+					Time: <br><br><input type = "time" name = "time" required/><br><br>
 
-			</form>
+					<input type = "submit" name = "Schedule"/><br><br>
 
-		</div>
-		
+				</form>
+
+			</div>
+			
+		</center>
 	</body>
 </html>

@@ -20,7 +20,7 @@
 
 			{% csrf_token %}
 
-			<p>{{question.question}}</p>
+			<p style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;">{{question.question}}</p>
 
 			<input style = "float: right;" id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
 
@@ -34,21 +34,13 @@
 
 			{% endif %}
 
-			{% for option in options %}
+			<input style = "margin-left: 20px; margin-top: 20px;" type = "text" id = "option" name = "answer" />
 
-				<input type = "radio" id = "option" name = "answer" value = "{{option}}" />
-				<label for = "option"> {{option}} </label> <br> 
-
-			{% endfor %}
-
-			<br>
-			<br>
-
-			<input id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
+			<input style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
 
 		</form>
 
-		<p id = "timer">0</p> 
+		<p style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "timer">0</p> 
 
 	</div>
 

@@ -15,23 +15,56 @@
 
 		<div id = "leaderboard">
 
-			<table style="width:800px;">
-			  <tr>
-			   <th>Username</th>
-			   <th>Correct Answers</th>
-			   <th>Time taken(secs)</th>
-			  </tr>
-			  {% for u in users %}
-			  <tr>
-			  	<td>{{u.username}}</td>
-			  	<td>{{u.correct_answers}}</td>
-			  	<td>{{u.time_taken}}</td>
-			  </tr>
-			  {% endfor %}
+			<p> Leaderboard </p>
+
+			<table class = "table" style="width:800px;">
+				
+				<thead>
+				  
+				  <tr>
+				   
+				   <th>Username</th>
+				   <th>Correct Answers</th>
+				   <th>Time taken(secs)</th>
+				  
+				  </tr>
+
+				</thead>
+
+				{% for u in users %}
+				  <tr>
+				 
+				  	<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
+				 
+				  	<td>{{u.correct_answers}}</td>
+				 
+				  	<td class = "time-taken">{{u.time_taken}}</td>
+				 
+				  </tr>
+				{% endfor %}
 			</table>
 
 		</div>
 
 	</center>
+
+	<script type="text/javascript">
+		
+		// Round up the time-taken 
+
+		var timeTaken = document.getElementsByClassName("time-taken"); 
+
+		var i; 
+
+		for(i=0; i<timeTaken.length; i++)
+		{
+			var time = Number(timeTaken[i].innerHTML);
+
+			time = time.toFixed(3);
+
+			timeTaken[i].innerHTML = time;   
+		}
+
+	</script>
 
 {% endblock %}	

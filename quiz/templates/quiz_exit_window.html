@@ -1,46 +1,52 @@
 <!DOCTYPE html>
+
 <style type="text/css">
-
-	#nav
+	
+	.body
 	{
-		background-color: #34495E;
-		color: white;
+		font-size: 12px;
 	}
 
-	#logout-button
+	#exit-message
 	{
-		float: right;
-		margin-right: 20px;
-	}
-
-	#user-display
-	{
-		font-size: 15px;
-	}
-
-	#home-block
-	{
-		margin-top: 100px;
-		width: 800px;
-		background-color:#F4F6F7;
-		color: black;
+		margin-top: 450px;
 	}
 
 </style>
+
 <html>
+	
 	<head>
-		<title> Welcome to the blog. </title>
+		<title> Qnondrum | Exit window </title>
 	</head>
+	
 	<body>
+		
 		<!-- Latest compiled and minified CSS -->
+		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
 		<!-- jQuery library -->
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 		<!-- Latest compiled JavaScript -->
+		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-		{% block content %}
-		{% endblock %}
+
+		<!-- Exit announcment --> 
+
+		<center>
+
+			<div id = "exit-message">
+
+				<h4> The Quiz has ended! </h4>
+				<p> Thank you for participating. You can close the window now. </p>
+
+			</div>
+
+		</center>
+
 	</body>
+
 </html>

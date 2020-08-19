@@ -14,73 +14,82 @@
 	</nav>
 
 	
-	<div id = "quiz-contest">
+	
 
 		{% if show_questions == 'YES' %}
 
-		<p style = "margin-top: 10px; font-size: 16px; margin-left: 20px;"> {{contest.genre}} </p>
+		<div id = "quiz-contest">
+			
+			<p style = "margin-top: 10px; font-size: 16px; margin-left: 20px;"> {{contest.genre}} </p>
 
-		{% for question in questions %}
+			{% for question in questions %}
 
-			<div id = "question">
+				<div id = "question">
 
-				{% if question.image %}
+					{% if question.image %}
 
-				<div id = "image-holder">
+						<div id = "image-holder">
 
-					<img id = "img-preview" alt = "Your avatar" width = "200" height = "200" src = "{{question.image.url}}">
+							<img id = "img-preview" alt = "Your avatar" width = "200" height = "200" src = "{{question.image.url}}">
+
+						</div>
+
+					{% endif %}
+
+
+					<p style = "margin-left: 10px; margin-top: 10px; margin-right: 10px;"> {{question.question}} </p> 
+
+
+					<p style = "margin-left: 10px; margin-top: 10px;" > <strong> Answer: </strong> {{question.answer}} </p>
+
+					<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit </a>
+
+					| 
+
+					<a style = "margin-top: 10px;" href = "{% url 'delete_question' %}?question_id={{question.id}}"> Delete  </a>
 
 				</div>
 
-				{% endif %}
+			{% endfor %}
 
-
-				<p style = "margin-left: 10px; margin-top: 10px; margin-right: 10px;"> {{question.question}} </p> 
-
-				<p style = "margin-left: 10px; margin-top: 10px;"> <strong> Options: </strong> </p>
-
-				{% for option in question.option_list %}
-
-					<p style = "margin-left: 10px; margin-top: 10px;"> {{option}} </p>
-
-				{% endfor %}
-
-
-				<p style = "margin-left: 10px; margin-top: 10px;" > <strong> Answer: </strong> {{question.answer}} </p>
-
-				<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit </a>
-
-				| 
-
-				<a style = "margin-top: 10px;" href = "{% url 'delete_question' %}?question_id={{question.id}}"> Delete  </a>
-
-			</div>
-
-		{% endfor %}
-
+			
 			<a href = "contest?contest_id={{contest.id}}" style = "float: right; margin-right: 10px;" > Add question </a> <br>
+		
+		</div>
 
 		{% else %}
 
-			<p> This contest is to be scheduled at {{contest.time}} </p>
+			<center>
+
+				<div id = "contest-update">
+
+					{% if played_contest == 'YES' %}
+
+						<p> You have already played the contest. </p> 
+
+					{% else %}
+
+						<p> This contest is to be scheduled at {{contest.time}} </p>
+						<p id = "contest-show"> Time to go to contest: <span id = "time"> </span></p>
+					
+					{% endif %}
+				
+					
+					<p> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
+
+				</div>
+
+			</center>
 
 		{% endif %}
 
-	</div>
-
-	<div id = "countdown">
-
-		<p id = "contest-show"> The contest will start in <span id = "time"> </span></p>
-
-	</div>	
-
-	<p> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
-	
 	<script type = "text/javascript">
 
 		function onEnter()
 		{
 			var contestTime = "{{contest.time}}"; 
+
+			console.log('Contest time = ' + contestTime); 
 
 			// Split contest time into tokens 
 
@@ -94,7 +103,14 @@
 
 				time[0] = (parseInt(time[0]) + 12).toString(10); 
 
-				tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
+				if(time[2] != null)
+				{
+					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
+				}
+				else
+				{
+					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":00"; 
+				}
 
 				console.log(tokens[tokens.length - 2]); 
 			}

@@ -10,4 +10,4 @@ class QuizForm(ModelForm):
 	class Meta: 
 
 		model = QuizQuestion
-		fields = ['question', 'image', 'options', 'answer', 'contest']
+		fields = ['question', 'image', 'guess', 'answer', 'contest']

@@ -1,5 +1,6 @@
 # Importing libraries
 
+import difflib
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -20,6 +21,7 @@ from graphos.renderers.gchart import PieChart
 from django.core.files.storage import FileSystemStorage 
 from django.db.models import Min, Max, Count, Q 
 from functools import cmp_to_key 
+from django.urls import reverse 
 
 # Class to represent custom data structure 
 
@@ -59,9 +61,9 @@ def homepage(request):
 
 # Method to add a question 
 
-def add_question(question, options, contest, answer, image): 
+def add_question(question, contest, answer, image): 
 
-	quiz_question = QuizQuestion(question = question, options = options, answer = answer, contest = contest, image = image)    
+	quiz_question = QuizQuestion(question = question, answer = answer, contest = contest, image = image)    
 
 	quiz_question.save() 
 
@@ -134,13 +136,6 @@ def create_contest(request):
 
 			question = request.POST.get('question') 
 
-			# Fetching options from request data 
-
-			option_1 = request.POST.get('option_1') 
-			option_2 = request.POST.get('option_2') 
-			option_3 = request.POST.get('option_3') 
-			option_4 = request.POST.get('option_4') 
-
 			# Fetcing answer from request data  
 
 			answer = request.POST.get('answer') 
@@ -157,9 +152,7 @@ def create_contest(request):
 				filename = file_storage.save(image.name, image) 
 				file_url = file_storage.url(filename) 
 
-			options = option_1 + ',' + option_2 + ',' + option_3 + ',' + option_4
-
-			question_object, msg = add_question(question = question, contest = contest, options = options, answer = answer, image = image) 
+			question_object, msg = add_question(question = question, contest = contest, answer = answer, image = image) 
 
 			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
@@ -204,14 +197,35 @@ def create_contest(request):
 def view_contest(request): 
 
 	user = request.user 
-
 	contest_id = request.GET.get('contest_id') 
-
 	contest = Contest.objects.get(id = contest_id) 
-
 	questions = QuizQuestion.objects.filter(contest = contest)
 
 	args = {'user' : user, 'contest' : contest, 'questions' : questions, 'first_question' : questions[0]}  
+
+	submissions = Submission.objects.filter(user = user)
+
+	flag = False 
+
+	for submission in submissions: 
+
+		if submission.question.contest == contest: 
+
+			# User has played contest 
+
+			flag = True 
+
+			break
+
+	if flag == True:
+
+		# User has played the contest 
+
+		args.update({'played_contest' : 'YES'})
+
+	else:
+
+		args.update({'played_contest' : 'NO'})
 
 	if contest.host == user: 
 
@@ -233,43 +247,34 @@ def view_contest(request):
 @login_required
 def edit_question(request): 
 
-	user = request.user 
+	# Fetch request data 
 
+	user = request.user 
 	question_id = request.GET.get('question_id') 
 
+	# Fetch data with a DB call 
+
 	question = QuizQuestion.objects.get(id = question_id) 
-
 	contest = Contest.objects.get(id = question.contest.id) 
-
-	# Unpacking options 
-
-	option_1 = question.option_list[0] 
-	option_2 = question.option_list[1]
-	option_3 = question.option_list[2] 
-	option_4 = question.option_list[3] 
 
 	# Defining context for the page 
 
-	args = {'user' : user, 'question' : question, 'contest' : contest, 'option_1' : option_1, 'option_2' : option_2, 'option_3' : option_3, 'option_4' : option_4}
+	args = {'user' : user, 'question' : question, 'contest' : contest}
+
+	# Check if user is author 
+
+	if user != question.contest.host: 
+
+		url = reverse('quiz_home')
+		return HttpResponseRedirect(url) 
 
 	if request.method == 'POST': 
 
 		# Check if question is valid 
 
 		question_content = request.POST.get('question') 
-
-		option_1 = request.POST.get('option_1') 
-		option_2 = request.POST.get('option_2') 
-		option_3 = request.POST.get('option_3') 
-		option_4 = request.POST.get('option_4') 
-
-		image = request.FILES.get('image') 
-		
+		image = request.FILES.get('image') 		
 		answer = request.POST.get('answer') 
-
-		options = option_1 + ',' + option_2 + ',' + option_3 + ',' + option_4
-
-		# Validation check 
 
 		# Edit the question
 
@@ -304,18 +309,20 @@ def delete_question(request):
 
 	question = QuizQuestion.objects.get(id = question_id) 
 
-	option_1 = question.option_list[0] 
-	option_2 = question.option_list[1]
-	option_3 = question.option_list[2] 
-	option_4 = question.option_list[3] 
-
 	# Get contest id 
 
 	contest_id = question.contest.id 
 
+	# Check if user is author 
+
+	if user != question.contest.host: 
+
+		url = reverse('quiz_home')
+		return HttpResponseRedirect(url) 
+
 	# Update context 
 
-	args = {'user' : user, 'question' : question, 'contest_id' : contest_id, 'option_1' : option_1, 'option_2' : option_2, 'option_3' : option_3, 'option_4' : option_4} 
+	args = {'user' : user, 'question' : question, 'contest_id' : contest_id, 'answer' : answer} 
 
 	if request.method == 'POST': 
 
@@ -369,6 +376,16 @@ def fetch_next_question(question, user):
 
 	return message, next_question 
 
+# Method to return similarity of two strings 
+
+def similarity_quotient(str1, str2): 
+
+	similarity = difflib.SequenceMatcher(None, str1, str2).ratio() 
+
+	print(str1, str2, similarity) 
+
+	return similarity
+
 @login_required
 def play_contest(request): 
 
@@ -378,14 +395,13 @@ def play_contest(request):
 	question_id = request.GET.get('question_id')
 	contest_id = request.GET.get('contest_id') 
 
-	contest = Contest.objects.get(id = contest_id) 
-
 	# Fetch data from database call 
 
+	contest = Contest.objects.get(id = contest_id) 
 	question = QuizQuestion.objects.get(id = question_id) 
 	submissions = Submission.objects.filter(user = user, question = question) 
 	contest_questions = QuizQuestion.objects.filter(contest = contest) 
-
+	
 	if len(submissions) == len(contest_questions): 
 
 		return redirect('quiz_home') 
@@ -394,7 +410,7 @@ def play_contest(request):
 
 	question = contest_questions[index] 
 
-	args = {'user' : user, 'question' : question, 'options' : question.option_list, 'contest' : contest} 
+	args = {'user' : user, 'question' : question, 'contest' : contest} 
 
 	if request.method == 'POST': 
 
@@ -409,8 +425,6 @@ def play_contest(request):
 		if answer == None: 
 
 			answer = "" 
-
-		print(answer, time_taken)
 
 		# Fetch question 
 
@@ -433,16 +447,13 @@ def play_contest(request):
 
 		if message == 'FINISH': 
 
-			return redirect('quiz_home') 
+			return render(request, 'quiz_exit_window.html', args) 
 
 		else:
 
 			# Update context
 
 			args['question'] = next_question
-			args['options'] = next_question.option_list 
-
-			print('Redirecting')
 
 			return render(request, 'quiz_play_contest.html', args) 
 
@@ -492,10 +503,10 @@ def display_leaderboard(request):
 
 		for submission in user_submissions: 
 
-			given_answer = submission.answer 
-			correct_answer = submission.question.answer 
+			given_answer = submission.answer.lower() 
+			correct_answer = submission.question.answer.lower() 
 
-			if correct_answer == given_answer: 
+			if similarity_quotient(correct_answer, given_answer) > 0.85: 
 
 				correct_answers += 1 
 				time_taken += submission.time_taken 

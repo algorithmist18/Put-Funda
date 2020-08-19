@@ -7,9 +7,17 @@
 			{% csrf_token %}
 			<div id = "content">
 				{% if not questions.author %}
-					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
+					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a>
+					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+						<i class = "fas fa-arrow-up"></i>
+						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
+					</button></p>
 				{% else %}
-					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a></p>
+					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a>
+					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+						<i class = "fas fa-arrow-up"></i>
+						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
+					</button></p>
 				{% endif %}
 				</p>
 				<input type = "hidden" name = "questions" value="{{questions.question}}">		
@@ -20,9 +28,9 @@
 				{% endif %}
 				<br>
 				<br>
-				<input class = "show-comments" type = "submit" name = "act" value = "Show comments"> &nbsp; &nbsp; 
-				<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> Like </button>
-				<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
+				<input class = "show-comments" type = "submit" name = "act" value = "Show comments">
+			
+				
 			</div>
 				<div id = "show-answer">
 				{% for k, v in q_times.items %}
