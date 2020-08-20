@@ -1,64 +1,86 @@
 {% extends 'register_base.html' %}
 {% block content %}
-	<h4> Register below </h4>
-	<form method="post" action="{% url 'register' %}">
+	<h4 style = "margin-top: 50px;"> Register yourself below. Sign-up is free. </h4>
+
+	<div id = "registration-form">
+	
+		<form method="post" action="{% url 'register' %}">
+
 		{% csrf_token %}
-		<center>
-		<div id = "left-part" style = "float: left; margin-left: 200px; margin-top: 0px;">
+		
+		<div id = "left-part">
+			
 			{{form.errors}}
+			
+			<!--
 			<div class="form-group">
 		      	<p><label>Email:</p></label>
 		    	<p>{{form.email}}</p>
 		      	<p><small id="emailHelp" class="form-text text-muted">{{form.email_id.help_text}}</small></p>
 		      	<span id = "confirm-email" style = "font-size: 12px;"></span></p>
 		    </div>
+			-->
+		
 		    <div class="form-group">
 		      <p><label>Username:</label></p>
 		      <p><span>{{form.username}}</span><br> <p><small id = "username-helptext" class="form-text text-muted">{{form.username.help_text}}</small></p>
 		      <span id = "confirm-username" style = "font-size: 12px;"></span></p>
 		      <p><small class="form-text text-muted">{{form.username.help_text}}</small></p>
 		    </div>
+		
 		    <div class="form-group">
 		      <p><label>First name:</label></p>
 		      <p id = "first-name"><span>{{form.first_name}}</span></p>
 		    </div>
+		
 		    <div class="form-group">
 		      <p><label>Last name:</label></p>
 		      <p>{{form.last_name}}</p>
 		    </div>
+
+		    <br>
+		
 		     <div class="form-group">
 		      <p><label for="exampleInputEmail1">DOB:</label><p>
 		      <p id = "birth-date"><span>{{form.birth_date}}</span></p>
 		      <p><small class="form-text text-muted">{{form.birth_date.help_text}}</small></p>
 		    </div>
+		
 		</div>
 
-		<div id = "right-part" style="margin-top: 100px;">
+		<div id = "right-part">
+		
 		    <div class="form-group">
 		      <p><label for="exampleInputEmail1">Location:</label></p>
 		      <p><span>{{form.location}}</span></p>
 		    </div>
+		    <!--
 		    <div class="form-group">
 		      <p><label>Phone:</label></p>
 		      <p><span>{{form.phone}}</span></p>
 		    </div>
+		-->
 		    <div class="form-group">
 		      <p><label for="exampleInputEmail1">Password:</label></p>
 		      <p><span>{{form.password1}}</span></p>
-		      <p><small class="form-text text-muted">{{form.password1.help_text}}</small></p>
+		       <p><small class="form-text text-muted">Your password cannot be similar to your personal information.<br> Your password cannot be entirely numeric.</small></p>
 		    </div>
+		 
 		    <div class="form-group">
 		      <p><label for="exampleInputEmail1">Confirmation:</label></p>
 		      <p>{{form.password2}}</p>
 		      <p><small class="form-text text-muted">{{form.password2.help_text}}</small></p>
 		    </div>
+		
 		</div>
-  </center>
-  <center>
-  	 <input style = "font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
-  </center>
-  </form>   
-</form>
+  	
+  		<center>
+  	 		<input style = "margin-top: 400px; font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
+  		</center>
+  		<br><br>
+		</form>
+
+	</div>
 
 <script type="text/javascript">
 	

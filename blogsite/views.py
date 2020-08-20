@@ -761,7 +761,7 @@ def count_alphabet(token):
 
 	# Check if string has an alphabet 
 
-	for character in username: 
+	for character in token: 
 
 		if character.isalpha(): 
 
