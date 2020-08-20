@@ -279,7 +279,6 @@ def edit_question(request):
 		# Edit the question
 
 		question.question = question_content 
-		question.options = options 
 		question.answer = answer 
 
 		if image is not None: 
