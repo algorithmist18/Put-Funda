@@ -209,6 +209,8 @@ def view_contest(request):
 
 	for submission in submissions: 
 
+		print(user.username, submission.question.contest) 
+
 		if submission.question.contest == contest: 
 
 			# User has played contest 
@@ -393,6 +395,7 @@ def play_contest(request):
 	user = request.user 
 	question_id = request.GET.get('question_id')
 	contest_id = request.GET.get('contest_id') 
+	instruction = request.GET.get('instruction') 
 
 	# Fetch data from database call 
 
@@ -400,6 +403,8 @@ def play_contest(request):
 	question = QuizQuestion.objects.get(id = question_id) 
 	submissions = Submission.objects.filter(user = user, question = question) 
 	contest_questions = QuizQuestion.objects.filter(contest = contest) 
+
+	# TODO: If it has been ten minutes since contest started - leave 
 	
 	if len(submissions) == len(contest_questions): 
 
@@ -458,7 +463,18 @@ def play_contest(request):
 
 	else: 
 
-		return render(request, 'quiz_play_contest.html', args) 
+		if instruction == 'show': 
+
+			# Updating arguments 
+
+			args['contest_id'] = contest_id
+			args['question_id'] = question_id
+
+			return render(request, 'quiz_contest_instructions.html', args) 
+
+		else: 
+
+			return render(request, 'quiz_play_contest.html', args) 
 
 # Method to return a list of users which participated in the contest 
 	

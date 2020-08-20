@@ -166,7 +166,7 @@
 			
 			// Open new popup window 
 
-			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}", "Play contest", 
+			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}&instruction=show", "Play contest", 
 						directories=0, titlebar=0, toolbar=0, menubar=0, width=400, height=350); 
 		}
 
