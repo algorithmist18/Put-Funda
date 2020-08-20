@@ -91,8 +91,6 @@ def login_view(request):
 		passwd = request.POST.get('password')
 
 		# Checking if password is stored in plain text or not 
-			
-		print(passwd) 
 
 		if form.is_valid:
 

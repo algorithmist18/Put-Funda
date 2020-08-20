@@ -84,10 +84,6 @@ def display(request):
 		previews.update({post.title : preview(post.content)})
 		authors.update({post.content : post.author}) 
 
-
-	print('Number of blog posts', len(previews)) 
-	print(posts[0].title)
-
 	# Updating context 
 
 	context.update({'posts' : posts, 'user' : user})
