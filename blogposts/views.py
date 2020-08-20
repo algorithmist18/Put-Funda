@@ -68,7 +68,7 @@ def display(request):
 
 	# Display posts 
 
-	author = request.user
+	logged_in_user = request.user
 
 	posts = []
 	context = {}
@@ -76,7 +76,6 @@ def display(request):
 	authors = {} 
 
 	post_objects = Post.objects.all().order_by('-time') 
-	user = User.objects.all().filter(username = author)[0] 
 
 	for post in post_objects:
 
@@ -86,7 +85,7 @@ def display(request):
 
 	# Updating context 
 
-	context.update({'posts' : posts, 'user' : user})
+	context.update({'posts' : posts, 'user' : logged_in_user})
 
 	return render(request, 'blog_home.html', context)
 
@@ -100,7 +99,7 @@ def show_post(request):
 	preview = request.GET.get('preview')
 
 	posts = Post.objects.all().filter(title = post_title)
-	user = User.objects.all().filter(username = author)[0] 
+	user = User.objects.get(username = author)
 
 	print(author, user.username) 
 
