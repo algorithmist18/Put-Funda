@@ -17,14 +17,18 @@
 
 			<p> Leaderboard </p>
 
-			<table class = "table" style="width:800px;">
+			<table id = "table-leaderboard" class = "table" style="width:800px;">
 				
 				<thead>
 				  
 				  <tr>
+					
+				   <th>Rank</th>	   
 				   
 				   <th>Username</th>
+			
 				   <th>Correct Answers</th>
+			
 				   <th>Time taken(secs)</th>
 				  
 				  </tr>
@@ -32,7 +36,10 @@
 				</thead>
 
 				{% for u in users %}
+				  
 				  <tr>
+
+				  	<td class = "rank-row">1</td>
 				 
 				  	<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
 				 
@@ -40,8 +47,10 @@
 				 
 				  	<td class = "time-taken">{{u.time_taken}}</td>
 				 
-				  </tr>
+				   </tr>
+			
 				{% endfor %}
+			
 			</table>
 
 		</div>
@@ -63,6 +72,17 @@
 			time = time.toFixed(3);
 
 			timeTaken[i].innerHTML = time;   
+		}
+
+		// Rank the participants 
+
+		var rank = document.getElementsByClassName('rank-row'); 
+		var counter = 1; 
+
+		for(i=0; i<rank.length; i++)
+		{
+			rank[i].innerHTML = counter.toString(10); 
+			counter++; 
 		}
 
 	</script>

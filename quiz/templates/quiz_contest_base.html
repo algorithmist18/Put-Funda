@@ -16,12 +16,18 @@
 
 	#quiz-question
 	{
-		margin-top: 100px;
+		margin-top: 50px;
 		font-size: 12px;
 		border-style: solid;
 		border-color: gray;
 		border-width: 1px;
 		width: 500px;
+	}
+
+	#alert
+	{
+		font-size: 12px;
+		width: 400px;
 	}
 
 </style>
@@ -57,6 +63,7 @@
 		</nav>
 
 		<!-- Quiz schedule form --> 
+
 
 		<center>
 
@@ -99,3 +106,24 @@
 	</body>
 
 </html>
+
+<script type="text/javascript">
+	
+	// Access message parameter and display a success message 
+
+	let params = new URLSearchParams(location.search); 
+
+	var message = params.get('message') 
+
+	if(message == 'OK')
+	{
+		// Display success message 
+
+		console.log('s'); 
+
+			$("<div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your question was added.</div>").insertBefore("#quiz-question");
+
+	}
+	
+
+</script>

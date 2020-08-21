@@ -223,7 +223,31 @@ def view_contest(request):
 
 		# User has played the contest 
 
-		args.update({'played_contest' : 'YES'})
+		contest_submission = [] 
+		correct_answer = 0 
+		time_taken = 0 
+
+		for submission in submissions: 
+
+			if submission.question.contest == contest:
+
+				quotient = similarity_quotient(submission.question.answer, submission.answer) 
+
+				if quotient > 0.85: 
+
+					# Correct answer 
+
+					time_taken += submission.time_taken
+					correct_answer += 1 
+					contest_submission.append([submission.question.question, submission.answer, submission.question.answer, '1'])
+
+				else: 
+
+					# Incorrect answer 
+
+					contest_submission.append([submission.question.question, submission.answer, submission.question.answer, '0'])
+
+		args.update({'played_contest' : 'YES', 'submission' : contest_submission, 'correct_answers' : correct_answer, 'time_taken' : round(time_taken, 3)})
 
 	else:
 
@@ -309,6 +333,7 @@ def delete_question(request):
 	# Fetch question from database 
 
 	question = QuizQuestion.objects.get(id = question_id) 
+	answer = question.answer 
 
 	# Get contest id 
 

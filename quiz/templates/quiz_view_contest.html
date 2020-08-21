@@ -58,23 +58,64 @@
 
 			<center>
 
-				<div id = "contest-update">
+				{% if played_contest == 'YES' %}
 
-					{% if played_contest == 'YES' %}
+						<p style = "margin-top: 30px;"> You have already played the contest. </p> <br>
 
-						<p> You have already played the contest. </p> 
+						<p style = "font-size: 12px;"> You have answered {{correct_answers}} questions correctly in {{time_taken}} seconds. </p> 
+
+						<!--Display submissions and correct answer--> 
+
+						<table class = "table" style="width:1000px; font-size: 12px;" id = "table-submission">
+							
+							<thead>
+								
+								<tr>
+									
+									<th>Question</th>
+
+									<th>Your answer</th>
+
+									<th>Correct answer</th>
+
+									<th>Points given</th> 
+								
+								</tr>
+
+							</thead>
+
+							{% for sub in submission %}
+
+								<tr>
+				 
+				  					<td>{{sub.0}}</td>
+				 
+				  					<td id = "your-answer">{{sub.1}}</td>
+				 
+				  					<td id = "correct-answer">{{sub.2}}</td>
+
+				  					<td id = "points">{{sub.3}}</td>
+				 
+				   				</tr>
+
+							{% endfor %}
+						
+						</table>
 
 					{% else %}
 
-						<p> This contest is to be scheduled at {{contest.time}} </p>
-						<p id = "contest-show"> Time to go to contest: <span id = "time"> </span></p>
-					
-					{% endif %}
-				
-					
-					<p> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
+					<div id = "contest-update">
 
-				</div>
+						<p style = "margin-top: 30px;"> This contest is to be scheduled at {{contest.time}} </p>
+						<p id = "contest-show" style = "margin-top: 10px;"> Time to go to contest: <span id = "time"> </span></p><br>
+					
+					</div>
+
+					{% endif %}
+					
+					<!--
+					<p id = "show-leaderboard"> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
+					-->
 
 			</center>
 
@@ -82,14 +123,10 @@
 
 	<script type = "text/javascript">
 
-		function onEnter()
-		{
-			var contestTime = "{{contest.time}}"; 
+		// Function to fix standard time 
 
-			console.log('Contest time = ' + contestTime); 
-
-			// Split contest time into tokens 
-
+		function toJSTime(contestTime)
+		{		
 			var tokens = contestTime.split(" "); 
 
 			// Transforming date-time standards from Django to JavaScript  
@@ -121,7 +158,53 @@
 
 			time = time.trim(); 
 
+			return new Date(time).getTime(); 
+		}
+
+		function onEnter()
+		{
+			var contestTime = "{{contest.time}}"; 
+
+			console.log('Contest time = ' + contestTime); 
+
+			// Split contest time into tokens 
+
+			var tokens = contestTime.split(" "); 
+
+			// Transforming date-time standards from Django to JavaScript  
+
+			contestTime = toJSTime(contestTime); 
+
+			/*
+			if(tokens[tokens.length - 1] == "p.m.")
+			{
+				var time = tokens[tokens.length - 2]; 
+
+				time[0] = (parseInt(time[0]) + 12).toString(10); 
+
+				if(time[2] != null)
+				{
+					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
+				}
+				else
+				{
+					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":00"; 
+				}
+
+				console.log(tokens[tokens.length - 2]); 
+			}
+				
+			var time = ""; 
+
+			for(i=0; i<tokens.length - 1; i++)
+			{
+				time += tokens[i] + " "; 
+			}
+
+			time = time.trim(); 
+
 			var contestTime = new Date(time).getTime(); 
+			*/
 
 			// Designing the countdown timer 
 
@@ -168,6 +251,24 @@
 
 			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}&instruction=show", "Play contest", 
 						directories=0, titlebar=0, toolbar=0, menubar=0, width=400, height=350); 
+		}
+
+		// Display leaderboard after 10 minutes have passed 
+
+		var contestTime = toJSTime("{{contest.time}}"); 
+		var currentTime = new Date().getTime(); 
+
+		var distance = currentTime - contestTime;
+
+		// Extract minutes 
+
+		var minutes = Math.floor((distance / 1000) / 60);
+
+		console.log(minutes); 
+
+		if(minutes > 10)
+		{
+			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
 		}
 
 	</script>
