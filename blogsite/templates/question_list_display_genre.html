@@ -13,25 +13,47 @@
 						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
 					</button></p>
 				{% else %}
-					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a>
+					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> posted on {{questions.time}} by <a href = "{% url 'show_user'%}?user={{questions.author}}">{{ questions.author }}</a></h5> <a href="{{question.title}}"> {{questions.title}} </a>
 					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
 						<i class = "fas fa-arrow-up"></i>
 						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
 					</button></p>
 				{% endif %}
-				</p>
+
+				{% if comments != None %}
+					<div class = "comments">
+					{% if questions.question == ques %}
+						{% for comment in comments %}
+								<p> _______________________________________________ </p>
+								<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
+								<p id = "comment-content"> {{comment.content}}</p>			
+						{% endfor %}
+					{% else %}
+					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<span id = "comment-count"> {{questions.comments}} </span>
+					<br>
+					{% endif %}
+					</div>
+				{% else %}
+					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<span id = "comment-count"> {{questions.comments}} </span>
+					<br>
+				{% endif %}
+
+				<br>
+				<textarea cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
+				<br>
+
 				<input type = "hidden" name = "questions" value="{{questions.question}}">		
-				<input type = "text"   name = "comment">
+			
 				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
 				{% if author == questions.author.username %}
 					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
 				{% endif %}
 				<br>
-				<br>
-				<input class = "show-comments" type = "submit" name = "act" value = "Show comments">
-			
-				
+				<br>				
 			</div>
+
 				<div id = "show-answer">
 				{% for k, v in q_times.items %}
 						{% if k == questions.question %}
@@ -44,25 +66,11 @@
 			</div>
 			{% if answer != None %}
 				{% if questions.answer == answer %}
-					<p style = "margin-top: 10px;" id = "answer"> {{ answer }} </p>
+					<p style = "margin-top: 10px; font-size: 12px;" id = "answer"> <strong>Answer:</strong> {{ answer }} </p>
 				{% endif %} 
 			{% endif %}
 			<br>
 			<br>
-			{% if comments != None %}
-				<div id = "comments">
-				{% if questions.question == ques %}
-					{% for comment in comments %}
-						<p> _______________________________________________ </p>
-							<p id = "comment-author"> 
-								<a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> 
-								<span id = "comment-time"> {{comment.time}} </span> 
-							</p>
-							<p id = "comment-content"> {{comment.content}}</p>		
-					{% endfor %}
-				{% endif %}
-				</div>
-			{% endif %}
 		</div>
 	{% endfor %}
 	</div>
@@ -96,6 +104,7 @@
 		}); 
 
 	</script>
+
 {% endblock %}
 
 

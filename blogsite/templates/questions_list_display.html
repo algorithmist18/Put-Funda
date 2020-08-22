@@ -62,22 +62,30 @@
 						{% endfor %}
 					{% else %}
 					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<span id = "comment-count"> {{questions.comments}} </span>
 					<br>
 					{% endif %}
 					</div>
 				{% else %}
 					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+					<span id = "comment-count"> {{questions.comments}} </span>
 					<br>
 				{% endif %}
+				
 				<br>
 				<textarea cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
 				<br>
+				
 				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
+				
 				{% if author == questions.author.username %}
+				
 					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
+				
 				{% endif %}
-				<br>
-				<br>
+				
+				<br><br>
+			
 			</div> 
 				
 			<div id = "show-answer">

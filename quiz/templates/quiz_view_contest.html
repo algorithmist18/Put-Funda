@@ -66,7 +66,7 @@
 
 						<!--Display submissions and correct answer--> 
 
-						<table class = "table" style="width:1000px; font-size: 12px;" id = "table-submission">
+						<table class = "table" style = "width: 1000px; font-size: 12px;" id = "table-submission">
 							
 							<thead>
 								
@@ -88,7 +88,7 @@
 
 								<tr>
 				 
-				  					<td>{{sub.0}}</td>
+				  					<td id = "question-row">{{sub.0}}</td>
 				 
 				  					<td id = "your-answer">{{sub.1}}</td>
 				 
@@ -102,6 +102,8 @@
 						
 						</table>
 
+					<p style = "font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
+					
 					{% else %}
 
 					<div id = "contest-update">
@@ -266,7 +268,7 @@
 
 		console.log(minutes); 
 
-		if(minutes > 10)
+		if(minutes > 2000)
 		{
 			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
 		}

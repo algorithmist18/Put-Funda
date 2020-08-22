@@ -14,6 +14,7 @@ class Question(models.Model):
 	time = models.DateTimeField(auto_now_add = True, blank = True)
 	author = models.ForeignKey(User, on_delete = models.DO_NOTHING, null = True) 
 	likes = models.IntegerField(default = 0) 
+	comments = models.IntegerField(default = 0) 
 
 class Like(models.Model): 
 

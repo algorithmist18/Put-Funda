@@ -233,7 +233,7 @@ def view_contest(request):
 
 				quotient = similarity_quotient(submission.question.answer, submission.answer) 
 
-				if quotient > 0.85: 
+				if quotient >= 0.85: 
 
 					# Correct answer 
 
@@ -406,6 +406,13 @@ def fetch_next_question(question, user):
 
 def similarity_quotient(str1, str2): 
 
+	# Convert everything to lower case 
+
+	str1 = str1.lower()
+	str2 = str2.lower() 
+
+	# Compute similarity
+
 	similarity = difflib.SequenceMatcher(None, str1, str2).ratio() 
 
 	print(str1, str2, similarity) 
@@ -546,7 +553,7 @@ def display_leaderboard(request):
 			given_answer = submission.answer.lower() 
 			correct_answer = submission.question.answer.lower() 
 
-			if similarity_quotient(correct_answer, given_answer) > 0.85: 
+			if similarity_quotient(correct_answer, given_answer) >= 0.85: 
 
 				correct_answers += 1 
 				time_taken += submission.time_taken 
@@ -554,8 +561,6 @@ def display_leaderboard(request):
 
 		contest_user = ContestUser(user.username, correct_answers, time_taken) 
 		contest_users.append(contest_user) 
-	
-	print(contest_users) 
 
 	# Sort the submissions
 

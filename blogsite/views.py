@@ -213,18 +213,24 @@ def list_questions(request):
 		act = request.POST.get('act')
 		show = request.POST.get('show')
 		
-		#Getting details of question in context
+		# Getting details of question in context
 
 		q = request.POST.get('questions')
 		question = Question.objects.filter(question = q)[0]		
 		q_list = Question.objects.all().order_by('-time')
+
+		for element in q_list: 
+
+			print(element.comments) 
+
+		# Appending the timestamps for each question 
 
 		question_times = {}
 
 		for elem in q_list:
 			question_times.update({elem.question : (current_time - elem.time).total_seconds() / 3600 })
 
-		#Displaying data according to act variable
+		# Displaying data according to act variable
 
 		if act == 'Submit':
 
@@ -300,7 +306,7 @@ def list_questions(request):
 
 		else: 
 
-			#Show answer to the question
+			# Show answer to the question
 			
 			print('Need to show answer to {}'.format(question.question))
 
@@ -377,6 +383,18 @@ def add_comment(request):
 
 		comment = Comment(content = comm, time = datetime.datetime.now(), author = request.user, question = question)
 		comment.save()
+
+		if question.comments == 0: 
+
+			question.comments = Comment.objects.filter(question = question).count() 
+
+		else:
+
+			question.comments = question.comments + 1 
+
+		question.save() 
+
+		print(question.comments) 
 
 # Method to return questions asked by users 
 
