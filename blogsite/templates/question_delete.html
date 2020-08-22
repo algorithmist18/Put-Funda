@@ -8,19 +8,26 @@
 
 			{% csrf_token %}
 
-			{% if not ques.author %}
-				<p class="question-text"> {{ques.question}} <h5 class="q-time"> <strong> posted on {{ques.time}} by admin</strong></h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
-			{% else %}
-				<p class= "question-text"> {{ques.question}} <h5 class="q-time"><strong> posted on {{ques.time}} by {{ ques.author }} </strong> </h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
-			{% endif %}
+			<div id = "question-content">
 
-		<!-- Including delete button -->
+				{% if not ques.author %}
+					<p class="question-text"> {{ques.question}} <h5 class="q-time"> <strong> posted on {{ques.time}} by admin</strong></h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
+				{% else %}
+					<p class= "question-text"> {{ques.question}} <h5 class="q-time"><strong> posted on {{ques.time}} by {{ ques.author }} </strong> </h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
+				{% endif %}
 
-			<input type = "hidden" name = "questions" value = "{{ques.question}}">
-			<input type = "submit" name = "act" value = "Cancel">
-			<input type = "submit" name = "act" value = "Delete">
+				<!-- Including delete button -->
+
+				<input type = "hidden" name = "questions" value = "{{ques.question}}">
+				<input type = "submit" name = "act" value = "Cancel">
+				<input type = "submit" name = "act" value = "Delete">
+
+				<br><br><br>
+
+			</div>
 
 		</form>
+
 	</div> 
 
 {% endblock %}

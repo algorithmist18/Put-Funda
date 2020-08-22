@@ -294,21 +294,16 @@ def list_questions(request):
 		elif act == "Delete": 
 
 			# Delete question 
-
-			print("Need to delete question {}".format(q))
-
+			
 			args = {'ques' : question, 'author' : author} 
 
 			# return redirect('delete?q={}')
 
 			return render(request, 'question_delete.html', args)
 
-
 		else: 
 
 			# Show answer to the question
-			
-			print('Need to show answer to {}'.format(question.question))
 
 			genres = Question.objects.values('title')
 
