@@ -92,7 +92,7 @@ def login_view(request):
 
 		# Checking if password is stored in plain text or not 
 
-		if form.is_valid():
+		if form.is_valid:
 
 			# Authenticate the user 
 
