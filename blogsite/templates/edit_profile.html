@@ -15,7 +15,7 @@
   	<!-- Navbar content -->
 
   		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-  		
+  	
   		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
 	
 	</nav>
@@ -39,15 +39,19 @@
 
 							DOB: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 
+							<input type = "text" name = "displayDOB" value = "{{user.profile.birth_date}}" readonly><br><br>
+
+							New DOB: &nbsp;
+
 							<input type = "date" name = "dateOfBirth" value = "{{user.profile.birth_date}}"/> <br><br> 
 
 							Location:&nbsp; &nbsp; &nbsp; 
 
 							<input type = "text" id = "user-location" name = "location" value = "{{user.profile.location}}"/> <br><br>
 
-							<br> <br> <br><br>
+							<br> <br> 
 
-							<input type = "submit" value = "Save edits" style = "margin-left: 20px" /> 	
+							<input type = "submit" value = "Save edits" style = "margin-left: 20px" /> <br><br>	
 
 					</div>
 

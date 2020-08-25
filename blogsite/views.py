@@ -662,8 +662,11 @@ def search_users(request):
 
 	print('User to be searched = {}'.format(user_name))
 
-	users_by_firstname = User.objects.all().filter(first_name = user_name)
-	users_by_lastname = User.objects.all().filter(last_name = user_name)
+	# Search by first name, last name and username 
+
+	users_by_firstname = User.objects.filter(first_name__icontains = user_name)
+	users_by_lastname = User.objects.filter(last_name__icontains = user_name)
+	users_by_username = User.objects.filter(username__icontains = user_name) 
 
 	user_list = []
 
@@ -672,6 +675,11 @@ def search_users(request):
 
 	for users in users_by_lastname:
 		user_list.append(users)
+
+	for users in users_by_lastname: 
+		user_list.append(users) 
+
+	user_list = set(user_list) 
 
 	print(user_list)
 
@@ -686,6 +694,16 @@ def edit_profile(request):
 
 	username = request.GET.get('user') 
 	user = User.objects.get(username = username)
+	logged_in_user = request.user 
+
+	# Check if user is logged into their own profile 
+
+	if logged_in_user != user: 
+
+		# Redirect to home 
+
+		return HttpResponseRedirect('edit?user={}&msg={}'.format(logged_in_user.username, 'bad_request'))  
+
 
 	print(user.first_name, user.last_name, user.profile.birth_date)  
 	
@@ -710,12 +728,12 @@ def edit_profile(request):
 		# Getting POST data 
 
 		location = request.POST.get('location')
-		dateOfBirth = request.POST.get('ateOfBirth')
+		dateOfBirth = request.POST.get('dateOfBirth')
 
 		# Assign to user profile
 
 		user.profile.location = location 
-		user.profile.dob = dateOfBirth
+		user.profile.birth_date = dateOfBirth
 
 		# Save profile 
 

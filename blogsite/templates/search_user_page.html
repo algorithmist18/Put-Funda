@@ -1,9 +1,23 @@
 {% extends 'search_results_base.html' %}
 {% block content %}
+	
 	<div id = "users">
-	<p> List of users on searching for {{query}}...</p>
+
+	<p> List of users on searching for <i>{{query}}</i>...</p>
+	
 	{% for users in user_list %}
-		<p> <a href = "{% url 'show_user' %}?user={{users.username}}"> {{users.first_name}} {{users.last_name}} </a></p>
+	
+	<p>
+
+		 <a href = "{% url 'show_user' %}?user={{users.username}}"> {{users.first_name}} {{users.last_name}} </a> 
+
+		 <span>({{users.username}})</span><br>
+
+		 <span style = "font-size: 12px;">{{users.profile.location}}</span>
+	</p>
+
 	{% endfor %}
+
 	</div>
+
 {% endblock %}
