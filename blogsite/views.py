@@ -45,7 +45,7 @@ def register(request):
 		
 		print(form.is_valid) 
 
-		if form.is_valid:
+		if form.is_valid():
 			
 			user = form.save()
 			user.refresh_from_db()
@@ -92,7 +92,7 @@ def login_view(request):
 
 		# Checking if password is stored in plain text or not 
 
-		if form.is_valid:
+		if form.is_valid():
 
 			# Authenticate the user 
 
