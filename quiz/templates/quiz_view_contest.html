@@ -54,6 +54,8 @@
 		
 		</div>
 
+		<p style = "float: right; margin-right: 150px; font-size: 12px;"> Edit the contest <a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}"> here. </a></p><br><br>
+
 		<p style = "float: right; margin-right: 150px; font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
 
 		{% else %}
@@ -273,6 +275,25 @@
 		if(minutes > 2000)
 		{
 			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
+		}
+
+		let params = new URLSearchParams(location.search); 
+
+		var message = params.get('msg') 
+
+		// Give alert warning based on message 
+
+		if(message == 'edit_success')
+		{
+			$("<center><div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your contest was edited.</div></center>").insertBefore("#quiz-contest");
+		}
+		else if(message == 'bad_request')
+		{
+			$("<center><div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Error!</strong> It seems there was an illegal request made.</div></center>").insertBefore("#quiz-contest");
+		}
+		else if(message == 'contest_past')
+		{
+			$("<center><div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Error!</strong> You cannot edit the contest now.</div></center>").insertBefore("#quiz-contest");
 		}
 
 	</script>

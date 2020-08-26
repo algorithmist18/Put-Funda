@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from quiz.forms import QuizForm
 from quiz.models import QuizQuestion, Contest, Submission
+from .models import User 
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
@@ -22,6 +23,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Min, Max, Count, Q 
 from functools import cmp_to_key 
 from django.urls import reverse 
+import pytz
 
 # Class to represent custom data structure 
 
@@ -50,8 +52,19 @@ def homepage(request):
 	user = request.user 
 
 	user_contests = Contest.objects.filter(host = user) 
+	all_contests = Contest.objects.all() 
 
-	contests = Contest.objects.all() 
+	contests = [] 
+
+	# Display only those contests who have all the questions done 
+
+	for contest in all_contests: 
+
+		questionCount = QuizQuestion.objects.filter(contest = contest).count() 
+
+		if questionCount >= 10: 
+
+			contests.append(contest) 
 
 	# Update the context for this page 
 
@@ -201,7 +214,7 @@ def view_contest(request):
 	contest = Contest.objects.get(id = contest_id) 
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions, 'first_question' : questions[0]}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
 
 	submissions = Submission.objects.filter(user = user)
 
@@ -267,6 +280,78 @@ def view_contest(request):
 
 	return render(request, 'quiz_view_contest.html', args) 
 
+# Method to edit contest (timing, genre)  
+
+@login_required
+def edit_contest(request): 
+
+	# Fetch request data 
+
+	username = request.GET.get('user') 
+	contest_id = request.GET.get('contest_id') 
+	logged_in_user = request.user 
+
+	# Fetching user from DB 
+
+	user = User.objects.get(username = username) 
+
+	# Check if user is logged in 
+
+	if user != logged_in_user: 
+
+		# Bad request 
+
+		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'bad_request'))
+
+	# Fetch contest object from DB 
+	
+	contest = Contest.objects.get(id = contest_id) 
+
+	# If contest has been played 
+
+	current_date_time = datetime.datetime.now(pytz.timezone('UTC'))  
+	contest_date_time = contest.time 
+
+	distance = contest_date_time - current_date_time
+
+	if contest_date_time < current_date_time: 
+
+		# Cannot edit it again 
+
+		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'contest_past')) 
+
+	# Populate context 
+
+	args = {'user' : user, 'contest' : contest}  
+
+	# Proceed to handle request 
+
+	if request.method == 'POST': 
+
+		# Fetch form data 
+
+		genre = request.POST.get('genre') 
+		time = request.POST.get('time') 
+		date = request.POST.get('date') 
+
+		# TODO: Check if timings clash
+
+		# Edit operation 
+
+		contest.genre = genre
+		contest.time = date + ' ' +  time  
+
+		# Save edits 
+
+		contest.save() 
+
+		# Redirect with acknowledgement 
+
+		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'edit_success'))
+	
+	else: 
+
+		return render(request, 'quiz_edit_contest.html', args) 
 
 # Method to edit question 
 
