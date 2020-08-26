@@ -73,7 +73,7 @@
 
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
 	  		
-	  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </a>
 	  		
 	  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
 		
@@ -116,6 +116,10 @@
 
 			</form>
 
+			<br><br>
+
+			<p> Go back to the contest <a href = "{% url 'view_contest' %}?contest_id={{id}}"> here. </a></p>
+
 		</div>
 		
 		</center>
@@ -125,6 +129,7 @@
 			<br><h4 style = "margin-left: 15px;">A few pointers</h4>
 			<br>
 			<ul>
+				<li class = "pointers">Your contest will not be public unless there are 10 questions.</li><br>
 				<li class = "pointers">Please keep the questions short, participants have 20 seconds to read, process and answer.</li><br>
 				<li class = "pointers">Since the answers are processed by a system, 'put funda' questions might be difficult to assess. Do ask accordingly.</li><br>
 				<li class = "pointers">If acronyms will do, (ISRO, FA) then do mention it in the question itself.</li><br>
@@ -150,8 +155,12 @@
 
 		console.log('s'); 
 
-			$("<div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your question was added.</div>").insertBefore("#quiz-question");
+		$("<div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your question was added.</div>").insertBefore("#quiz-question");
 
+	}
+	else if(message == 'INVALID_LESSQUESTIONS')
+	{
+		$("<div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Not finished yet!</strong> You still have some questions left to add.</div>").insertBefore("#quiz-question");
 	}
 	
 

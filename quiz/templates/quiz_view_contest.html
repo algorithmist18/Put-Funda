@@ -7,7 +7,19 @@
 
 	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
 	  		
-	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
+	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </a>
+
+	  	<span>
+
+  			<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
+	  			
+  			<a style = "color: white; font-size: 12px;" id = "quiz-button" class = "navbar-brand" href = "{% url 'quiz_home' %}"> Quiz </a>
+
+	  		<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
+	  			
+	  		<a style = "color: white; font-size: 12px;" id = "blog-button" class = "navbar-brand" href = "{% url 'blog_home' %}"> Blogs </a>
+
+  		</span>
 	  		
 	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
 		

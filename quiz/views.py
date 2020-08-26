@@ -175,6 +175,7 @@ def create_contest(request):
 
 			# Check if number of questions are 20 
 
+			
 			msg = is_valid_contest(contest) 
 
 			if msg == 'OK': 
@@ -182,8 +183,11 @@ def create_contest(request):
 				return redirect('quiz_home') 
 
 			else: 
+			
+				return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg))
 
-				return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
+
+			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
 	else: 
 
@@ -195,6 +199,7 @@ def create_contest(request):
 		
 		msg = is_valid_contest(contest) 
 
+		'''
 		if msg == 'OK': 
 
 			return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
@@ -202,6 +207,10 @@ def create_contest(request):
 		else: 
 
 			return render(request, 'quiz_contest_base.html', args) 
+		'''
+
+		return render(request, 'quiz_contest_base.html', args) 
+
 
 
 # Method to view a contest 
@@ -214,7 +223,7 @@ def view_contest(request):
 	contest = Contest.objects.get(id = contest_id) 
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions, 'first_question' : questions[0]}  
 
 	submissions = Submission.objects.filter(user = user)
 
@@ -309,7 +318,7 @@ def edit_contest(request):
 
 	# If contest has been played 
 
-	current_date_time = datetime.datetime.now(pytz.timezone('UTC'))  
+	current_date_time = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))  
 	contest_date_time = contest.time 
 
 	distance = contest_date_time - current_date_time
