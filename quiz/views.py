@@ -211,8 +211,6 @@ def create_contest(request):
 
 		return render(request, 'quiz_contest_base.html', args) 
 
-
-
 # Method to view a contest 
 
 @login_required
@@ -231,7 +229,7 @@ def view_contest(request):
 
 	for submission in submissions: 
 
-		print(user.username, submission.question.contest) 
+		print(user.username, submission.question.contest.id) 
 
 		if submission.question.contest == contest: 
 

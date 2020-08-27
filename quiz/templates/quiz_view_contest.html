@@ -1,6 +1,5 @@
 {% extends 'quiz_view_contest_base.html' %}
 
-
 {% block content %}
 
 	<!-- Navigation bar --> 
@@ -21,11 +20,19 @@
 
   		</span>
 	  		
-	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
+	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>  	
 		
 	</nav>	
 
 		{% if show_questions == 'YES' %}
+
+		<center>
+
+			<p style = "font-size: 12px;"> Edit the contest <a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}"> here. </a></p>
+
+			<p style = "font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
+
+		</center>
 
 		<div id = "quiz-contest">
 			
@@ -39,14 +46,14 @@
 
 						<div id = "image-holder">
 
-							<img id = "img-preview" alt = "Your avatar" width = "60" height = "60" src = "{{question.image.url}}">
+							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image.url}}">
 
 						</div>
 
 					{% endif %}
 
 
-					<p style = "margin-left: 10px; margin-top: 10px; margin-right: 10px;"> {{question.question}} </p> 
+					<p style = "margin-left: 10px; margin-top: 10px;"> {{question.question}} </p> 
 
 
 					<p style = "margin-left: 10px; margin-top: 10px;" > <strong> Answer: </strong> {{question.answer}} </p>
@@ -65,10 +72,6 @@
 			<a href = "contest?contest_id={{contest.id}}" style = "float: right; margin-right: 10px;" > Add question </a> <br>
 		
 		</div>
-
-		<p style = "float: right; margin-right: 150px; font-size: 12px;"> Edit the contest <a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}"> here. </a></p><br><br>
-
-		<p style = "float: right; margin-right: 150px; font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
 
 		{% else %}
 
