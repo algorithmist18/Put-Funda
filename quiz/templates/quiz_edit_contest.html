@@ -74,9 +74,11 @@
 
 					Genre: <br><br><input type = "text" name = "genre" placeholder = "Genre" value = "{{contest.genre}}" /><br><br>
 
-					Date: <br><br><input type = "date" name = "date" required/><br><br>
+					Date: <br><br><input id = "date" type = "date" name = "date" required/><br><br>
 
-					Time: <br><br><input type = "time" name = "time" required/><br><br>
+					Time: <br><br><input id = "time" type = "time" name = "time" required/><br><br>
+
+					<span id = "confirm-date" style = "font-size: 12px;"></span></p>
 
 					<input type = "submit" name = "Schedule"/><br><br>
 
@@ -84,6 +86,58 @@
 
 			</div>
 			
+			<br>
+			
+			<p style = "font-size: 12px;"> The time will be considered invalid if it is within 15 minutes (before/after) another contest. </p>
+						
 		</center>
+
 	</body>
+
 </html>
+
+<script type="text/javascript">
+	
+
+	// Generate AJAX request for validating time 
+
+	function validateContestTime()
+	{
+		var date = $('#date').val(); 
+		var time = $('#time').val();
+
+		var contestTime = date + ' ' + time;
+
+		console.log('Called'); 
+
+		// Make AJAX call to backend
+
+		if(time != null && date != null)
+		{
+			$.get("{% url 'is_valid_date' %}", {contestTime : contestTime},
+
+				function (data)
+				{
+					if(data['validDate'] == 'YES')
+					{
+						$('#confirm-date').html(data['message']); 
+					} 
+					else
+					{
+						$('#confirm-date').html(data['message']); 
+					}
+				}
+
+			);
+		}
+	}
+
+	function onChange()
+	{
+		$('#date').change(function() {validateContestTime()}); 
+		$('#time').change(function() {validateContestTime()});
+	}
+
+	$(document).ready(onChange); 
+
+</script>

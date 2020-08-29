@@ -24,6 +24,7 @@ from django.db.models import Min, Max, Count, Q
 from functools import cmp_to_key 
 from django.urls import reverse 
 import pytz
+from dateutil import tz 
 
 # Class to represent custom data structure 
 
@@ -82,6 +83,80 @@ def add_question(question, contest, answer, image):
 
 	return quiz_question, 'OK' 
 
+# Method to check date validation 
+
+def is_valid_date(request):
+
+	# Fetch request data 
+
+	user = request.user 
+	contest_id = request.GET.get('contest_id') 
+
+	# Initialize response 
+
+	response = {} 
+
+	if request.method == 'GET': 
+
+		contestTime = request.GET.get('contestTime')
+		contestTime += ':00'
+
+		currentTime = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
+
+		contestTime = datetime.datetime.strptime(contestTime, '%Y-%m-%d %H:%M:%S')
+
+		# Fetch contests of the future 
+
+		contests = Contest.objects.filter(time__gt = currentTime) 
+
+		validDate = 'YES'  
+		message = 'Time is valid' 
+
+		# Fetch current timezone 
+
+		utc_tz = tz.gettz('UTC') 
+		local_tz = tz.gettz('Asia/Kolkata') 
+
+		contestTime = contestTime.replace(tzinfo = local_tz) 
+
+		if contestTime < currentTime: 
+
+			# Time is in the past 
+
+			response['validDate'] = 'NO'
+			response['message'] = 'Time is in the past.'
+
+			return JsonResponse(response)
+
+		for contest in contests:
+
+			print(contestTime, contest.time)
+
+			distance = (contest.time - contestTime).total_seconds()
+
+			if distance < 0: 
+
+				distance *= -1 
+
+			distance_in_minutes = (distance/60) 
+
+			if distance_in_minutes <= 15:
+
+				validDate = 'NO' 
+				message = 'Time is clashing. Choose another time.' 
+				break 
+		
+		# Generating response 
+
+		response['validDate'] = validDate
+		response['message'] = message 
+
+		return JsonResponse(response) 
+
+	else: 
+
+		return JsonResponse('') 
+
 # Method to schedule a Quiz 
 
 def schedule_quiz(request): 
@@ -97,6 +172,8 @@ def schedule_quiz(request):
 		genre = request.POST.get('genre') 
 
 		contest = Contest(host = user, genre = genre, time = date + ' ' + time) 
+
+		# Check whether date and time is valid 
 
 		contest.save() 
 
@@ -221,7 +298,15 @@ def view_contest(request):
 	contest = Contest.objects.get(id = contest_id) 
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions, 'first_question' : questions[0]}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+
+	if len(questions) > 0: 
+
+		args['first_question'] = questions[0] 
+
+	else:
+
+		args['first_question'] = 'No questions yet.'
 
 	submissions = Submission.objects.filter(user = user)
 
