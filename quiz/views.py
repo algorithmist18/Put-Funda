@@ -24,7 +24,6 @@ from django.db.models import Min, Max, Count, Q
 from functools import cmp_to_key 
 from django.urls import reverse 
 import pytz
-from dateutil import tz 
 
 # Class to represent custom data structure 
 
@@ -114,8 +113,8 @@ def is_valid_date(request):
 
 		# Fetch current timezone 
 
-		utc_tz = tz.gettz('UTC') 
-		local_tz = tz.gettz('Asia/Kolkata') 
+		utc_tz = pytz.timezone('Asia/Kolkata') 
+		local_tz = pytz.timezone('Asia/Kolkata') 
 
 		contestTime = contestTime.replace(tzinfo = local_tz) 
 
