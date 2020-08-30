@@ -81,8 +81,20 @@
 
 		for(i=0; i<rank.length; i++)
 		{
+			// If time is same, then same rank 
+
 			rank[i].innerHTML = counter.toString(10); 
 			counter++; 
+
+			if(i > 0)
+			{
+				if(timeTaken[i].innerHTML == timeTaken[i - 1].innerHTML)
+				{
+					// Same time taken 
+
+					rank[i].innerHTML = rank[i - 1].innerHTML; 
+				}
+			}
 		}
 
 	</script>
