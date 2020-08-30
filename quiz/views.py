@@ -22,7 +22,7 @@ from django.core.files.storage import FileSystemStorage
 from django.db.models import Min, Max, Count, Q 
 from functools import cmp_to_key 
 from django.urls import reverse 
-import pytz, tzlocal
+import pytz
 
 # Class to represent custom data structure 
 
