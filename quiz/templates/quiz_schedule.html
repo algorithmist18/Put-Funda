@@ -61,8 +61,7 @@
 
 		<center>
 
-			<p style = "margin-top: 50px; font-size: 12px;"> Schedule the Quiz timings here. </p>
-
+			<p id = "schedule-message" style = "margin-top: 50px; font-size: 12px;"> Schedule the Quiz timings here. </p>
 
 			<div id = "quiz-schedule">
 
@@ -140,5 +139,20 @@
 	}
 
 	$(document).ready(onChange); 
+
+	// Display alert 
+
+	let params = new URLSearchParams(location.search); 
+
+	var message = params.get('message'); 
+
+	console.log(message); 
+
+	if(message.length > 0)
+	{
+		console.log('Hello'); 
+
+		$("<center><div id = 'alert' class = 'alert alert-warning' role = 'alert'><strong>Error!</strong> Your contest does not have a valid time.</div></center>").insertBefore("#schedule-message");
+	}
 
 </script>

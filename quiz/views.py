@@ -16,14 +16,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 import datetime, collections
-from datetime import timezone
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
 from django.db.models import Min, Max, Count, Q 
 from functools import cmp_to_key 
 from django.urls import reverse 
-import pytz
+import pytz, tzlocal
 
 # Class to represent custom data structure 
 
@@ -82,6 +81,65 @@ def add_question(question, contest, answer, image):
 
 	return quiz_question, 'OK' 
 
+# Method to compare date  
+
+def time_diff(contestTime, contest_id):
+
+	# Fetch timezones
+
+	utc_tz = pytz.timezone('UTC') 
+	local_tz = pytz.timezone('Asia/Kolkata')
+
+	# Contest time is string 
+
+	contestTime = local_tz.localize(datetime.datetime.strptime(contestTime, '%Y-%m-%d %H:%M:%S'))
+	currentTime = datetime.datetime.now(local_tz) 
+
+	# Fetch contests ahead of time 
+
+	contests = Contest.objects.filter(time__gt = currentTime) 
+
+	# Initialize variables 
+
+	validDate = 'YES' 
+	message = 'Time is valid'
+
+	# Check whether contest is in the past 
+
+	if contestTime < currentTime: 
+
+		validDate = 'NO' 
+		message = 'Time is in the past' 
+
+		return validDate, message 
+
+	# Check if contest time is clashing with other contests 
+
+	for contest in contests:
+
+		distance = (contest.time - contestTime).total_seconds()
+
+		print(contest.time, contestTime) 
+	
+		if distance < 0: 
+
+			distance *= -1 
+
+		distance_in_minutes = (distance/60) 
+
+		if distance_in_minutes <= 15:
+
+			if contest.id is not contest_id: 
+
+				validDate = 'NO' 
+				message = 'Time is clashing. Choose another time.' 
+				
+				return validDate, message
+
+	# All OK 
+
+	return validDate, message
+
 # Method to check date validation 
 
 def is_valid_date(request):
@@ -100,52 +158,7 @@ def is_valid_date(request):
 		contestTime = request.GET.get('contestTime')
 		contestTime += ':00'
 
-		currentTime = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
-
-		contestTime = datetime.datetime.strptime(contestTime, '%Y-%m-%d %H:%M:%S')
-
-		# Fetch contests of the future 
-
-		contests = Contest.objects.filter(time__gt = currentTime) 
-
-		validDate = 'YES'  
-		message = 'Time is valid' 
-
-		# Fetch current timezone 
-
-		utc_tz = pytz.timezone('Asia/Kolkata') 
-		local_tz = pytz.timezone('Asia/Kolkata') 
-
-		contestTime = contestTime.replace(tzinfo = local_tz) 
-
-		if contestTime < currentTime: 
-
-			# Time is in the past 
-
-			response['validDate'] = 'NO'
-			response['message'] = 'Time is in the past.'
-
-			return JsonResponse(response)
-
-		for contest in contests:
-
-			print(contestTime, contest.time)
-
-			distance = (contest.time - contestTime).total_seconds()
-
-			if distance < 0: 
-
-				distance *= -1 
-
-			distance_in_minutes = (distance/60) 
-
-			if distance_in_minutes <= 15:
-
-				validDate = 'NO' 
-				message = 'Time is clashing. Choose another time.' 
-				break 
-		
-		# Generating response 
+		validDate, message = time_diff(contestTime = contestTime, contest_id = contest_id)  
 
 		response['validDate'] = validDate
 		response['message'] = message 
@@ -170,12 +183,22 @@ def schedule_quiz(request):
 		time = request.POST.get('time') 
 		genre = request.POST.get('genre') 
 
+		contestTime = date + ' ' + time + ':00'
+
+		print(contestTime) 
+
+		# Check whether date and time is valid
+
+		validDate, message = time_diff(contestTime, contest_id = 0) 
+
+		if validDate == 'NO': 
+
+			return HttpResponseRedirect('schedule?message={}'.format(message)) 
+
+		# Save contest 
+
 		contest = Contest(host = user, genre = genre, time = date + ' ' + time) 
-
-		# Check whether date and time is valid 
-
 		contest.save() 
-
 		contest_id = contest.id 
 
 		return HttpResponseRedirect('contest?contest_id={}'.format(contest_id)) 
