@@ -46,6 +46,7 @@ def compare(x):
 
 # Method to redirect to homepage 
 
+@login_required
 def homepage(request): 
 
 	user = request.user 
@@ -171,6 +172,7 @@ def is_valid_date(request):
 
 # Method to schedule a Quiz 
 
+@login_required
 def schedule_quiz(request): 
 
 	user = request.user 
