@@ -156,18 +156,23 @@
 			{
 				var time = tokens[tokens.length - 2]; 
 
-				time[0] = (parseInt(time[0]) + 12).toString(10); 
+				// Change here
 
-				if(time[2] != null)
+				var x = time.indexOf(":");
+
+				var hour = time.substring(0, x);
+                var mins = time.substring(x+1);
+
+				if(mins != null)
 				{
-					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
+					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":" + mins;
 				}
 				else
 				{
-					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":00"; 
+					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":00";
 				}
 
-				console.log(tokens[tokens.length - 2]); 
+				console.log(tokens[tokens.length - 2]);
 			}
 				
 			var time = ""; 
@@ -195,37 +200,6 @@
 			// Transforming date-time standards from Django to JavaScript  
 
 			contestTime = toJSTime(contestTime); 
-
-			/*
-			if(tokens[tokens.length - 1] == "p.m.")
-			{
-				var time = tokens[tokens.length - 2]; 
-
-				time[0] = (parseInt(time[0]) + 12).toString(10); 
-
-				if(time[2] != null)
-				{
-					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":" + time[2] + time[3]; 
-				}
-				else
-				{
-					tokens[tokens.length - 2] = parseInt(time[0]) + 12 + ":00"; 
-				}
-
-				console.log(tokens[tokens.length - 2]); 
-			}
-				
-			var time = ""; 
-
-			for(i=0; i<tokens.length - 1; i++)
-			{
-				time += tokens[i] + " "; 
-			}
-
-			time = time.trim(); 
-
-			var contestTime = new Date(time).getTime(); 
-			*/
 
 			// Designing the countdown timer 
 
