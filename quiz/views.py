@@ -703,9 +703,9 @@ def play_contest(request):
 			args['contest_id'] = contest_id
 			args['question_id'] = question_id
 
-			no_of_questions = QuizQuestion.objects.filter(contest = contest_id).count() 
+			questions = QuizQuestion.objects.filter(contest = contest_id)
 
-			args['no_of_questions'] = no_of_questions
+			args['no_of_questions'] = len(questions)
 
 			return render(request, 'quiz_contest_instructions.html', args) 
 
