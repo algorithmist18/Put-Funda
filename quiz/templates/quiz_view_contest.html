@@ -152,6 +152,17 @@
 
 			// Transforming date-time standards from Django to JavaScript  
 
+			if(tokens[tokens.length - 1] == "noon")
+			{
+				tokens[tokens.length - 1] = "12:00"; 
+				tokens.push("p.m."); 
+			}
+			else if(tokens[tokens.length - 1] == "midnight")
+			{
+				tokens[tokens.length - 1] = "12:00"; 
+				tokens.push("a.m"); 
+			}
+			
 			if(tokens[tokens.length - 1] == "p.m.")
 			{
 				var time = tokens[tokens.length - 2]; 
@@ -163,6 +174,11 @@
 				var hour = time.substring(0, x);
                 var mins = time.substring(x+1);
 
+                if(hour == 12)
+                {
+                	hour = 0; 
+                }
+
 				if(mins != null)
 				{
 					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":" + mins;
@@ -171,8 +187,6 @@
 				{
 					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":00";
 				}
-
-				console.log(tokens[tokens.length - 2]);
 			}
 				
 			var time = ""; 
@@ -253,15 +267,18 @@
 		var contestTime = toJSTime("{{contest.time}}"); 
 		var currentTime = new Date().getTime(); 
 
+		console.log(new Date()); 
+
 		var distance = currentTime - contestTime;
 
 		// Extract minutes 
 
 		var minutes = Math.floor((distance / 1000) / 60);
 
-		console.log(minutes); 
+		console.log('Minutes passed');
+		console.log(minutes);  
 
-		if(minutes > 2000)
+		if(minutes > 20000)
 		{
 			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
 		}

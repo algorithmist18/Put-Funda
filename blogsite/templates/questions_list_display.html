@@ -14,41 +14,49 @@
 			<div id = "content">
 
 				{% if not questions.author %}
-					
-				<p class="question-text"> 
-					
-					<span class = "question-content"> {{questions.question}} </span> 
-					
-					<h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> 
-					
-					<a href="{{question.title}}"> {{questions.title}} </a>
-					
-					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
-						<i class = "fas fa-arrow-up"></i>
-					</button>
-					
-					<span class = "like-count">{{ questions.likes }}</span>
-				</p>
+				
+				<div id = "question-div">
+
+					<p class="question-text"> 
+						
+						<span class = "question-content"> {{questions.question}} </span> 
+						
+						<h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> 
+						
+						<a href="{{question.title}}"> {{questions.title}} </a>
+						
+						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+							<i class = "fas fa-arrow-up"></i>
+						</button>
+						
+						<span class = "like-count">{{ questions.likes }}</span>
+					</p>
+
+				</div>
 
 				{% else %}
 
-				<p class= "question-text"> <span class = "question-content">
-					
-					<span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
-					
-					<strong> posted on {{questions.time}} by </strong>
+				<div id = "question-div">
+
+					<p class= "question-text"> <span class = "question-content">
 						
-					<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
+						<span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
+						
+						<strong> posted on {{questions.time}} by </strong>
+							
+						<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
 
-					<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
+						<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
 
-					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
-						<i class = "fas fa-arrow-up"></i>
-					</button>
+						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+							<i class = "fas fa-arrow-up"></i>
+						</button>
 
-					<span class = "like-count">{{ questions.likes }}</span>
+						<span class = "like-count">{{ questions.likes }}</span>
 
-				</p>
+					</p>
+
+				</div>
 
 				{% endif %}
 

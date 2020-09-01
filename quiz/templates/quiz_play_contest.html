@@ -38,25 +38,34 @@
 
 	<script type="text/javascript">
 
-		// Function to countdown till 20 seconds 
+		// Function to countdown till 24 seconds 
 		
 		var currentDate = new Date(); 
 		var currentTime = $('#timer').html(); 
 
 		function setTime()
 		{
+			console.log(localStorage.storedTime); 
+
 			currentTime = Number(currentTime) + 1; 
 
+			if(currentTime < localStorage.storedTime)
+			{
+				currentTime = localStorage.storedTime; 
+			}
+	
 			// Set time 
 
-			console.log('Current time = ' + currentTime); 
+			console.log('Current time = ' + currentTime);
+
+			localStorage.storedTime = currentTime;  
 
 			$('#timer').html(currentTime);
 			$('#time_taken').val(currentTime.toString(10)); 
 
 			// Go to next question if timer exceeded 
 
-			if(currentTime == 30)
+			if(currentTime == 24)
 			{
 				console.log("Time limit exceeded."); 
 
@@ -87,6 +96,8 @@
 
 				form.submit();
 
+				localStorage.storedTime = 0; 
+
 				return; 
 			} 
 
@@ -110,7 +121,12 @@
 			var newDate = new Date(); 
 
 			$('#time_taken').val(newDate - currentDate); 
+
+			localStorage.storedTime = 0; 
+			
 		}); 
+
+		// Load time on load 
 
 	</script>
 

@@ -430,6 +430,8 @@ def edit_contest(request):
 
 	distance = contest_date_time - current_date_time
 
+	print(distance) 
+
 	if contest_date_time < current_date_time: 
 
 		# Cannot edit it again 
