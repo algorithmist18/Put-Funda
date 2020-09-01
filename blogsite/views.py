@@ -733,7 +733,10 @@ def edit_profile(request):
 		# Assign to user profile
 
 		user.profile.location = location 
-		user.profile.birth_date = dateOfBirth
+
+		if dateOfBirth != '': 
+			
+			user.profile.birth_date = dateOfBirth
 
 		# Save profile 
 

@@ -45,8 +45,6 @@
 
 		function setTime()
 		{
-			console.log(localStorage.storedTime); 
-
 			currentTime = Number(currentTime) + 1; 
 
 			if(currentTime < localStorage.storedTime)
@@ -54,9 +52,7 @@
 				currentTime = localStorage.storedTime; 
 			}
 	
-			// Set time 
-
-			console.log('Current time = ' + currentTime);
+			// Set time
 
 			localStorage.storedTime = currentTime;  
 
@@ -67,8 +63,6 @@
 
 			if(currentTime == 24)
 			{
-				console.log("Time limit exceeded."); 
-
 				// Create a POST request and send it to server 
 
 				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'}; 
@@ -123,7 +117,7 @@
 			$('#time_taken').val(newDate - currentDate); 
 
 			localStorage.storedTime = 0; 
-			
+
 		}); 
 
 		// Load time on load 
