@@ -74,9 +74,9 @@ def homepage(request):
 
 # Method to add a question 
 
-def add_question(question, contest, answer, image): 
+def add_question(question, contest, answer, image, second_answer, third_answer): 
 
-	quiz_question = QuizQuestion(question = question, answer = answer, contest = contest, image = image)    
+	quiz_question = QuizQuestion(question = question, answer = answer, contest = contest, image = image, second_answer = second_answer, third_answer = third_answer)     
 
 	quiz_question.save() 
 
@@ -253,6 +253,8 @@ def create_contest(request):
 			# Fetcing answer from request data  
 
 			answer = request.POST.get('answer') 
+			second_answer = request.POST.get('second_answer')
+			third_answer = request.POST.get('third_answer') 
 
 			# Fetching image from request data 
 
@@ -266,7 +268,7 @@ def create_contest(request):
 				filename = file_storage.save(image.name, image) 
 				file_url = file_storage.url(filename) 
 
-			question_object, msg = add_question(question = question, contest = contest, answer = answer, image = image) 
+			question_object, msg = add_question(question = question, contest = contest, answer = answer, image = image, second_answer = second_answer, third_answer = third_answer) 
 
 			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
@@ -362,7 +364,7 @@ def view_contest(request):
 
 				quotient = similarity_quotient(submission.question.answer, submission.answer) 
 
-				if quotient >= 0.85: 
+				if is_correct(submission, submission.question): 
 
 					# Correct answer 
 
@@ -504,11 +506,15 @@ def edit_question(request):
 		question_content = request.POST.get('question') 
 		image = request.FILES.get('image') 		
 		answer = request.POST.get('answer') 
+		second_answer = request.POST.get('second_answer') 
+		third_answer = request.POST.get('third_answer') 
 
 		# Edit the question
 
 		question.question = question_content 
 		question.answer = answer 
+		question.second_answer = second_answer
+		question.third_answer = third_answer
 
 		if image is not None: 
 
@@ -604,6 +610,38 @@ def fetch_next_question(question, user):
 		next_question = questions[i + 1]  
 
 	return message, next_question 
+
+# Method to check whether answer is correct 
+
+def is_correct(submission, question): 
+
+	# Fetching given and correct answers 
+
+	submitted_answer = submission.answer 
+	correct_answer = question.answer 
+
+	# Fetching other accepted answers 
+
+	answer1 = question.second_answer 
+	answer2 = question.third_answer 
+
+	# Check with original answer 
+
+	if similarity_quotient(submitted_answer, correct_answer) >= 0.85: 
+
+		return True 
+
+	if len(answer1) > 0 and similarity_quotient(submitted_answer, answer1) >= 0.85: 
+
+		return True 
+
+	if len(answer2) > 0 and similarity_quotient(submitted_answer, answer2) >= 0.85: 
+
+		return True 
+
+	# Answer does not match with anything 
+
+	return False 
 
 # Method to return similarity of two strings 
 
@@ -760,7 +798,7 @@ def display_leaderboard(request):
 			given_answer = submission.answer.lower() 
 			correct_answer = submission.question.answer.lower() 
 
-			if similarity_quotient(correct_answer, given_answer) >= 0.85: 
+			if is_correct(submission, submission.question): 
 
 				correct_answers += 1 
 				time_taken += submission.time_taken 

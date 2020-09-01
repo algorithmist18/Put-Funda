@@ -20,7 +20,9 @@ class QuizQuestion(models.Model):
 	question = models.TextField()
 	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
 	guess = models.TextField()
-	answer = models.TextField() 
+	answer = models.TextField()
+	second_answer = models.TextField() 
+	third_answer = models.TextField()  
 	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
 
 class Submission(models.Model): 	
