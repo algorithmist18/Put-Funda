@@ -735,7 +735,7 @@ def edit_profile(request):
 		user.profile.location = location 
 
 		if dateOfBirth != '': 
-			
+
 			user.profile.birth_date = dateOfBirth
 
 		# Save profile 
@@ -760,7 +760,7 @@ def like_question(request):
 	if request.method == 'GET': 
 
 		question = request.GET.get('question') 
-		question_object = Question.objects.get(question = question) 
+		question_object = Question.objects.get(id = question_id) 
 		new_like = Like.objects.get_or_create(user = request.user, question = question_object) 
 
 		# Get the number of likes for the question 

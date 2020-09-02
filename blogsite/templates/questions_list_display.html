@@ -48,7 +48,7 @@
 
 						<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
 
-						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.id}}"> 
 							<i class = "fas fa-arrow-up"></i>
 						</button>
 
@@ -146,7 +146,7 @@
 			var likes = $('.like-count');  
 			var idx = buttons.index(this); 
 
-			$.get('/like_question', {question : question}, function(data)
+			$.get('/like_question', {question_id : question}, function(data)
 			{
 				$(this).hide(); 
 				likes[idx].innerHTML = data; 
