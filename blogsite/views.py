@@ -759,7 +759,7 @@ def like_question(request):
 
 	if request.method == 'GET': 
 
-		question = request.GET.get('question') 
+		question_id = request.GET.get('question') 
 		question_object = Question.objects.get(id = question_id) 
 		new_like = Like.objects.get_or_create(user = request.user, question = question_object) 
 
