@@ -47,11 +47,24 @@
 		{
 			currentTime = Number(currentTime) + 1; 
 
+			/*
 			if(currentTime < localStorage.storedTime)
 			{
 				currentTime = localStorage.storedTime; 
 			}
-	
+			*/
+			
+			// Method to detect page has been refreshed or not 
+
+			console.info(performance.navigation.type); 
+
+			if(performance.navigation.type == performance.navigation.TYPE_RELOAD)
+			{
+				// Page has been refreshed 
+
+				currentTime = localStorage.storedTime; 
+			}
+
 			// Set time
 
 			localStorage.storedTime = currentTime;  
@@ -63,6 +76,8 @@
 
 			if(currentTime == 24)
 			{
+				console.log('Time limit exceeded'); 
+
 				// Create a POST request and send it to server 
 
 				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'}; 
@@ -87,7 +102,7 @@
 
 					form.appendChild(input); 
 				}
-				
+
 				localStorage.storedTime = 0; 
 
 				form.submit();
@@ -101,16 +116,15 @@
 		{
 			setInterval(setTime, 1000);
 		}
+
 		
-		// Entry point 
-
-		$(document).ready(countdownBegin); 
-
 		// Clear cache on submit 
 		
-		$("#submit-button").click(function()
+		$('#submit-button').click(function()
 		{
 			// Clear storage time for next question 
+
+			console.log('Hello'); 
 
 			var newDate = new Date(); 
 
@@ -118,7 +132,13 @@
 
 			localStorage.storedTime = 0; 
 
-		}); 
+			console.log('Bye'); 
+
+		});
+		
+		// Entry point 
+
+		$(document).ready(countdownBegin);  
 
 		// Load time on load 
 
