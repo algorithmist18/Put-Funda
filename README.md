@@ -1,7 +1,7 @@
 # Qnondrum
 
 A web-based application for posting interesting questions, trivia, and playing short solo Quiz contests.
-You can visit the website here - [Qnondrum](https://www.qnondrum.pythonanywhere.com)
+You can visit the website here - [Qnondrum](https://qnondrum.pythonanywhere.com)
 
 ## Pointers
 
