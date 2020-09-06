@@ -1,7 +1,7 @@
 # Qnondrum
 
-This is a web-application to post questions about the world. 
-Politics, Sports or Business, people can register online and ask/answer interesting trivias all day, everyday. 
+A web-based application for posting interesting questions, trivia, and playing short solo Quiz contests.
+You can visit the website here - [Qnondrum](https://qnondrum.pythonanywhere.com)
 
 ## Pointers
 
