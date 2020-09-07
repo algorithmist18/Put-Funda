@@ -195,6 +195,7 @@ def schedule_quiz(request):
 
 		if validDate == 'NO': 
 
+			print(validDate, message) 
 			return HttpResponseRedirect('schedule?message={}'.format(message)) 
 
 		# Save contest 
@@ -275,9 +276,6 @@ def create_contest(request):
 		else:
 
 			# Finish question 
-
-			# Check if number of questions are 20 
-
 			
 			msg = is_valid_contest(contest) 
 
