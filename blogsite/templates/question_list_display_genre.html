@@ -1,5 +1,12 @@
 {% extends 'question_list_genre.html' %}
 {% block content %}
+	
+	<center>
+
+		<p style = "font-size: 12px;">This is the Questions feed.<br><br> If you want to play contests, head over <a href = "{% url 'quiz_home' %}">here.</a></p>
+
+	</center>
+	
 	<div id="block">
 	{% for questions in q_list %}
 		<div id = "question">

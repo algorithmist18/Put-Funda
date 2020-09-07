@@ -100,7 +100,7 @@
 	{
 		font-size: 12px;
 		color: white;
-		margin-left: 570px;
+		margin-left: 380px;
 	}
 
 	.like-button
@@ -133,7 +133,21 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+  			
   			<a style = "color: white; font-size: 12px;" class = "navbar-brand" style="color: white;" href="{% url 'home' %}"> Home </a>
+  			
+  			<span>
+
+  				<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
+	  			
+  				<a id = "quiz-button" class = "navbar-brand" href = "{% url 'quiz_home' %}"> Quiz </a>
+
+	  			<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
+	  			
+	  			<a id = "blog-button" class = "navbar-brand" href = "{% url 'blog_home' %}"> Blogs </a>
+
+  			</span>
+  			
   			<a class = "navbar-brand" id = "header"> Qnondrum </a> 
   			<a style = "color: white; margin-right: 5px; font-size: 12px;" id = "logout-button" style="color: white;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
 		</nav>
