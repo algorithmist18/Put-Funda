@@ -40,11 +40,7 @@ def register(request):
 	if request.method == 'POST':
 
 		form = RegisterForm(request.POST)
-		
-		print(form.errors)
-		
-		print(form.is_valid) 
-
+	
 		if form.is_valid():
 			
 			user = form.save()
