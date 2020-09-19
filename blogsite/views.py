@@ -8,6 +8,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from blogsite.forms import RegisterForm
+from blogposts.models import Post
 from blogsite.models import Question, Like, Comment, Profile
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
@@ -203,6 +204,17 @@ def list_questions(request):
 	current_time = datetime.datetime.now(timezone.utc)
 
 	print('Author = {}'.format(author))
+	# Fetch all blogs 
+
+	blogs = Post.objects.all().order_by('-time') 
+	blogList = [] 
+
+	print('Number of blog posts = ', len(blogs)) 
+
+	for i in range(min(5, len(blogs))): 
+
+		blogs[i].title = blogs[i].title.strip() 
+		blogList.append(blogs[i]) 
 
 	if request.method == 'POST':
 
@@ -248,12 +260,12 @@ def list_questions(request):
 				if g != None and g != ' ':
 
 					q_list = Question.objects.filter(title = g).order_by('-time')
-					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'author' : author}
+					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 					return render(request, 'question_list_display_genre.html', args)
 
 				else:
 
-					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'author' : author, 'q_times' : question_times}
+					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'author' : author, 'q_times' : question_times, 'blogs' : blogList}
 					return render(request, 'questions_list_display.html', args)
 			else:
 
@@ -278,12 +290,12 @@ def list_questions(request):
 
 				q_list = Question.objects.filter(title = g).order_by('-time')
 				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'comments' : comments, 
-				'q_times' : question_times, 'author' : author}
+				'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
-				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'questions_list_display.html', args)	
 
 
@@ -355,12 +367,12 @@ def list_questions(request):
 			if g != None and g != ' ':
 
 				q_list = Question.objects.filter(title = g).order_by('-time')
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'questions_list_display.html', args)
 
 @login_required

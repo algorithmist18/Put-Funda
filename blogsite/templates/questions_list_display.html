@@ -7,133 +7,217 @@
 
 	</center>
 
-	<div id="block">
+	<div id = "block">
 	
-	{% for questions in q_list %}
+		{% for questions in q_list %}
 
-		<div id = "question">
+			<div id = "question">
 			
-			<form id="ans" method="post">
+				<form id="ans" method="post">
 
-			{% csrf_token %}
+					{% csrf_token %}
 
-			<div id = "content">
+					<div id = "content">
 
-				{% if not questions.author %}
+						{% if not questions.author %}
 				
-				<div id = "question-div">
+						<div id = "question-div">
 
-					<p class="question-text"> 
+							<p class="question-text"> 
 						
-						<span class = "question-content"> {{questions.question}} </span> 
+								<span class = "question-content"> {{questions.question}} </span> 
 						
-						<h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> 
+								<h5 class="q-time"> <strong> posted on {{questions.time}} by admin</strong> </h5> 
 						
-						<a href="{{question.title}}"> {{questions.title}} </a>
+								<a href="{{question.title}}"> {{questions.title}} </a>
 						
-						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
-							<i class = "fas fa-arrow-up"></i>
-						</button>
+								<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
+									<i class = "fas fa-arrow-up"></i>
+								</button>
 						
-						<span class = "like-count">{{ questions.likes }}</span>
-					</p>
+								<span class = "like-count">{{ questions.likes }}</span>
+							</p>
 
-				</div>
+						</div>
 
-				{% else %}
+						{% else %}
 
-				<div id = "question-div">
+						<div id = "question-div">
 
-					<p class= "question-text"> <span class = "question-content">
+							<p class= "question-text"> 
+
+								<span class = "question-content">
 						
-						<span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
-						
-						<strong> posted on {{questions.time}} by </strong>
+									<span class = "question-content"> {{questions.question}} </span> <h5 class="q-time"> 
 							
-						<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
+									<strong> posted on {{questions.time}} by </strong>
+								
+									<a href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
 
-						<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
+									<a href="?genre={{questions.title}}"> {{questions.title}} </a> 
 
-						<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.id}}"> 
-							<i class = "fas fa-arrow-up"></i>
-						</button>
+									<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.id}}"> 
+										<i class = "fas fa-arrow-up"></i>
+									</button>
 
-						<span class = "like-count">{{ questions.likes }}</span>
+									<span class = "like-count">{{ questions.likes }}</span>
 
-					</p>
+								</span>
+
+							</p>
+
+						</div>
+
+						{% endif %}
+
+
+						<input type = "hidden" name = "questions" value = "{{questions.question}}">
+				
+						<!--<input row = "20" name = "comment" type = "text" placeholder = "Write a comment...">-->
+
+						{% if comments != None %}
+					
+							<div id = "comments">
+					
+								{% if questions.question == ques %}
+									
+									<div id = "comment-section">
+
+										{% for comment in comments %}
+									
+											<p> _______________________________________________ </p>
+										
+											<p id = "comment-author"> 
+												<a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> 
+												<span id = "comment-time"> {{comment.time}} </span> 
+											</p>
+										
+											<p id = "comment-content"> {{comment.content}}</p>			
+							
+										{% endfor %}
+
+									</div>
+					
+								{% else %}
+
+								<div id = "comment-div">
+						
+									<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
+									<span id = "comment-count">{{questions.comments}}</span>
+									
+								</div>
+								
+								{% endif %}
+
+							</div>
+
+							<br>
+
+						{% else %}
+
+							<div id = "comment-div">
+
+								<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>	
+								<span id = "comment-count"> {{questions.comments}} </span>
+							
+							</div>
+						
+						{% endif %}
+			
+						<textarea style = "margin-left: 10px;" cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
+						<br>
+				
+						<input style = "margin-left: 10px;" class = "comment-button" type = "submit" name = "act" value = "Submit">
+				
+						{% if author == questions.author.username %}
+				
+							<input id = "delete-button" type = "submit" name = "act" value = "Delete">
+				
+						{% endif %}
+				
+						<br><br>
+				
+					<div id = "show-answer">
+					
+						{% for k, v in q_times.items %}
+					
+							{% if k == questions.question %}
+								
+								{% if v > 96 %}
+									
+									<input type = "submit" name = "show" value = "Show answer"><br>
+					
+								{% endif %}
+							
+							{% endif %}	
+					
+						{% endfor %}
+					
+					</div>
+
+				</form>
 
 				</div>
-
-				{% endif %}
-
-
-				<input type = "hidden" name = "questions" value = "{{questions.question}}">
-				<!--<input row = "20" name = "comment" type = "text" placeholder = "Write a comment...">-->
-				{% if comments != None %}
-					<div class = "comments">
-					{% if questions.question == ques %}
-						{% for comment in comments %}
-								<p> _______________________________________________ </p>
-								<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-								<p id = "comment-content"> {{comment.content}}</p>			
-						{% endfor %}
-					{% else %}
-					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
-					<span id = "comment-count"> {{questions.comments}} </span>
-					<br>
-					{% endif %}
-					</div>
-				{% else %}
-					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
-					<span id = "comment-count"> {{questions.comments}} </span>
-					<br>
-				{% endif %}
-				
-				<br>
-				<textarea cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
-				<br>
-				
-				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
-				
-				{% if author == questions.author.username %}
-				
-					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
-				
-				{% endif %}
-				
-				<br><br>
 			
-			</div> 
+				{% if answer != None %}
 				
-			<div id = "show-answer">
-			{% for k, v in q_times.items %}
-					{% if k == questions.question %}
-						{% if v > 96 %}
-							<input type = "submit" name = "show" value = "Show answer"><br>
-						{% endif %}
-					{% endif %}	
-			{% endfor %}
-			</div>
-			</form>
-			{% if answer != None %}
-				{% if questions.answer == answer %}
-				<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
+					{% if questions.answer == answer %}
+				
+						<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
+				
+					{% endif %}
+			
 				{% endif %}
-			{% endif %}
+			
+				<br><br>
+		
+			</div>
+		
+		{% endfor %}
+
+	</div>
+
+	<div id = "tags-blogs">
+
+		<!-- Genre division --> 
+
+		<div id="tags">
+
+			<br> <p style = "font-size: 14px; margin-left: 10px;"> Genre tags </p> 
+
+			{% for genre in g_list %}
+				{% if genre != None %}
+					<a class="genre" href="?genre={{genre}}">{{genre}}</a>
+					<br>
+				{% endif %}
+			{% endfor %}
+
 			<br>
-			<br>
+
 		</div>
-	{% endfor %}
-	</div>
-	<div id="tags">
-	{% for genre in g_list %}
-		{% if genre != None %}
-			<a class="genre" href="?genre={{genre}}">{{genre}}</a>
+				<!-- Blogs --> 
+
+		<div id = "blogs">
+
+			<br> <p style = "font-size: 14px; margin-left: 15px;"> Blogs </p> <br>
+
+			{% for blog in blogs %}
+
+				<p>
+					<a class = "blog-title" href = "blogposts/show_post?user={{user.username}}&post={{blog.title}}">{{blog.title}}</a><br>
+					<span style = "margin-left: 15px;">by {{blog.author}}</span>
+				</p>
+
+				<br>
+
+			{% endfor %}
+
 			<br>
-			<br>
-		{% endif %}
-	{% endfor %}
+
+		</div>
+
 	</div>
+
 {% endblock %}
 
 {% block javascript %}
