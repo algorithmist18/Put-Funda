@@ -9,12 +9,12 @@
 		<center>
 			<div id="home-block" class="jumbotron">
 			  <h1 class="display-4">Hello, {{user.first_name}}!</h1>
-			  <p class="lead">We hope to see you have a great time, hopefully learn something new.</p>
+			  <p class="lead">We hope to see you have a great time, and learn something new.</p>
 			  <hr class="my-4">
 			  <p class="lead">
-			    <a class = "links" href="{% url 'ask' %}"> Ask something.</a>
+			    <a class = "links" href="{% url 'ask' %}"> Ask a question.</a>
 			    <br>
-				<a class = "links" href="{% url 'view' %}"> Visit questions.</a>
+				<a class = "links" href="{% url 'view' %}"> Visit Questions feed.</a>
 			  </p>
 			</div>
 			<p style="margin-right: 10px; font-size: 12px;"> Want to visit the blogs section? Here: <a style="font-size: 12px" href="{% url 'blog_home' %}">Blogs</a></p>
