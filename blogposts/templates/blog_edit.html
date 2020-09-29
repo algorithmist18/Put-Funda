@@ -8,46 +8,45 @@
   		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
 	</nav>
 
+
+	<!--Script for using CKEditor-->
+	<script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
+
+	<!--
 	<script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>
+
 	<script type="text/javascript">
+		
 		// bkLib.onDomLoaded(nicEditors.allTextAreas);
 		
+
 		bkLib.onDomLoaded(function()
 		{ 
 			new nicEditor({buttonList : ['bold', 'italic', 'underline', 'superscript', 'subscript']}).panelInstance('content'); 
 		});
 
 	</script>
+	-->
 
-		
 	<center>
 	<div id="post-form" style="margin-top: 70px;">
 
 		<form method="post" action="{% url 'edit_post' %}?id={{id}}">
 			
 			{% csrf_token %}
-			
-			<!--
-
-			{% for field in form %}
-
-			<div class = "form-group">
-	            	<label for = "name"> {{field.label_tag}} </label>
-	            	
-	         </div>
-
-	         {% endfor %} 
-
-			-->
 
 	        <p>
 			  <label for="title">Title:</label> <br>
-			  <div id = "form-title" class = "controls">{{form.title}}</div> 
+			  <input id = "form-title" value = "{{post.title}}" name = "title" class = "controls"/> 
 			</p>
 
 			<p>
 			  <label for="content">Content:</label> <br> <br>
-			  <textarea rows = "12" cols = "90" name="content" id="content" value = {{form.content}}></textarea>
+			  <textarea style = "float: left" rows = "12" cols = "90" name = "content" id="content">{{post.content | safe}}</textarea>
+			  
+			  <script>
+			  	CKEDITOR.replace('content', {'height' : 400, 'width' : 600});
+			  </script>
 			</p>
 
 			<p>

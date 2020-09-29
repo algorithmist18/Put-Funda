@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'graphos',
     'blogsite',
     'blogposts',
-    'quiz'
+    'quiz',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,6 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL = 'login'
  
+# Support for CKEditor 
+
+CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }

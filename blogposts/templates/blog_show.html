@@ -1,3 +1,5 @@
+
+
 {% extends 'blog_homepage.html' %}
 
 {% block content %}
@@ -11,28 +13,87 @@
 
 	<!-- Block to display blog-posts --> 
 
-	<center>
+	
 		<div id="container">
+			
 			<div id="post">
-				<br>
-				<h3 style = "margin-left: 40px; margin-right: 40px;" align="left">{{post.title}} </h3>
-				<br>
-				<br>
-				<div id = "content" style = "margin-left: 40px; margin-right: 40px;">
-					<p align="left"> {% autoescape off %} {{post.content}} {% endautoescape %}  </p>
+			
+				<br><h3 style = "margin-left: 40px; margin-right: 40px;" align="left">{{post.title}} </h3>
+
+			
+				<div id = "content" style = "float: left; margin-left: 40px; margin-right: 40px;">
+					<p>{{post.content | safe}}</p>
 				</div>
-				<br>
-				<br>
-				<p style = "font-size: 12px;"> 
+				
+
+			<center>
+			
+			<br><br><p style = "margin-left: 40px; font-size: 12px;"> 
+				
 				by 
 
 				{% if post.anon %}
 					<strong>anonymous</strong>
 				{% else %}
-					<a href="/users?user={{user.username}}"> {{ post.author}} </a>
+					<a href="/users?user={{post.author.username}}"> {{ post.author}} </a>
 				{% endif %}
-				</a> at {{post.time}} </p>
+				
+				at {{post.time}} 
+
+			</p>
+			</center>
 			</div>
+
+			<!-- Block to display comments --> 
+
+			<form method = "POST" action = "{% url 'show_post' %}?user={{post.author}}&post={{post.title}}">
+					
+				{% csrf_token %}
+				
+				<input type = "hidden" name = "blogid" value = "{{post.id}}">
+
+				{% if blog_comments != None %}
+
+				<div id = "blog-comments">
+
+					<div id = "blog-comment-section">
+
+						{% for comment in blog_comments %}
+
+							<p> _____________________________________ </p>
+
+							<p id = "comment-author"> 
+								<a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> 
+								<span id = "comment-time"> {{comment.time}} </span>
+							</p>
+
+							<p id = "comment-content"> {{comment.content}}</p>	
+
+						{% endfor %}
+
+					</div>
+
+				</div>
+
+				{% else %}
+
+				<div id = "blog-comments">
+
+					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>({{commentCount}})
+					<span id = "comment-count"> {{questions.comments}} </span>
+								
+				</div>
+
+				{% endif %}
+
+				<div id = "comment-input">
+					<textarea style = "margin-left: 10px;" cols = '50' name = "comment" placeholder = "Write a comment..."></textarea>
+					<br>
+					<input style = "margin-left: 10px;" class = "comment-button" type = "submit" name = "act" value = "Submit">
+				</div>
+
+			</form>
+
 		</div>
-	</center>
+	
 {% endblock %}

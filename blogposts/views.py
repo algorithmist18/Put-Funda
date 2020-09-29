@@ -6,6 +6,7 @@ from .forms import PostForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse 
 from django.contrib.auth.decorators import login_required
+import datetime 
 
 # Create your views here.
 
@@ -108,8 +109,63 @@ def show_post(request):
 		if post.preview == preview: 
 
 			break
+
+	args = {} 
+
+	noOfComments = PostComment.objects.all().filter(post = post).count() 
+
+	if request.method == 'POST': 
+
+		blogId = request.POST.get('blogid') 
+		blogPost = Post.objects.get(id = blogId) 
+		action = request.POST.get('act') 
+
+		if action == 'Show comments': 
+
+			# Show all the comments
+
+			blogComments = PostComment.objects.all().filter(post = blogPost) 
+			noOfComments = len(blogComments) 
+
+			# Update context 
+
+			args['post'] = blogPost
+			args['author'] = blogPost.author
+			args['blog_comments'] = blogComments 
+			args['commentCount'] = noOfComments 
+
+			return render(request, 'blog_show.html', args)
+
+		else: 
+
+			# Post a comment on the blog  
+
+			comment = request.POST.get('comment') 
+			comment = comment.strip() 
+
+			BlogComment = PostComment(content = comment, time = datetime.datetime.now(), author = user, post = blogPost) 
+
+			BlogComment.save() 
 			
-	return render(request, 'blog_show.html', {'post' : post, 'author' : user})
+			if blogPost.comments == 0: 
+
+				blogPost.comments = PostComment.objects.filter(post = blogPost).count() 
+
+			else: 
+
+				blogPost.comments = blogPost.comments + 1 
+
+			blogPost.save() 
+
+			args['post'] = blogPost 
+			args['author'] = blogPost.author
+			args['commentCount'] = blogPost.comments 
+
+			return render(request, 'blog_show.html', args) 
+
+	else:
+
+		return render(request, 'blog_show.html', {'post' : post, 'author' : user, 'commentCount' : noOfComments})
 
 @login_required
 def edit_post(request): 
@@ -137,6 +193,8 @@ def edit_post(request):
 
 		form = PostForm(request.POST, instance = post) 
 
+		print(form.errors) 
+
 		if form.is_valid(): 
 
 			# Valid post 
@@ -151,12 +209,12 @@ def edit_post(request):
 
 			message = 'Uh oh! Blog post could not be updated, try again later.' 
 			print(message) 
-			return render(request, 'blog_home.html') 
+			return render(request, 'blog_edit.html', {'post' : post, 'author' : author, 'id' : primary_key}) 
 
 	else: 
 
-		post_form = PostForm(instance = post) 
-		return render(request, 'blog_edit.html', {'form' : post_form, 'author' : author, 'id' : primary_key})
+		#post_form = PostForm(instance = post) 
+		return render(request, 'blog_edit.html', {'post' : post, 'author' : author, 'id' : primary_key})
 
 @login_required
 def delete_post(request): 
@@ -203,3 +261,4 @@ def delete_post(request):
 			message = 'Uh oh! Logged in user not the author.' 
 			print(message) 
 			return None 
+

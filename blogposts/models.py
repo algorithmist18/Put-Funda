@@ -5,18 +5,19 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django import forms 
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
 class Post(models.Model): 
 
 	title = models.CharField(max_length = 40, default = 'Blog post') 
-	content = models.TextField(default = 'Life is good.')  
+	content = RichTextField(default = 'Life is good.') 
 	time = models.DateTimeField(auto_now_add = True)
 	author = models.ForeignKey(User, on_delete = models.CASCADE, null = True) 
 	anon = models.BooleanField(default = False, null = True) 
-
-
+	comments = models.IntegerField()
+	
 	class Meta: 
 
 		unique_together = (("title", "author")) 

@@ -29,16 +29,13 @@
 
 					<br>
 
-
 					<span style="font-size: 18px; margin-left: 20px;"> 
 						<a href = "show_post?user={{ user.username }}&post={{ post.title }}&preview={{ post.preview }}">{{post.title}}</a> 
 					</span>
 
-					<p id = "text" style="margin-left: 20px; font-size: 14px; margin-top: 20px;"> 
-					{% autoescape off %} 
-						{{post.preview}} ... 
-					{% endautoescape %} 
-					</p>
+					<div id = "text" style = "margin-left: 20px; font-size: 14px; margin-top: 20px;"> 
+						{{post.preview | safe}}...
+					</div>
 
 					<p style="margin-left: 20px; margin-top: 20px; font-size: 12px;">
 					 
