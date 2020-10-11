@@ -70,23 +70,25 @@
 			{% csrf_token %}
 			<div id = "content">
 				{% if not questions.author %}
-					<p class="question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="genre={{questions.title}}"> {{questions.title}} </a></p>
+					<p class="question-text"> {{questions.question|safe}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> 
+						<a style = "font-size: 12px;" href="genre={{questions.title}}"> {{questions.title}} </a></p>
 				{% else %}
-					<p class= "question-text"> {{questions.question}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a href="view?genre={{questions.title}}"> {{questions.title}} </a></p>
+					<p style = "font-size: 14px; margin-right: 10px;" class = "question-text"> {{questions.question|safe}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a style = "font-size: 12px;" href="view?genre={{questions.title}}"> {{questions.title}} </a></p>
 				{% endif %}
 				</p>
 				<input type = "hidden" name = "questions" value = "{{questions.question}}">
-				<input name = "comment" type = "text">
-				<input type = "submit" name = "act" value = "Submit">
-				<input type = "submit" name = "act" value = "Show comments">
+				<input style = "font-size: 12px; margin-left: -13px;" type = "submit" class = "btn btn-link" name = "act" value = "Show comments">
+				<span style = "font-size: 12px; margin-left: -7px;" id = "comment-count">({{questions.comments}})</span>
+				<br>
+				<input style = "font-size: 12px;" name = "comment" type = "text">
+				<input style = "font-size: 12px;" type = "submit" name = "act" value = "Submit">
 			</div> 
 			<div id = "show-answer">
 			{% for k, v in q_times.items %}
 					{% if k == questions.question %}
 						{% if v > 96 %}
-
 							<br>
-							<input type = "submit" name = "show" value = "Show answer">
+							<input style = "font-size: 12px;" type = "submit" name = "show" value = "Show answer">
 						{% endif %}
 					{% endif %}	
 			{% endfor %}
@@ -94,18 +96,18 @@
 			</form>
 			{% if answer != None %}
 				{% if questions.answer == answer %}
-					<p style="margin-top: 10px;" id = "answer"> {{ answer }} </p>
+					<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
 				{% endif %}
 			{% endif %}
 			<br>
 			<br>
 			{% if comments != None %}
-				<div id = "comments">
+				<div id = "comments" style = "font-size: 12px;">
 				{% if questions.question == ques %}
 					{% for comment in comments %}
 							<p> _______________________________________________ </p>
-							<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-							<p id = "comment-content"> {{comment.content}}</p>			
+							<p style = "font-size: 12px;" id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
+							<p style = "font-size: 12px;" id = "comment-content"> {{comment.content}}</p>			
 					{% endfor %}
 				{% endif %}
 				</div>

@@ -14,13 +14,13 @@
 			{% csrf_token %}
 			<div id = "content">
 				{% if not questions.author %}
-					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a href="{{question.title}}"> {{questions.title}} </a>
+					<p class = "q-content" style = "font-size: 14px;"> {{questions.question|safe}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a style = "font-size: 12px;" href="{{question.title}}"> {{questions.title}} </a>
 					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
 						<i class = "fas fa-arrow-up"></i>
 						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
 					</button></p>
 				{% else %}
-					<p class = "q-content"> {{questions.question}} <h5 class = "q-time"> posted on {{questions.time}} by <a href = "{% url 'show_user'%}?user={{questions.author}}">{{ questions.author }}</a></h5> <a href="{{question.title}}"> {{questions.title}} </a>
+					<p class = "q-content" style = "font-size: 14px;"> {{questions.question|safe}} <h5 class = "q-time"> posted on {{questions.time}} by <a href = "{% url 'show_user'%}?user={{questions.author}}">{{ questions.author }}</a></h5> <a style = "font-size: 12px;" href="{{question.title}}"> {{questions.title}} </a>
 					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
 						<i class = "fas fa-arrow-up"></i>
 						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
@@ -28,12 +28,12 @@
 				{% endif %}
 
 				{% if comments != None %}
-					<div class = "comments">
+					<div class = "comments" style = "font-size: 12px;">
 					{% if questions.question == ques %}
 						{% for comment in comments %}
 								<p> _______________________________________________ </p>
 								<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-								<p id = "comment-content"> {{comment.content}}</p>			
+								<p style = "font-size: 12px;" id = "comment-content"> {{comment.content}}</p>			
 						{% endfor %}
 					{% else %}
 					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
@@ -43,19 +43,20 @@
 					</div>
 				{% else %}
 					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
-					<span id = "comment-count">({{questions.comments}})</span>
+					<span style = "font-size: 12px; margin-left: -10px;" id = "comment-count">({{questions.comments}})</span>
 					<br>
 				{% endif %}
 
 				<br>
-				<textarea cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
+				<textarea style = "font-size: 12px;" cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
 				<br>
 
 				<input type = "hidden" name = "questions" value="{{questions.question}}">		
 			
-				<input class = "comment-button" type = "submit" name = "act" value = "Submit">
+				<input style = "font-size: 12px;" class = "comment-button" type = "submit" name = "act" value = "Submit">
 				{% if author == questions.author.username %}
-					<input id = "delete-button" type = "submit" name = "act" value = "Delete">
+					<input class = "btn btn-link" id = "delete-button" type = "submit" name = "act" value = "Delete">
+					<input class = "btn btn-link" id = "edit-button" name = "act" type = "submit" value = "Edit">
 				{% endif %}
 				<br>
 				<br>				
@@ -65,7 +66,7 @@
 				{% for k, v in q_times.items %}
 						{% if k == questions.question %}
 							{% if v > 96 %}
-								<input type = "submit" name = "show" value = "Show answer">
+								<input style = "font-size: 12px;" class = "btn btn-link" type = "submit" name = "show" value = "Show answer">
 							{% endif %}
 						{% endif %}	
 				{% endfor %}

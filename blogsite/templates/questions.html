@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <style type="text/css">
+	
 	#logout
 	{
 		margin-left:;
@@ -16,11 +17,12 @@
 		color: white;
 		margin-left: 570px;
 	}
+
 </style>
 
 <html>
 	<head>	
-		<title> Qnondrum | Ask  </title>
+		<title> Qnondrum | Ask a question </title>
 	</head>
 	<body>
 
@@ -33,6 +35,9 @@
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
+		<!--Script for using CKEditor-->
+		<script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
+
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
   			<a class = "navbar-brand" style="color: white; font-size: 12px;" href="{% url 'home' %}"> Home </a>
   			<a class = "navbar-brand" id = "header"> Qnondrum </a> 
@@ -40,20 +45,30 @@
 		</nav>
 
 		<center>
+
 			<form action="{% url 'ask' %}" method = "POST">
+			
 				{% csrf_token %}
 				<br>
 				<br>
 					Genre:
 				<br>
 				<br>
+			
 				<input type="text" name="title" required>
 				<br>
 				<br>
 					Question?
 				<br>
 				<br>
-				<textarea rows = '15' cols = '80' name = 'question' required></textarea>
+			
+				<textarea style = "font-size: 14px;" rows = '15' cols = '80' name = 'question' required></textarea>
+
+				<script>
+			  		CKEDITOR.replace('question', {'height' : 300, 'width' : 800, 
+			  			'fontSize' : 14}); 
+			  	</script>
+
 				<br>
 				<br>
 					Answer
@@ -62,7 +77,9 @@
 				<textarea rows = '6' cols = '50' name = 'answer' required></textarea>
 				<br>
 				<br>
+			
 				<input type="submit" value = "Ask"> </input>
+			
 			</form>
 		</center>
 	</body>

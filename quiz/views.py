@@ -42,19 +42,50 @@ def compare(x):
 
 	return x.correct_answers, -x.time_taken 
 
-# Create your views here.
-
 # Method to redirect to homepage 
 
 @login_required
 def homepage(request): 
 
-	user = request.user 
+	# Fetch all contests 
 
+	user = request.user 
 	user_contests = Contest.objects.filter(host = user) 
 	all_contests = Contest.objects.all() 
 
+	# Contests 
+
 	contests = [] 
+	past_contests = [] 
+	new_contests = [] 
+	active_contests = [] 
+
+	current_time = datetime.datetime.now(pytz.timezone('UTC')) 
+	
+	# Fetching new and past contests  
+
+	for contest in all_contests.filter(time__lt = current_time).order_by('-time'): 
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+		
+		if question_count >= 10: 
+			past_contests.append(contest) 
+
+		# Append to active contests 
+
+		time_difference = (contest.time - current_time).total_seconds() 
+		time_difference /= 60 
+
+		if time_difference >= 0 and time_difference <= 2000 and question_count >= 10: 
+
+			active_contests.append(contest) 
+	
+	for contest in all_contests.filter(time__gt = current_time).order_by('time'): 
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+		
+		if question_count >= 10: 
+			new_contests.append(contest)
 
 	# Display only those contests who have all the questions done 
 
@@ -68,7 +99,10 @@ def homepage(request):
 
 	# Update the context for this page 
 
-	args = {'user_contests' : user_contests, 'contests' : contests}
+	args = {'new_contests' : new_contests, 'active_contests' : active_contests, 
+			'past_contests' : past_contests, 'user_contests' : user_contests, 
+			'contests' : contests, 'new_contests_size' : len(new_contests),
+			'active_contests_size' : len(active_contests)}
 
 	return render(request, 'quiz_homepage.html', args) 
 

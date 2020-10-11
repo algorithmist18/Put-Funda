@@ -142,3 +142,7 @@ LOGIN_URL = 'login'
 # Support for CKEditor 
 
 CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }
+
+# Setting for session expiry 
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

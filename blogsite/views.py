@@ -174,28 +174,66 @@ def load_comments(request, ques, comments):
 @login_required
 def delete_question(request): 
 
-	# Function to delete a question 
+	# Fetch question and user data
 
-	author = request.user.username # holding the name only 
-	question = request.GET.get('q') 
-	act = request.POST.get('act') 
+	question_id = request.GET.get('question_id') 
+	author = request.GET.get('user') 
+	user = request.user 
 
-	question_object = Question.objects.filter(question = question) 
+	# Make a DB call 
+
+	question = Question.objects.get(id = question_id) 
+	author = User.objects.get(username = author) 
+
+	# Check if valid request 
+
+	if author != user: 
+
+		# Invalid request 
+
+		return HttpResponseRedirect('view') 
+
+	# Valid request 
 
 	if request.method == 'POST': 
 
-		if act == "Delete": 
+		# Check action 
 
-			# Delete question 
-			question_object.delete()
-			return HttpResponseRedirect('view?msg=delete_success')
+		action = request.POST.get('action') 
 
-		else: 
+		if action == 'Cancel': 
 
-			# Cancel and return 
-			return redirect('view') 
+			# Cancel and return to list 
 
-	return HttpResponseRedirect('view?msg=delete_success')  
+			return HttpResponseRedirect('view') 
+
+		# Delete question 
+
+		question.delete() 
+
+		# Return with message 
+
+		return HttpResponseRedirect('view?message={}'.format('delete_q_success')) 
+
+	else:
+
+		# Update context 
+
+		args = {'user' : user, 'question' : question}  
+
+		return render(request, 'question_delete.html', args) 
+
+# Method to find all distinct genres from list 
+
+def find_all_genres(genre_list): 
+
+	genre_set = [] 
+
+	for genre in genre_list: 
+		if genre['title'] is not None: 
+			genre_set.append(genre['title'].strip())
+
+	return set(genre_set)  
 
 @login_required
 def list_questions(request):
@@ -307,7 +345,13 @@ def list_questions(request):
 
 			# return redirect('delete?q={}')
 
-			return render(request, 'question_delete.html', args)
+			return HttpResponseRedirect('delete_feed_question?question_id={}&user={}'.format(question.id, author)) 
+
+		elif act == "Edit": 
+
+			# Edit question 
+
+			return HttpResponseRedirect('edit_feed_question?question_id={}&user={}'.format(question.id, author)) 
 
 		else: 
 
@@ -339,6 +383,8 @@ def list_questions(request):
 
 	else:
 
+		# Designing an efficient Questions feed ranking system  
+
 		query = request.GET.get('query')
 
 		if query != None and query != ' ' and query != '':
@@ -349,30 +395,50 @@ def list_questions(request):
 
 		else:
 
-			q_list = Question.objects.all().order_by('-time')
-			genres = Question.objects.values('title')
-			g = request.GET.get('genre')
-			l = list(genres.values('title'))
-			g_list = []
+			# Fetch all questions and rank them 
+
+			question_list = list(Question.objects.all().order_by('-time'))
+			
+			# Fetch chosen genre from request object  
+
+			genre = request.GET.get('genre')
+		
+			# All the genres of questions 
+			
+			genre_list = list(Question.objects.values('title')) 
+			genre_set = find_all_genres(genre_list) 
+
+			# Dictionary for time elapsed for every question  
 
 			question_times = {}
 
-			for elem in q_list:	
+			for elem in question_list:	
 				question_times.update({elem.question : (current_time - elem.time).total_seconds() / 3600 })
+			
+			# Check if user has clicked on specific genre 
 
-			for d in l:
-				g_list.append(d['title'])
-			g_set = set(g_list)
+			if genre != None and genre != ' ':
 
-			if g != None and g != ' ':
+				# Display genre questions 
 
-				q_list = Question.objects.filter(title = g).order_by('-time')
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+				list_of_questions = list(Question.objects.filter(title = genre).order_by('-time'))
+				genre_question_times = {} 
+
+				# Update the question times for genre 
+
+				for question in list_of_questions: 
+
+					genre_question_times.update({question.question : (current_time - question.time).total_seconds() / 3600 })
+
+				args = {'q_list' : list_of_questions, 'g_list' : genre_set, 'q_times' : genre_question_times, 'author' : author, 'blogs' : blogList}
+				
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
-				args = {'q_list' : q_list, 'g_list' : g_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+				# Display generic questions feed 
+
+				args = {'q_list' : question_list, 'g_list' : genre_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'questions_list_display.html', args)
 
 @login_required
@@ -967,6 +1033,72 @@ def validate_image(request):
 	else:
 
 		return JsonResponse(response) 
+
+# Method to edit a question 
+
+@login_required
+def edit_question(request): 
+
+	# Fetch question and user data
+
+	question_id = request.GET.get('question_id') 
+	author = request.GET.get('user') 
+	user = request.user 
+
+	# Make a DB call 
+
+	question = Question.objects.get(id = question_id) 
+	author = User.objects.get(username = author) 
+
+	# Check if valid request 
+
+	if author != user: 
+
+		# Invalid request 
+
+		return HttpResponseRedirect('view') 
+
+	# Valid request 
+
+	if request.method == 'POST': 
+
+		# Check action 
+
+		action = request.POST.get('action') 
+
+		if action == 'Cancel': 
+
+			# Cancel and return to list 
+
+			return HttpResponseRedirect('view') 
+
+		# Extract data from request 
+
+		title = request.POST.get('title') 
+		content = request.POST.get('question')
+		answer = request.POST.get('answer') 
+
+		# Edit the question object 
+
+		question.title = title 
+		question.question = content 
+		question.answer = question.answer 
+
+		# Save object 
+
+		question.save() 
+
+		# Return with message 
+
+		return HttpResponseRedirect('view?message={}'.format('edit_q_success')) 
+
+	else:
+
+		# Update context 
+
+		args = {'user' : user, 'question' : question}  
+
+		return render(request, 'question_edit_base.html', args) 
 
 
 # Receiver signals: to check whether user is logged in or not

@@ -16,7 +16,7 @@ class Post(models.Model):
 	time = models.DateTimeField(auto_now_add = True)
 	author = models.ForeignKey(User, on_delete = models.CASCADE, null = True) 
 	anon = models.BooleanField(default = False, null = True) 
-	comments = models.IntegerField()
+	comments = models.IntegerField(default = 0) 
 	
 	class Meta: 
 

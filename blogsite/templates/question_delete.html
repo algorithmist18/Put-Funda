@@ -10,23 +10,23 @@
 	
 	<div id = "question">
 
-		<form method = "post" action = "{% url 'delete_q' %}?q={{ques.question}}">
+		<form method = "post" action = "{% url 'delete_q' %}?question_id={{question.id}}&user={{user.username}}">
 
 			{% csrf_token %}
 
 			<div id = "question-content">
 
-				{% if not ques.author %}
-					<p class="question-text"> {{ques.question}} <h5 class="q-time"> <strong> posted on {{ques.time}} by admin</strong></h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
+				{% if not question.author %}
+					<p class="question-text"> {{question.question | safe}} <h5 class="q-time"> <strong> posted on {{question.time}} by admin</strong></h5> <a href="{{question.title}}"> {{ques.title}} </a></p>
 				{% else %}
-					<p class= "question-text"> {{ques.question}} <h5 class="q-time"><strong> posted on {{ques.time}} by {{ ques.author }} </strong> </h5> <a href="{{ques.title}}"> {{ques.title}} </a></p>
+					<p class= "question-text"> {{question.question | safe}} <h5 class="q-time"><strong> posted on {{question.time}} by {{ question.author }} </strong> </h5> <a href="{{question.title}}"> {{question.title}} </a></p>
 				{% endif %}
 
 				<!-- Including delete button -->
 
-				<input type = "hidden" name = "questions" value = "{{ques.question}}">
-				<input type = "submit" name = "act" value = "Cancel">
-				<input type = "submit" name = "act" value = "Delete">
+				<input type = "hidden" name = "questions" value = "{{question.question}}">
+				<input style = "font-size: 12px;" type = "submit" name = "action" value = "Cancel">
+				<input style = "font-size: 12px;" type = "submit" name = "action" value = "Delete">
 
 				<br><br><br>
 

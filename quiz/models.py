@@ -12,8 +12,7 @@ class Contest(models.Model):
 
 	host = models.ForeignKey(User, on_delete = models.CASCADE) 
 	time = models.DateTimeField() 
-	genre = models.CharField(max_length = 20, default = 'General') 
-
+	genre = models.CharField(max_length = 20, default = 'General')
 
 class QuizQuestion(models.Model): 
 
