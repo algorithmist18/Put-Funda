@@ -4,7 +4,7 @@
 	<center>
 
 		<br>
-			<p style = "margin-left: 30px;"> Ask a question <a href = "{% url 'ask' %}">here.</a></p>
+			<p style = "margin-left: 22%;"> Ask a question <a href = "{% url 'ask' %}"> here.</a></p>
 
 	</center>
 
@@ -14,7 +14,7 @@
 
 			<div id = "question">
 			
-				<form id="ans" method="post">
+				<form id = "ans" method = "post">
 
 					{% csrf_token %}
 
@@ -61,7 +61,7 @@
 								
 									<a style = "font-size: 12px;" href = "/users?user={{questions.author}}"> {{ questions.author }} </a> </h5> 
 
-									<a style = "font-size: 12px;" href="?genre={{questions.title}}"> {{questions.title}} </a> 
+									<a style = "font-size: 12px;" href = "?genre={{questions.title}}"> {{questions.title}} </a> 
 
 									<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.id}}"> 
 										<i class = "fas fa-arrow-up"></i>
@@ -172,7 +172,11 @@
 				
 					{% if questions.answer == answer %}
 				
-						<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
+						<p style="margin-top: 10px; font-size: 12px;" id = "answer"> 
+
+							<strong> Answer: </strong> {{ answer }} 
+						
+						</p>
 				
 					{% endif %}
 			
