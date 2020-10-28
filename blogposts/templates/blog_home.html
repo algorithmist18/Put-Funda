@@ -57,14 +57,20 @@
 
 					{% if user == post.author %}	
 
-						<a href = "edit_post?id={{post.id}}">
-							<button value = "edit" style = "font-size: 12px; margin-left: 20px; margin-top: 5px; margin-bottom: 10px;"> Edit </button>
-						</a>
+						<center>	
 
-						<a href = "delete_post?id={{post.id}}">
-							<button value = "delete" style = "font-size: 12px; margin-left: 20px; margin-top: 5px; margin-bottom: 10px;"> Delete </button>
-						</a>
+							<a style = "font-size: 12px; float: right; margin-right: 30px;" href = "delete_post?id={{post.id}}">
+								Delete
+							</a>
+
+							&nbsp; &nbsp; 
+
+							<a style = "font-size: 12px; float: right; margin-right: 20px;" href = "edit_post?id={{post.id}}">
+								Edit
+							</a>	
 						
+						</center>
+
 					{% endif %}
 
 				</div>
