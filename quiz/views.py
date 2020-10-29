@@ -64,21 +64,25 @@ def homepage(request):
 	
 	# Fetching new and past contests  
 
-	for contest in all_contests.filter(time__lt = current_time).order_by('-time'): 
+	for contest in all_contests.order_by('-time'): 
 
 		question_count = QuizQuestion.objects.filter(contest = contest).count() 
-		
-		if question_count >= 10: 
-			past_contests.append(contest) 
 
 		# Append to active contests 
 
 		time_difference = (contest.time - current_time).total_seconds() 
 		time_difference /= 60 
+		time_difference *= -1
+
+		print(time_difference) 
 
 		if time_difference >= 0 and time_difference <= 2000 and question_count >= 10: 
 
 			active_contests.append(contest) 
+
+		elif time_difference >= 0 and time_difference > 2000 and question_count >= 10: 
+
+			past_contests.append(contest) 
 	
 	for contest in all_contests.filter(time__gt = current_time).order_by('time'): 
 
