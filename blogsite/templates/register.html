@@ -10,47 +10,35 @@
 	
 		<center>
 
-			 
-		       
-			       {% if form.errors %}
+			{% if form.errors %}
 			        
-			        <div style = "width: 500px;" class = "alert alert-danger" id = "errors">
+			<div style = "width: 500px;" class = "alert alert-danger" id = "errors">
 		      		
-		      		<ul>
+		      	<ul>
 
-				        {% for field in form %}
-				            {% for error in field.errors %}
-				               <li><strong>{{ error|escape }}</strong><br></li>
-				            {% endfor %}
+				    {% for field in form %}
+				        {% for error in field.errors %}
+				        	<li><strong>{{ error|escape }}</strong><br></li>
 				        {% endfor %}
+				    {% endfor %}
 
-				        {% for error in form.non_field_errors %}
+				    {% for error in form.non_field_errors %}
 				            
-				            <li><strong>{{ error|escape }}</strong></li>
+				        <li><strong>{{ error|escape }}</strong></li>
 				  
-				        {% endfor %}
+				    {% endfor %}
 				      
-			      	</ul>
+			    </ul>
 
-		      		</div>	
+		    </div>	
 		  	
 		  
-		    		{% endif %}
+		    {% endif %}
 
 		</center>
 
 		<div id = "left-part">
 			
-			
-			<!--
-			<div class="form-group">
-		      	<p><label>Email:</p></label>
-		    	<p>{{form.email}}</p>
-		      	<p><small id="emailHelp" class="form-text text-muted">{{form.email_id.help_text}}</small></p>
-		      	<span id = "confirm-email" style = "font-size: 12px;"></span></p>
-		    </div>
-			-->
-		
 		    <div class="form-group">
 		      <p><label>Username:</label></p>
 		      <p><span>{{form.username}}</span><br> <p><small id = "username-helptext" class="form-text text-muted">{{form.username.help_text}}</small></p>
@@ -81,15 +69,10 @@
 		<div id = "right-part">
 		
 		    <div class="form-group">
-		      <p><label for="exampleInputEmail1">Location:</label></p>
+		      <p><label for="exampleInputEmail1">City:</label></p>
 		      <p><span>{{form.location}}</span></p>
 		    </div>
-		    <!--
-		    <div class="form-group">
-		      <p><label>Phone:</label></p>
-		      <p><span>{{form.phone}}</span></p>
-		    </div>
-		-->
+		 
 		    <div class="form-group">
 		      <p><label for="exampleInputEmail1">Password:</label></p>
 		      <p><span>{{form.password1}}</span></p>
@@ -108,6 +91,7 @@
   	 		<input style = "margin-top: 400px; font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
   		</center>
   		<br><br>
+		
 		</form>
 
 	</div>

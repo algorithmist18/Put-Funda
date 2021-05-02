@@ -4,11 +4,30 @@
 
 <style type="text/css">
 
-#welcome
-{
-	margin-top: 150px;
-	width: 800px;
-}
+	#welcome {
+
+		margin-top: 150px;
+		width: 800px;
+	}
+
+	#title-word {
+
+		font-family: 'Quicksand', sans-serif; 
+		font-weight: 600;
+		font-size: 50px;
+	}
+
+	#subtitle {
+
+		font-family: 'Quicksand', sans-serif;
+		font-weight: 300;
+		font-size: 20px;
+	}
+
+	#container {
+
+		margin-top: 200px;
+	}
 
 </style>
 
@@ -17,21 +36,64 @@
 		<title> Qnondrum | Welcome </title>
 	</head>
 	<body>
+		
 		<!-- Latest compiled and minified CSS -->
+		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
+		<!--For downloading Google Fonts--> 
+
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;700&display=swap" rel="stylesheet">
+
 		<!-- jQuery library -->
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 		<!-- Latest compiled JavaScript -->
+		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 		<center>
-			<div id = "welcome" class="jumbotron">
-				<h2 class="display-4"> Welcome to Qnondrum! </h2>
-				<p class="lead"> A forum for answerable questions and questionable answers. </p>
-				<br>
-				<a href="/login">Login</a> <a href="/register">Register</a>
+
+			<div id="container">
+
+				<!--Title-->
+
+				<h2 id="title-word">Qnondrum.</h2>
+
+				<!--Subtitle--> 
+
+				<p id="subtitle">A forum for hosting Quiz contests and posting interesting trivia about the world.</p>
+
+				<!--Buttons for login and register--> 
+
+				<br><br>
+
+				<button href="/login" id="login-button" class="btn btn-primary" onclick="login()">Login</button> &nbsp; &nbsp; <button href="/register" id="register-button" class="btn btn-success" onclick="register()">Register</button>
+			
 			</div>
+		
 		</center>
+
 	</body>
+
+	<script type="text/javascript">
+			
+		// Redirect to login page 
+
+		function login() {
+
+			window.location.href='/login'; 
+		}
+
+		// Redirect to register page 
+
+		function register() { 
+
+			window.location.href='/register'; 
+		}
+
+	</script>
+
 </html>

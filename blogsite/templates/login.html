@@ -1,5 +1,8 @@
 {% extends 'register_base.html' %}
 {% block content %}
+
+	<!-- Display errors --> 
+
 	{% if forms.errors %}
 		{% for field in forms %}
 			{% for error in field.errors %}
@@ -7,26 +10,104 @@
 			{% endfor %}
 		{% endfor %}
 	{% endif %}
+	
+	<!-- Login form --> 
+
+	<center>
+
 	<div id = "container">	
+
+		<h1 id="sign-in-header">Sign in.</h1><br>
+		
+		<div id="login-form">
+
 		<form id="login" action="{% url 'login' %}" method="post">
 
 		  {% csrf_token %}
 
-		  {{error}}
-		  <br>
-		  <div class="form-group">
-		  	{{form.username.errors}}
-		  	<label for="{{form.username.id_for_label}}">Username:</label>
-		  	{{form.username}}
+		  <div class="mb-3" id="form-container">
+			
+			{% if error %}
+
+		  		<div style="margin-top: 5px; margin-left: 5px; margin-right: 5px;" class="alert alert-danger">
+		  			<p>{{error}}</p>
+		  		</div>
+
+		  	{% endif %}
+
+		  	<br>
+		  
+			<div class="form-group">
+				
+				<!--
+				<div class="alert-danger"><p>{{form.username.errors}}</p></div>
+			
+			  	<label for="{{form.username.id_for_label}}">Username:</label>
+			
+			  	{{form.username}}
+				-->
+
+			  	<!-- Generate form per field --> 
+
+			  	{% for field in form %} 
+
+			  		{% if field.errors %} 
+
+				  		<div class="control-group error">
+	                    
+	                    	<label class="control-label">{{ field.label }}</label> 
+	                    
+	                    	<div class="controls">{{ field }}
+	                        	<span class="help-inline">
+	                           		{% for error in  field.errors %}{{ error }}{% endfor %}
+	                        	</span>
+	                    	</div>
+	                	
+	                	</div>
+
+	            	{% else %}
+	                
+	                	<div class="control-group">
+	                    
+	                    	<label class="control-label">{{ field.label }}</label> 
+	                    
+	                    	<div class="controls">{{ field }}
+	                        	{% if field.help_text %}
+	                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
+	                        	{% endif %}
+	                    	</div>
+	               		
+	               		</div>
+
+	            	{% endif %}
+	        			
+	        		<br>
+
+	        	{% endfor %}
+
+			</div>
+
 		  </div>
+
+		  <!--
+		  {{error}}
 
 		  <div class="form-group">
 		  	{{form.password.errors}}
 		  	<label for="{{form.password.id_for_label}}">Password:</label>
 		  	{{form.password}}
 		  </div>
-		  <input type="submit" class = "btn btn-primary" value="Login"/>
+				-->	
+
+			<input type="submit" class = "btn btn-primary" value="Login"/>
 
 		</form>
+
+		<br>
+
+		</div>
+
 	</div>
+
+	</center>
 {% endblock %}

@@ -10,7 +10,7 @@
 
 			{% csrf_token %}
 
-			<p style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;">{{question.question}}</p>
+			<p style = "margin-left: 20px; margin-top: 20px;">{{question.question}}</p>
 
 			<input style = "float: right;" id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
 
@@ -26,7 +26,7 @@
 
 			<input style = "margin-left: 20px; margin-top: 20px;" type = "text" id = "option" name = "answer" />
 
-			<input style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
+			<input style = "margin-left: 20px; margin-top: 20px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
 
 		</form>
 
@@ -45,14 +45,7 @@
 
 		function setTime()
 		{
-			currentTime = Number(currentTime) + 1; 
-
-			/*
-			if(currentTime < localStorage.storedTime)
-			{
-				currentTime = localStorage.storedTime; 
-			}
-			*/
+			currentTime = Number(currentTime) + 1;
 			
 			// Method to detect page has been refreshed or not 
 
@@ -74,7 +67,7 @@
 
 			// Go to next question if timer exceeded 
 
-			if(currentTime == 24)
+			if(currentTime == 30)
 			{
 				console.log('Time limit exceeded'); 
 
@@ -114,7 +107,8 @@
 
 		function countdownBegin()
 		{
-			// Do a GET request here 
+			// Do a GET request here
+
 			setInterval(setTime, 1000);
 		}
 
@@ -125,15 +119,11 @@
 		{
 			// Clear storage time for next question 
 
-			console.log('Hello'); 
-
 			var newDate = new Date(); 
 
 			$('#time_taken').val(newDate - currentDate); 
 
 			localStorage.storedTime = 0; 
-
-			console.log('Bye'); 
 
 		});
 		

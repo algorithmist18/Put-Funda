@@ -84,14 +84,20 @@ def login_view(request):
 
 		form = AuthenticationForm(request.POST)
 
+		# Retrieve username and password
+
 		username = request.POST.get('username')
 		passwd = request.POST.get('password')
 
 		# Checking if password is stored in plain text or not 
 
+		print(username, passwd)
+
 		if form.is_valid:
 
 			# Authenticate the user 
+
+			print('Form is valid') 
 
 			try:
 
@@ -101,13 +107,15 @@ def login_view(request):
 
 				next_page_url = 'home?username=' + username
 
+				print(next_page_url) 
+
 				return redirect('home')
 
 			except:
 
 				# Authentication error - redirect to login page with message 
 
-				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password invalid'})
+				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect'})
 		else:
 
 			print(form.errors)

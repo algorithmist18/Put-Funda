@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <style type="text/css">
+	
+	#nav {
 
-	#nav
-	{
 		background-color: #34495E;
 		color: white;
+		font-family: 'Open Sans', sans-serif;
 	}
 
-	#logout-button
-	{
+	#logout-button {
+
 		float: right;
 		margin-right: 20px;
+		font-family: 'Open Sans', sans-serif;
 	}
 
-	#user-display
-	{
+	#user-display {
+
 		font-size: 15px;
+		font-family: 'Open Sans', sans-serif;
 	}
 
-	#home-block
-	{
+	#home-block {
+
 		margin-top: 100px;
 		width: 800px;
 		background-color:#F4F6F7;
 		color: black;
+		font-family: 'Open Sans', sans-serif;
 	}
 
 </style>
+
 <html>
+
 	<head>
 		<title>Qnondrum</title>
 	</head>
-	<body>
+	
+	<body style="font-family: 'Open Sans', sans-serif;">
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
@@ -40,7 +47,13 @@
 
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 		{% block content %}
 		{% endblock %}
+	
 	</body>
+
 </html>
