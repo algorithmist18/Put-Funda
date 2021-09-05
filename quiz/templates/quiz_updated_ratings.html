@@ -23,9 +23,9 @@
 </style>
 <html>
 	<head>
-		<title> Qnondrum | Contest Leaderboard </title>
+		<title> Qnondrum | Updated ratings </title>
 	</head>
-	<body>
+	<bod style="font-family: 'Open Sans', sans-serif;"y>
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
@@ -50,15 +50,13 @@
 
 			<!-- Button to update rating --> 
 
-			{% if request.user.username == 'coder' %}
+			{% if request.user.username == 'Avinash' %}
 	
-				<p><a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}" id = "update-rating-button">Restore ratings</a></p>
+				<p><a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}" id = "update-rating-button">Leaderboard</a></p>
 
 			{% endif %}
 
 			<!-- Leaderboard -->
-
-			<p> Leaderboard </p>
 
 			<table id = "table-leaderboard" class = "table" style="width:800px;">
 				
