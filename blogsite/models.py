@@ -36,9 +36,11 @@ class Profile(models.Model):
 	location = models.CharField(max_length = 25, default='Kolkata')
 	birth_date = models.DateField(null=True, blank=True)
 	is_online = models.BooleanField(default = False)
+	rating = models.FloatField(default = 1500.0, null=True, blank=True)
+	volatility = models.FloatField(default = 150.0, null = True, blank = True) 
+	no_of_contests_played = models.IntegerField(default = 0, null = True, blank = True) 
 
 	# Add image field
-
 	picture = models.ImageField(upload_to = 'images/', max_length = 200, blank = True)  
 
 @receiver(post_save, sender = User)

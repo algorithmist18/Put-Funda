@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<style type="text/css">
+
+	#nav
+	{
+		background-color: #34495E;
+		color: white;
+	}
+
+	#logout-button
+	{
+		float: right;
+		margin-right: 20px;
+	}
+
+	#leaderboard
+	{
+		font-size: 12px;
+		margin-top: 50px;
+		margin-left: 20px;
+	}
+
+</style>
+<html>
+	<head>
+		<title> Qnondrum | Contest Leaderboard </title>
+	</head>
+	<body>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<!-- Navigation bar --> 
+		
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	</nav>
+
+	<!-- Display leaderboard here -->
+
+	<center>
+
+		<div id = "leaderboard">
+
+			<!-- Button to update rating --> 
+
+			{% if request.user.username == 'coder' %}
+	
+				<p><a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}" id = "update-rating-button">Restore ratings</a></p>
+
+			{% endif %}
+
+			<!-- Leaderboard -->
+
+			<p> Leaderboard </p>
+
+			<table id = "table-leaderboard" class = "table" style="width:800px;">
+				
+				<thead>
+				  
+				  <tr>
+					
+				   <th>Username</th>	   
+				   
+				   <th>Rank</th>
+			
+				   <th>Old rating </th>
+				  	
+				   <th> New rating </th>
+
+				   	<th>Difference</th>
+				  
+				  </tr>
+
+				</thead>
+
+				{% for u in users %}
+				  
+				  <tr>
+
+				  	<td class = "rank-row">{{u.rank}}</td>
+				 
+				  	<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
+				 
+				  	<td class = "old-rating">{{u.old_rating}}</td>
+
+				  	<td class = "new-rating">{{u.new_rating}} </td>
+
+				  	<td class = "diff"></td>
+				 
+				   </tr>
+			
+				{% endfor %}
+			
+			</table>
+
+		</div>
+
+	</center>
+
+	<script type="text/javascript">
+		
+		// Round up the time-taken 
+
+		var timeTaken = document.getElementsByClassName("time-taken"); 
+
+		var i; 
+
+		for(i=0; i<timeTaken.length; i++)
+		{
+			var time = Number(timeTaken[i].innerHTML);
+
+			time = time.toFixed(3);
+
+			timeTaken[i].innerHTML = time;   
+		}
+
+		var old_rating = document.getElementsByClassName("old-rating"); 
+
+		for(let i=0; i<old_rating.length; i++) {
+
+			let rating_old = Number(old_rating[i].innerHTML); 
+			old_rating[i].innerHTML = rating_old.toFixed(0); 
+		}
+
+		var new_rating = document.getElementsByClassName("new-rating"); 
+		var diff_rating = document.getElementsByClassName("diff"); 
+
+		for(let i=0; i<new_rating.length; i++) {
+
+			let rating = Number(new_rating[i].innerHTML); 
+			new_rating[i].innerHTML = rating.toFixed(0); 
+
+			let diff = rating - Number(old_rating[i].innerHTML); 
+
+			if(diff < 0) {
+
+				diff_rating[i].innerHTML = "<style: color: red;>" + diff.toFixed(0) + "</style>"; 
+
+			} else {
+
+				diff_rating[i].innerHTML =  "<style: color: green;>" + diff.toFixed(0) + "</style>"; 
+			}
+
+			//diff[i].innerHTML = Number(new_rating[i].innerHTML) - 
+		}
+
+		// Rank the participants 
+
+		var rank = document.getElementsByClassName('rank-row'); 
+		var counter = 1; 
+
+		for(i=0; i<rank.length; i++)
+		{
+			// If time is same, then same rank 
+
+			rank[i].innerHTML = counter.toString(10); 
+			counter++; 
+
+			if(i > 0)
+			{
+				if(timeTaken[i].innerHTML == timeTaken[i - 1].innerHTML)
+				{
+					// Same time taken 
+
+					rank[i].innerHTML = rank[i - 1].innerHTML; 
+				}
+			}
+		}
+
+		$("update-rating-button").click(function() {
+
+
+		})
+
+		function updateRating() {
+
+			/*
+			console.log("Inside updateRating()"); 
+
+			var response = document.forms['rating_form'].submit(); 
+
+			console.log(response);
+			*/
+
+			var contestId = "{{contest.id}}"; 
+
+			console.log('Contest ID = ' + contestId); 
+
+			$.get("{% url 'update_rating' %}", {
+
+				contest_id: contestId
+
+			}, function(data) {
+
+				console.log(data); 
+			}); 
+		}
+
+	</script>
+	
+	</body>
+</html>

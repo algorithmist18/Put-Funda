@@ -15,6 +15,22 @@
 
 		<div id = "leaderboard">
 
+			<!-- Button to update rating --> 
+
+			{% if request.user.username == 'coder' %}
+		<!--
+			<form name = "rating_form" method = "POST" action = "{% url 'update_rating' %}">
+				{% csrf_token %}
+				<input type = "hidden" name="contest_id" value = "{{contest.id}}">
+				
+			</form>
+		-->
+			<p><a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button">Update ratings</a></p>
+
+			{% endif %}
+
+			<!-- Leaderboard -->
+
 			<p> Leaderboard </p>
 
 			<table id = "table-leaderboard" class = "table" style="width:800px;">
@@ -96,6 +112,11 @@
 				}
 			}
 		}
+
+		$("update-rating-button").click(function() {
+
+
+		})
 
 	</script>
 

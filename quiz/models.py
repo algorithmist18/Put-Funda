@@ -13,15 +13,16 @@ class Contest(models.Model):
 	host = models.ForeignKey(User, on_delete = models.CASCADE) 
 	time = models.DateTimeField() 
 	genre = models.CharField(max_length = 20, default = 'General')
+	has_rating_updated = models.BooleanField(default = False, blank = True, null = True) 
 
 class QuizQuestion(models.Model): 
 
 	question = models.TextField()
 	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
-	guess = models.TextField()
+	guess = models.TextField(blank = True)
 	answer = models.TextField()
-	second_answer = models.TextField() 
-	third_answer = models.TextField()  
+	second_answer = models.TextField(blank = True) 
+	third_answer = models.TextField(blank = True)  
 	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
 
 class Submission(models.Model): 	
@@ -31,3 +32,8 @@ class Submission(models.Model):
 	answer = models.TextField() 
 	question = models.ForeignKey(QuizQuestion, on_delete = models.CASCADE) 
 
+class RatingHistory(models.Model): 
+
+	user = models.ForeignKey(User, on_delete = models.CASCADE) 
+	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
+	rating = models.FloatField(default = 1500, blank = True, null = True) 

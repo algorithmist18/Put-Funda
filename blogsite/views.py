@@ -255,6 +255,17 @@ def list_questions(request):
 	blogs = Post.objects.all().order_by('-time') 
 	blogList = [] 
 
+	# Fetch top rated users 
+
+	top_rated_users = list(Profile.objects.all().order_by('-rating'))  
+	top_rated_user_list = [None] * min(5, len(top_rated_users))
+
+	i = 0
+	for i in range(min(5, len(top_rated_users))): 
+
+		top_rated_user_list[i] = top_rated_users[i]
+		i += 1 
+
 	print('Number of blog posts = ', len(blogs)) 
 
 	for i in range(min(5, len(blogs))): 
@@ -306,12 +317,12 @@ def list_questions(request):
 				if g != None and g != ' ':
 
 					q_list = Question.objects.filter(title = g).order_by('-time')
-					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'author' : author, 'blogs' : blogList, 'top_rated_users': top_rated_user_list}
 					return render(request, 'question_list_display_genre.html', args)
 
 				else:
 
-					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'author' : author, 'q_times' : question_times, 'blogs' : blogList}
+					args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'author' : author, 'q_times' : question_times, 'blogs' : blogList,'top_rated_users': top_rated_user_list}
 					return render(request, 'questions_list_display.html', args)
 			else:
 
@@ -336,12 +347,12 @@ def list_questions(request):
 
 				q_list = Question.objects.filter(title = g).order_by('-time')
 				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 'comments' : comments, 
-				'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+				'q_times' : question_times, 'author' : author, 'blogs' : blogList, 'top_rated_users': top_rated_user_list}
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
-				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+				args = {'q_list' : q_list, 'g_list' : g_set, 'top_rated_users': top_rated_user_list, 'ques' : q, 'comments' : comments, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
 				return render(request, 'questions_list_display.html', args)	
 
 
@@ -380,13 +391,13 @@ def list_questions(request):
 
 				q_list = Question.objects.filter(title = g).order_by('-time')
 				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times,
-				'q_times' : question_times, 'author' : author, 'answer' : question.answer}
+				'q_times' : question_times, 'author' : author, 'answer' : question.answer, 'top_rated_users': top_rated_user_list}
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
 
 				args = {'q_list' : q_list, 'g_list' : g_set, 'ques' : q, 'q_times' : question_times, 
-				'author' : author, 'answer' : question.answer}
+				'author' : author, 'answer' : question.answer, 'top_rated_users': top_rated_user_list}
 				return render(request, 'questions_list_display.html', args)	
 
 	else:
@@ -438,7 +449,7 @@ def list_questions(request):
 
 					genre_question_times.update({question.question : (current_time - question.time).total_seconds() / 3600 })
 
-				args = {'q_list' : list_of_questions, 'g_list' : genre_set, 'q_times' : genre_question_times, 'author' : author, 'blogs' : blogList}
+				args = {'q_list' : list_of_questions, 'g_list' : genre_set, 'q_times' : genre_question_times, 'author' : author, 'blogs' : blogList, 'top_rated_users': top_rated_user_list}
 				
 				return render(request, 'question_list_display_genre.html', args)
 
@@ -446,7 +457,7 @@ def list_questions(request):
 
 				# Display generic questions feed 
 
-				args = {'q_list' : question_list, 'g_list' : genre_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList}
+				args = {'q_list' : question_list, 'g_list' : genre_set, 'q_times' : question_times, 'author' : author, 'blogs' : blogList, 'top_rated_users': top_rated_user_list}
 				return render(request, 'questions_list_display.html', args)
 
 @login_required

@@ -194,6 +194,21 @@
 
 		<p style = "font-size: 12px; margin-right: 10px;">If you want to play contests, head over <a href = "{% url 'quiz_home' %}">here.</a></p>
 
+		<!-- Top rated users -->
+
+		<div id="top-rated-users">
+
+			<br> <p style = "font-size: 14px; margin-left: 10px;"> Top rated users </p> 
+
+			{% for top_rated_user in top_rated_users %}
+				<p style = "font-size: 13px; margin-left: 10px;"><a class="top-rated-users" href="users?user={{top_rated_user.user.username}}">{{top_rated_user.user.username}}</a>&nbsp;&nbsp;<spam class="rating">{{top_rated_user.rating}}</spam>
+				<br></p>
+			{% endfor %}
+
+			<br>
+
+		</div> 
+
 		<!-- Genre division --> 
 
 		<div id="tags">
@@ -270,6 +285,16 @@
 			$('html, body').animate({scrollDown: $(this).offset().top}, 1000); 
 
 		}); 		
+
+		var ratingList = document.getElementsByClassName("rating"); 
+
+		for(let i=0; i<ratingList.length; i++) {
+
+			let rating = Number(ratingList[i].innerHTML);
+
+			ratingList[i].innerHTML = rating.toFixed(0); 
+		}
+
 
 	</script>
 

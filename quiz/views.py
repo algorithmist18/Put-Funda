@@ -5,11 +5,13 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from quiz.forms import QuizForm
-from quiz.models import QuizQuestion, Contest, Submission
+from quiz.models import QuizQuestion, Contest, Submission, RatingHistory
+from blogsite.models import Profile
 from .models import User 
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
@@ -23,6 +25,7 @@ from django.db.models import Min, Max, Count, Q
 from functools import cmp_to_key 
 from django.urls import reverse 
 import pytz
+from quiz.rating_system import update_rating
 
 # Class to represent custom data structure 
 
@@ -35,6 +38,18 @@ class ContestUser:
 		self.username = username 
 		self.correct_answers = correct_answers
 		self.time_taken = time_taken 
+
+# Class to represent user, rank, old rating and new rating 
+
+class RatingUser: 
+
+	def __init__(self, username, rank, correct_answers, old_rating, new_rating): 
+
+		self.username = username
+		self.rank = rank
+		self.correct_answers = correct_answers
+		self.old_rating = old_rating
+		self.new_rating = new_rating
 
 # Method to compare two users 
 
@@ -812,9 +827,9 @@ def display_leaderboard(request):
 
 	original_user = request.user 
 	contest_id = request.GET.get('contest_id') 
-	contest = Contest.objects.get(id = contest_id) 
+	contest = Contest.objects.get(id = int(contest_id))
 
-	#submisssions = Submission.objects.get(contest = contest) 
+	questions = list(QuizQuestion.objects.filter(contest = contest)) 
 
 	# Design leaderboard from submissions 
 
@@ -823,6 +838,13 @@ def display_leaderboard(request):
 	users = users_in_contest(contest) 
 
 	for user in users: 
+
+		user_profile = Profile.objects.get(user__username = user.username) 
+
+		# Updating number of contest played 			
+
+		user_profile.no_of_contests_played = fetch_no_of_contests_played(5, user.username) 
+		user_profile.save() 
 
 		user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
 
@@ -846,10 +868,6 @@ def display_leaderboard(request):
 	# Sort the submissions
 
 	contest_users = sorted(sorted(contest_users, key = lambda x: x.time_taken), key = lambda x: x.correct_answers, reverse = True)  
-	
-	for user in contest_users: 
-
-		print(user.username, user.correct_answers, user.time_taken) 
 
 	# Update context 
 
@@ -858,3 +876,235 @@ def display_leaderboard(request):
 	args.update({'user' : original_user, 'contest' : contest, 'users' : contest_users})
 
 	return render(request, 'quiz_display_leaderboard.html', args) 
+
+# Method to fetch number of contests user has played from certan contest
+def fetch_no_of_contests_played(start_contest_id, username): 
+
+
+	submission_list = Submission.objects.filter(user__username = username, question__contest__id__gt = start_contest_id - 1)
+	list_of_contest_ids = [] 
+
+	for submission in submission_list: 
+
+		list_of_contest_ids.append(submission.question.contest.id) 
+
+	return len(set(list_of_contest_ids)) 
+
+# Method to update rankings for contest user 
+
+def update_ratings(request): 
+
+	# Check if contest is invalid
+
+	response = {} 
+
+	if request.method == 'GET': 
+
+		# Fetch request data
+
+		contest_id = request.GET.get('contest_id') 
+		contest = Contest.objects.get(id = int(contest_id)) 
+
+		print(contest_id) 
+
+		# Check if contest needs some update
+
+		if contest.has_rating_updated == True: 
+
+			print('Contest ratings have already been updated') 
+			return display_leaderboard(request) 
+
+
+		current_time = datetime.datetime.now(pytz.timezone('UTC')) 
+
+		# Append to active contests 
+
+		time_difference = (contest.time - current_time).total_seconds() 
+		time_difference /= 60 
+		time_difference *= -1
+
+		if time_difference <= 2000: 
+
+			response.update({'success': 'false', 'message': 'Contest is still going on'})
+			return JsonResponse(response) 
+
+		# Fetch the leaderboard 
+
+		contest_users = [] 
+		users = users_in_contest(contest) 
+
+		for user in users: 
+
+			user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
+
+			correct_answers = 0 
+			time_taken = 0 
+
+			for submission in user_submissions: 
+
+				given_answer = submission.answer.lower() 
+				correct_answer = submission.question.answer.lower() 
+
+				if is_correct(submission, submission.question): 
+
+					correct_answers += 1 
+					time_taken += submission.time_taken 
+
+
+			contest_user = ContestUser(user.username, correct_answers, time_taken) 
+			contest_users.append(contest_user) 
+
+		# Sort the submissions
+
+		contest_users = sorted(sorted(contest_users, key = lambda x: x.time_taken), key = lambda x: x.correct_answers, reverse = True)  
+		rankings = []
+		rank = 1
+		correct_answer_array = []
+		rating_array = []
+		volatility_array = []
+		question_ratings = [] 
+		no_of_contests_played = [] 
+
+		# Fetch question levels 
+
+		questions = QuizQuestion.objects.filter(contest = contest) 
+		question_score = [0] * len(list(QuizQuestion.objects.filter(contest = contest)))
+		differential_score_array = [] 
+
+		i = 0 
+
+		for user in contest_users: 
+
+			rankings.append(rank) 
+			print(user.username, user.correct_answers, user.time_taken) 
+			rank = rank + 1
+			correct_answer_array.append(user.correct_answers)
+			rating_array.append(Profile.objects.get(user__username = user.username).rating) 
+			volatility_array.append(Profile.objects.get(user__username = user.username).volatility)
+			no_of_contests_played.append(Profile.objects.get(user__username = user.username).no_of_contests_played)  
+
+			i = 0
+			for question in list(QuizQuestion.objects.filter(contest = contest)): 
+
+				try:
+
+					submission = Submission.objects.get(user__username = user.username, question = question) 
+
+					if is_correct(submission, question): 
+
+						question_score[i] += 1 
+
+					i += 1
+
+				except Submission.DoesNotExist:
+
+					print('Submission does not exist') 
+
+		# Updating differential score 
+		for user in contest_users:
+
+			differential_score = 0 
+			i = 0
+
+			for question in list(QuizQuestion.objects.filter(contest = contest)): 
+
+				try: 
+				
+					submission = Submission.objects.get(user__username = user.username, question = question) 
+
+					if is_correct(submission, question): 
+
+						differential_score += (1 - (question_score[i] / len(contest_users)))
+
+					i += 1
+
+				except Submission.DoesNotExist: 
+
+					print('Submission does not exist')  
+
+			differential_score_array.append(differential_score) 
+
+		new_rating, new_volatility = update_rating(rating_array, volatility_array, rankings, correct_answer_array, len(contest_users), no_of_contests_played) 
+
+		i = 0 
+		delta = 0 
+		sum_of_old_rating = 0 
+		sum_of_new_rating = 0 
+		rated_users = [] 
+
+		for user in contest_users: 
+
+			print('Old rating: ', Profile.objects.get(user__username = user.username).rating) 
+
+			sum_of_old_rating += Profile.objects.get(user__username = user.username).rating
+
+			print('Rank: ', rankings[i]) 
+			print('Differential score: ', differential_score_array[i])
+			print('New rating: ', (new_rating[i]))# + differential_score_array[i]))
+			print('Old volatility: ', Profile.objects.get(user__username = user.username).volatility) 
+			print('New volatility: ', new_volatility[i])
+			print('Contest played: ', no_of_contests_played[i])
+
+			delta += (new_rating[i]) - Profile.objects.get(user__username = user.username).rating
+
+
+			# Updating rating 
+			user_profile = Profile.objects.get(user__username = user.username)
+			user_profile.rating = new_rating[i]# + differential_score_array[i]
+			user_profile.volatility = new_volatility[i] 
+			user_profile.save() 
+	
+			rated_user = RatingUser(user.username, rankings[i], user.correct_answers, rating_array[i], new_rating[i]) 
+			rated_users.append(rated_user) 
+
+			try: 
+
+				rating_history = RatingHistory.objects.get(contest = contest, user__username = user.username) 
+				rating_history.rating = new_rating[i]
+				rating_history.save() 
+
+			except RatingHistory.DoesNotExist: 
+				
+				user_object = User.objects.get(username = user.username) 
+				rating_history = RatingHistory(contest = contest, user = user_object, rating = new_rating[i]) 
+				rating_history.save() 
+			
+			i += 1
+		
+		for user in contest_users: 
+
+			user_profile = Profile.objects.get(user__username = user.username)
+			#user_profile.rating -= (delta/len(contest_users))
+			sum_of_new_rating += user_profile.rating 
+			#user_profile.save() 
+		
+		#print('Net change in rating: ', delta) 
+		
+		response.update({'success' : 'true'})
+		response.update({'users' : rated_users})
+		response.update({'contest': contest})
+
+		# Updating the contest
+		contest.has_rating_updated = True
+		contest.save() 
+
+		print('Sum of ratings before contest: ', sum_of_old_rating) 
+		print('Sum of ratings after contest: ', sum_of_new_rating) 
+		print('Average rating (Old): ', sum_of_old_rating / (len(contest_users))) 
+		print('Average rating (New): ', sum_of_new_rating / (len(contest_users)))
+
+		print('Old rating \t New rating') 
+
+		i = 0 
+
+		for user in contest_users: 
+
+			user_profile = Profile.objects.get(user__username = user.username) 
+			print(rating_array[i], '\t', user_profile.rating)
+			i += 1
+
+		return render(request, 'quiz_updated_ratings.html', response) 
+
+	else: 
+
+		return JsonResponse(response) 
