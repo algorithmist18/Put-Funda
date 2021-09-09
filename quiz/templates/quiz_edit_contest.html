@@ -78,7 +78,13 @@
 
 					Time: <br><br><input id = "time" type = "time" name = "time" required/><br><br>
 
-					<span id = "confirm-date" style = "font-size: 12px;"></span></p>
+					<span id = "confirm-date" style = "font-size: 12px;"></span></p><br>
+
+					<b>Seconds per question:</b> <br><br><input id="number" name="seconds-per-question" value="{{contest.time_per_question}}"/><br><br>
+
+					<b>Valid for (minutes):</b> <br><br><input id="number" name="valid-for" value="{{contest.valid_for}}" min="30" /><br><br>
+
+					<span style="font-size: 12px;">1 day: 1440 mins</span><br><br>
 
 					<input type = "submit" name = "Schedule"/><br><br>
 

@@ -91,11 +91,11 @@ def homepage(request):
 
 		print(time_difference) 
 
-		if time_difference >= 0 and time_difference <= 2000 and question_count >= 10: 
+		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 10: 
 
 			active_contests.append(contest) 
 
-		elif time_difference >= 0 and time_difference > 2000 and question_count >= 10: 
+		elif time_difference >= 0 and time_difference > contest.valid_for and question_count >= 10: 
 
 			past_contests.append(contest) 
 	
@@ -237,10 +237,10 @@ def schedule_quiz(request):
 		date = request.POST.get('date') 
 		time = request.POST.get('time') 
 		genre = request.POST.get('genre') 
+		valid_for = request.POST.get('valid-for') 
+		time_per_question = request.POST.get('seconds-per-question') 
 
 		contestTime = date + ' ' + time + ':00'
-
-		print(contestTime) 
 
 		# Check whether date and time is valid
 
@@ -253,7 +253,7 @@ def schedule_quiz(request):
 
 		# Save contest 
 
-		contest = Contest(host = user, genre = genre, time = date + ' ' + time) 
+		contest = Contest(host = user, genre = genre, time = date + ' ' + time, valid_for = int(valid_for), time_per_question = int(time_per_question)) 
 		contest.save() 
 		contest_id = contest.id 
 
@@ -504,13 +504,17 @@ def edit_contest(request):
 		genre = request.POST.get('genre') 
 		time = request.POST.get('time') 
 		date = request.POST.get('date') 
+		valid_for = request.POST.get('valid-for') 
+		time_per_question = request.POST.get('seconds-per-question')
 
 		# TODO: Check if timings clash
 
 		# Edit operation 
 
 		contest.genre = genre
-		contest.time = date + ' ' +  time  
+		contest.time = date + ' ' +  time 
+		contest.valid_for = int(valid_for) 
+		contest.time_per_question = request.POST.get('seconds-per-question')
 
 		# Save edits 
 
@@ -793,7 +797,8 @@ def play_contest(request):
 
 			args['contest_id'] = contest_id
 			args['question_id'] = question_id
-
+			args['contest'] = contest 
+			
 			questions = QuizQuestion.objects.filter(contest = contest_id)
 
 			args['no_of_questions'] = len(questions)
@@ -927,7 +932,7 @@ def update_ratings(request):
 		time_difference /= 60 
 		time_difference *= -1
 
-		if time_difference <= 2000: 
+		if time_difference <= contest.valid_for: 
 
 			response.update({'success': 'false', 'message': 'Contest is still going on'})
 			return JsonResponse(response) 

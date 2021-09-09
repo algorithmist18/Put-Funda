@@ -38,10 +38,12 @@
 
 	<script type="text/javascript">
 
-		// Function to countdown till 24 seconds 
+		// Function to countdown 
 		
 		var currentDate = new Date(); 
 		var currentTime = $('#timer').html(); 
+		var timeLimitStr = "{{contest.time_per_question}}"; 
+		var timeLimit = Number(timeLimitStr); 
 
 		function setTime()
 		{
@@ -67,7 +69,7 @@
 
 			// Go to next question if timer exceeded 
 
-			if(currentTime == 36)
+			if(currentTime == timeLimit)
 			{
 				console.log('Time limit exceeded'); 
 

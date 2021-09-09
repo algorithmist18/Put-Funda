@@ -147,6 +147,9 @@
 
 	<script type = "text/javascript">
 
+		var timeTillContestValidStr = "{{contest.valid_for}}";
+		var timeTillContestValid = Number(timeTillContestValidStr); 
+
 		// Function to fix standard time 
 
 		function toJSTime(contestTime)
@@ -286,10 +289,7 @@
 
 		var minutes = Math.floor((distance / 1000) / 60);
 
-		console.log('Minutes passed');
-		console.log(minutes);  
-
-		if(minutes > 20000)
+		if(minutes > timeTillContestValid)
 		{
 			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
 		}
