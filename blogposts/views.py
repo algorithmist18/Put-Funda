@@ -98,7 +98,7 @@ def show_post(request):
 	author = request.GET.get('user')
 	post_title = request.GET.get('post') 
 	preview = request.GET.get('preview')
-
+	noOfComments = 0 
 	posts = Post.objects.all().filter(title = post_title)
 	user = User.objects.get(username = author)
 
@@ -108,11 +108,11 @@ def show_post(request):
 
 		if post.preview == preview: 
 
+			noOfComments = PostComment.objects.all().filter(post = post).count() 
+
 			break
 
 	args = {} 
-
-	noOfComments = PostComment.objects.all().filter(post = post).count() 
 
 	if request.method == 'POST': 
 

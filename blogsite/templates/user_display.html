@@ -29,6 +29,7 @@
 				<p id = "username" > {{user.username}} </p>
 				<p id = "name"> {{user.first_name}} {{user.last_name}} </p>
 				<p id = "loc" style = "font-size: 12px;"> {{user.profile.location}} </p>
+				<p style = "font-size: 13px;"><span id="rating-label">Rating:&nbsp;</span><span id="rating">{{user.profile.rating}}</span></p>
 				<br><br>
 				<p id = "numberOfQuestions" style = "font-size: 12px;"> Number of questions: {{no_of_questions}} </p>
 				<br><br><br>
@@ -115,5 +116,15 @@
 		</div>
 	{% endfor %}
 	</div>
+
+	<script type="text/javascript">
+			
+		var ratingElem = document.getElementById("rating"); 
+
+		let rating = Number(ratingElem.innerHTML);
+
+		ratingElem.innerHTML = rating.toFixed(0); 
+
+	</script>
 
 {% endblock %}
