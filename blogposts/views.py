@@ -101,6 +101,7 @@ def show_post(request):
 	noOfComments = 0 
 	posts = Post.objects.all().filter(title = post_title)
 	user = User.objects.get(username = author)
+	blog_post = None
 
 	print(author, user.username) 
 
@@ -108,6 +109,7 @@ def show_post(request):
 
 		if post.preview == preview: 
 
+			blog_post = post
 			noOfComments = PostComment.objects.all().filter(post = post).count() 
 
 			break
@@ -165,7 +167,7 @@ def show_post(request):
 
 	else:
 
-		return render(request, 'blog_show.html', {'post' : post, 'author' : user, 'commentCount' : noOfComments})
+		return render(request, 'blog_show.html', {'post' : blog_post, 'author' : user, 'commentCount' : noOfComments})
 
 @login_required
 def edit_post(request): 
