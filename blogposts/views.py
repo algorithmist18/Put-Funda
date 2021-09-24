@@ -94,27 +94,11 @@ def display(request):
 def show_post(request):
 
 	# Display single post 
-
-	author = request.GET.get('user')
-	post_title = request.GET.get('post') 
-	preview = request.GET.get('preview')
-	noOfComments = 0 
-	posts = Post.objects.all().filter(title = post_title)
-	user = User.objects.get(username = author)
-	blog_post = None
-
-	print(author, user.username) 
-
-	for post in posts: 
-
-		if post.preview == preview: 
-
-			blog_post = post
-			noOfComments = PostComment.objects.all().filter(post = post).count() 
-
-			break
-
+	
+	user = request.user 
+	
 	args = {} 
+	args['user'] = user 
 
 	if request.method == 'POST': 
 
@@ -167,7 +151,14 @@ def show_post(request):
 
 	else:
 
-		return render(request, 'blog_show.html', {'post' : blog_post, 'author' : user, 'commentCount' : noOfComments})
+		blog_id = request.GET.get('id')
+		noOfComments = 0 
+		blog_post = Post.objects.all().get(id = blog_id) 
+		author = blog_post.author 
+
+		noOfComments = PostComment.objects.all().filter(post = blog_post).count() 
+
+		return render(request, 'blog_show.html', {'post' : blog_post, 'user': user, 'author' : author, 'commentCount' : noOfComments})
 
 @login_required
 def edit_post(request): 

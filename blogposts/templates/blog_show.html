@@ -46,7 +46,7 @@
 
 			<!-- Block to display comments --> 
 
-			<form method = "POST" action = "{% url 'show_post' %}?user={{post.author}}&post={{post.title}}">
+			<form method = "POST" action = "{% url 'show_post' %}?user={{post.author}}&id={{post.id}}">
 					
 				{% csrf_token %}
 				

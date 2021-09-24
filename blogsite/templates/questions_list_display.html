@@ -234,7 +234,7 @@
 			{% for blog in blogs %}
 
 				<p>
-					<a class = "blog-title" href = "blogposts/show_post?user={{user.username}}&post={{blog.title}}">{{blog.title}}</a><br>
+					<a class = "blog-title" href = "blogposts/show_post?id={{blog.id}}">{{blog.title}}</a><br>
 					<span style = "margin-left: 15px;">by {{blog.author}}</span>
 				</p>
 
