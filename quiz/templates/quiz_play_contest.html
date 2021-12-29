@@ -5,41 +5,42 @@
 	<!-- Display question --> 
 
 	<div id = "contest">
-
 		<form method = "post" action = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}">
-
 			{% csrf_token %}
-
-			<p style = "margin-left: 20px; margin-top: 20px;">{{question.question}}</p>
-
-			<input style = "float: right;" id = "time_taken" type = "hidden" name = "time_taken" value = "0" /> 
-
 			{% if question.image %}
-
-			<div id = "image-holder">
-
-				<img name = "question-image" src = "{{question.image.url}}" width = "300" height = "200" /> 
-
-			</div>
-
+				<div id="question-image-holder">
+					<div id = "question-holder">
+						<p style = "margin-left: 20px; margin-top: 20px; 
+						margin-right: 15px;">{{question.question}}</p>
+					</div>
+					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/> 		
+					<div id = "image-holder" style="float: right; width: 25%; margin-right: 15px">
+						<img id = "img" name = "question-image" src = "{{question.image.url}}" /> 
+					</div>
+				</div>
+			{% else %} 
+				<div id="question-image-holder">
+					<div id = "question-holder-full" style=" margin-left: 5px; margin-right: 5px;">
+						<p style = "margin-left: 20px; margin-top: 20px; margin-right: 15px;">{{question.question}}</p>
+					</div>
+					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/>
+				</div>
 			{% endif %}
-
-			<input style = "margin-left: 20px; margin-top: 20px;" type = "text" id = "option" name = "answer" />
-
-			<input style = "margin-left: 20px; margin-top: 20px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /> 
-
+			<br><br><br>
+			<center>
+				<div id="bottom-div" style="margin-bottom: 5px">
+					<p><span style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "timer">0</span> 
+					<input style = "margin-left: 20px; margin-top: 20px;" type = "text" id = "option" name = "answer" />
+					<input style = "margin-left: 20px; margin-top: 20px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /></p>
+				</div>
+			</center>
 		</form>
-
-		<p style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "timer">0</p> 
-
 	</div>
 
 	<!-- JavaScript code to handle timer -->
 
 	<script type="text/javascript">
 
-		// Function to countdown 
-		
 		var currentDate = new Date(); 
 		var currentTime = $('#timer').html(); 
 		var timeLimitStr = "{{contest.time_per_question}}"; 
@@ -50,36 +51,26 @@
 			currentTime = Number(currentTime) + 1;
 			
 			// Method to detect page has been refreshed or not 
-
-			console.info(performance.navigation.type); 
-
 			if(performance.navigation.type == performance.navigation.TYPE_RELOAD)
 			{
 				// Page has been refreshed 
-
 				currentTime = localStorage.storedTime; 
 			}
 
 			// Set time
-
 			localStorage.storedTime = currentTime;  
 
 			$('#timer').html(currentTime);
 			$('#time_taken').val(currentTime.toString(10)); 
 
 			// Go to next question if timer exceeded 
-
 			if(currentTime == timeLimit)
 			{
-				console.log('Time limit exceeded'); 
-
 				// Create a POST request and send it to server 
-
 				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'}; 
 				const URL = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}"; 
 
 				// Redirecting with a form submission
-				
 				var form = document.createElement('form'); 
 
 				document.body.appendChild(form); 
@@ -99,9 +90,7 @@
 				}
 
 				localStorage.storedTime = 0; 
-
 				form.submit();
-
 				return; 
 			} 
 
@@ -110,27 +99,21 @@
 		function countdownBegin()
 		{
 			// Do a GET request here
-
 			setInterval(setTime, 1000);
 		}
 
 		
-		// Clear cache on submit 
-		
+		// Clear cache on submit 		
 		$('#submit-button').click(function()
 		{
 			// Clear storage time for next question 
-
 			var newDate = new Date(); 
-
 			$('#time_taken').val(newDate - currentDate); 
-
 			localStorage.storedTime = 0; 
 
 		});
 		
 		// Entry point 
-
 		$(document).ready(countdownBegin);  
 
 		// Load time on load 

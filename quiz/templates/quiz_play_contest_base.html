@@ -2,22 +2,23 @@
 
 <style type="text/css">
 
-	#nav
-	{
+	#nav {
+
 		background-color: #34495E;
 		color: white;
 	}
 
-	#logout-button
-	{
+	#logout-button {
+	
 		float: right;
 		margin-right: 20px;
 	}
 
-	#contest
-	{
-		margin-left: 300px;
-		width: 800px;
+	#contest {
+
+		margin-left: 200px;
+		margin-right: 200px;
+		width: 900px;
 		height: 300px;
 		border-width: 1px;
 		border-color: gray; 
@@ -25,15 +26,31 @@
 		border-style: solid;
 	}
 
-	#image-holder
-	{
+	#image-holder {
+
 		float: right;
-		margin-right: 10px;
 		margin-top: 10px;
 		margin-bottom: 7px;
-		border-color: gray;
-		border-style: solid; 
-		border-width: 1px;
+	}
+
+	#img {
+
+		width: 220px;
+		height: 170px;
+	}
+
+	#question-holder {
+
+		float: left; 
+		width: 70%; 
+		margin-left: 5px;
+	}
+
+	#question-holder-full {
+
+		margin-left: 5px;
+		margin-right: 5px;
+		margin-top: 5px;
 	}
 
 </style>
@@ -46,21 +63,16 @@
 	
 	<body>
 		
-		<!-- Latest compiled and minified CSS -->
-		
+		<!-- Latest compiled and minified CSS -->	
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
 		<!-- jQuery library -->
-		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 		<!-- Latest compiled JavaScript -->
-		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-	
 		{% block content %}
-
 		{% endblock %} 
 
 	</body>

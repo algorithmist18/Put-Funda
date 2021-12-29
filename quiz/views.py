@@ -752,11 +752,17 @@ def play_contest(request):
 		question_id = request.GET.get('question_id') 
 		time_taken = request.POST.get('time_taken') 
 
-		time_taken = int(time_taken) / 1000
+		# Pre-process incoming data
 
 		if answer == None: 
 
 			answer = "" 
+
+		if time_taken == None: 
+
+			time_taken = 0
+
+		time_taken = int(time_taken) / 1000
 
 		# Fetch question 
 
@@ -770,7 +776,8 @@ def play_contest(request):
 
 			# Create submission object 
 
-			submission = Submission(user = user, question = question, answer = answer, time_taken = time_taken) 
+			submission = Submission(user = user, question = question, 
+			answer = answer, time_taken = time_taken) 
 			submission.save() 
 
 		# Route to next question 
