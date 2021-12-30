@@ -61,7 +61,8 @@ urlpatterns = [
     path('quiz/leaderboard', quiz_views.display_leaderboard, name = 'leaderboard'),
     path('quiz/edit_contest', quiz_views.edit_contest, name = 'edit_contest'),
     path('quiz/date-check', quiz_views.is_valid_date, name = 'is_valid_date'),
-    path('quiz/updaterating', quiz_views.update_ratings, name = 'update_rating') 
+    path('quiz/updaterating', quiz_views.update_ratings, name = 'update_rating'),
+    path('quiz/restorerating', quiz_views.restore_ratings, name='restore_rating') 
 ]
 
 if settings.DEBUG: 

@@ -42,4 +42,13 @@ class RatingHistory(models.Model):
 
 	user = models.ForeignKey(User, on_delete = models.CASCADE) 
 	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
-	rating = models.FloatField(default = 1500, blank = True, null = True) 
+	rating_before_contest = models.FloatField(default=1500, blank=True, null=True)
+	rating = models.FloatField(default=1500, blank=True, null=True) 
+
+class Leaderboard(models.Model): 
+
+	rank = models.IntegerField(default=0, blank=True, null=True) 
+	user = models.ForeignKey(User, on_delete = models.CASCADE) 
+	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
+	correct_answers = models.IntegerField(default=0, blank=True, null=True) 
+	time_taken = models.FloatField(default=0.00, blank=True, null=True) 

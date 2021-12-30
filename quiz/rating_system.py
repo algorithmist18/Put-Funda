@@ -82,8 +82,7 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 	rating_avg = 0 
 	i = 0 
 
-	for rating in rating_array: 
-
+	for rating in rating_array:
 		rating_avg += rating_array[i] 
 
 	rating_avg /= no_of_players
@@ -92,7 +91,6 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 	for i in range(no_of_players): 
 
 		expected_rank = 1.0
-		#expected_correct_answers = expected_correct_answers_array[i] 
 		actual_rank = ranking[i] 
 		actual_correct_answers = correct_answers[i] 
 		rms_mean = 0
@@ -107,9 +105,6 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 
 				volatility_sum += volatility_array[j] ** 2
 				rms_mean += (rating_array[j] - rating_avg) ** 2
-
-				print('Elo probability of player A:', rating_array[i], 'and player B:', rating_array[j], 'is', elo_question_probability(rating_array[i], 
-				rating_array[j], volatility_array[i], volatility_array[j])) 
 	
 		print('Expected rank: ', expected_rank) 
 	
@@ -122,18 +117,11 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 		volatility_sum += volatility_array[i] ** 2
 		rms_mean += (rating_array[i] - rating_avg) ** 2
 
-
 		actual_performance = ((actual_rank_ratio))
 		expected_performance = ((expected_rank_ratio)) 
 
-
 		rating_weight = ((0.4 * no_of_contest_played[i] + (0.2)) / ((0.7 * no_of_contest_played[i]) + (0.6)))
 		volatility_weight = ((0.5 * no_of_contest_played[i] + (0.8)) / ((no_of_contest_played[i]) + (0.6)))
-
-		#competition_factor = (rating_avg / rating_array[i]) * 100
-		#competition_factor /= no_of_players
-		#competition_factor += (rms_mean) / (no_of_players - 1)
-		#competition_factor = competition_factor ** 0.5
 
 		print(rating_weight, volatility_weight, actual_performance, expected_performance) 
 
@@ -145,7 +133,6 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 		new_volatility[i] += (volatility_array[i] * volatility_array[i])  
 		new_volatility[i] /= (volatility_weight + 1.1)
 		new_volatility[i] = (new_volatility[i] ** 0.5)
-
 
 	# Return new set of question_rating
 	return new_rating, new_volatility

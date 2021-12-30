@@ -24,6 +24,15 @@
 		
 	</nav>	
 
+		{% if request.user.username == 'coder' %}
+			<center>
+			<p>
+				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button" style="font-size: 12px;">Update ratings</a>
+				<a href = "{% url 'restore_rating' %}?contest_id={{contest.id}}" id = "restore-rating-button" style="font-size: 12px;">Restore ratings</a>
+			</p>
+			</center>
+		{% endif %}
+
 		{% if show_questions == 'YES' %}
 
 		<center>

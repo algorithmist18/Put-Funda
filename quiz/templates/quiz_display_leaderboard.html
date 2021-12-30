@@ -18,14 +18,11 @@
 			<!-- Button to update rating --> 
 
 			{% if request.user.username == 'Avinash' %}
-		<!--
-			<form name = "rating_form" method = "POST" action = "{% url 'update_rating' %}">
-				{% csrf_token %}
-				<input type = "hidden" name="contest_id" value = "{{contest.id}}">
-				
-			</form>
-		-->
-			<p><a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button">Update ratings</a></p>
+
+			<p>
+				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button">Update ratings</a>
+				<a href = "{% url 'restore_rating' %}?contest_id={{contest.id}}" id = "restore-rating-button">Restore ratings</a>
+			</p>
 
 			{% endif %}
 
