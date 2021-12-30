@@ -126,40 +126,32 @@ def homepage(request):
 	return render(request, 'quiz_homepage.html', args) 
 
 # Method to add a question 
-
 def add_question(question, contest, answer, image, second_answer, third_answer): 
 
-	quiz_question = QuizQuestion(question = question, answer = answer, contest = contest, image = image, second_answer = second_answer, third_answer = third_answer)     
-
+	quiz_question = QuizQuestion(question = question, answer = answer, contest = contest, 
+	image = image, second_answer = second_answer, third_answer = third_answer)     
 	quiz_question.save() 
-
 	return quiz_question, 'OK' 
 
 # Method to compare date  
-
 def time_diff(contestTime, contest_id):
 
 	# Fetch timezones
-
 	utc_tz = pytz.timezone('UTC') 
 	local_tz = pytz.timezone('Asia/Kolkata')
 
 	# Contest time is string 
-
 	contestTime = local_tz.localize(datetime.datetime.strptime(contestTime, '%Y-%m-%d %H:%M:%S'))
 	currentTime = datetime.datetime.now(local_tz) 
 
 	# Fetch contests ahead of time 
-
 	contests = Contest.objects.filter(time__gt = currentTime) 
 
 	# Initialize variables 
-
 	validDate = 'YES' 
 	message = 'Time is valid'
 
 	# Check whether contest is in the past 
-
 	if contestTime < currentTime: 
 
 		validDate = 'NO' 
@@ -168,7 +160,6 @@ def time_diff(contestTime, contest_id):
 		return validDate, message 
 
 	# Check if contest time is clashing with other contests 
-
 	for contest in contests:
 
 		distance = (contest.time - contestTime).total_seconds()
@@ -176,7 +167,6 @@ def time_diff(contestTime, contest_id):
 		print(contest.time, contestTime) 
 	
 		if distance < 0: 
-
 			distance *= -1 
 
 		distance_in_minutes = (distance/60) 
@@ -186,12 +176,10 @@ def time_diff(contestTime, contest_id):
 			if contest.id is not contest_id: 
 
 				validDate = 'NO' 
-				message = 'Time is clashing. Choose another time.' 
-				
+				message = 'Time is clashing. Choose another time.' 	
 				return validDate, message
 
 	# All OK 
-
 	return validDate, message
 
 # Method to check date validation 
@@ -199,12 +187,10 @@ def time_diff(contestTime, contest_id):
 def is_valid_date(request):
 
 	# Fetch request data 
-
 	user = request.user 
 	contest_id = request.GET.get('contest_id') 
 
 	# Initialize response 
-
 	response = {} 
 
 	if request.method == 'GET': 
@@ -213,7 +199,6 @@ def is_valid_date(request):
 		contestTime += ':00'
 
 		validDate, message = time_diff(contestTime = contestTime, contest_id = contest_id)  
-
 		response['validDate'] = validDate
 		response['message'] = message 
 
@@ -224,7 +209,6 @@ def is_valid_date(request):
 		return JsonResponse('') 
 
 # Method to schedule a Quiz 
-
 @login_required
 def schedule_quiz(request): 
 
@@ -233,7 +217,6 @@ def schedule_quiz(request):
 	if request.method == 'POST': 
 
 		# Redirect to adding questions page 
-
 		date = request.POST.get('date') 
 		time = request.POST.get('time') 
 		genre = request.POST.get('genre') 
@@ -243,7 +226,6 @@ def schedule_quiz(request):
 		contestTime = date + ' ' + time + ':00'
 
 		# Check whether date and time is valid
-
 		validDate, message = time_diff(contestTime, contest_id = 0) 
 
 		if validDate == 'NO': 
@@ -268,30 +250,23 @@ def schedule_quiz(request):
 def is_valid_contest(contest): 
 
 	questions = QuizQuestion.objects.filter(contest = contest) 
-
 	no_of_questions = len(questions) 
 
 	if no_of_questions < 10: 
-
 		return 'INVALID_LESSQUESTIONS'
-
+	
 	return 'OK'
 
 # Method to add questions to a contest 
-
 @login_required
 def create_contest(request): 
 
 	# Getting user and contest ID 
-
 	user = request.user 
-
 	contest_id = request.GET.get('contest_id') 
 
 	# DB call to fetch contest 
-
 	args = {'user' : user, 'id' : contest_id} 
-
 	contest = Contest.objects.get(id = contest_id) 
 
 	if request.method == 'POST': 
@@ -301,23 +276,19 @@ def create_contest(request):
 		if action == 'Add question': 
 
 			# Add question 
-
 			question = request.POST.get('question') 
 
 			# Fetcing answer from request data  
-
 			answer = request.POST.get('answer') 
 			second_answer = request.POST.get('second_answer')
 			third_answer = request.POST.get('third_answer') 
 
 			# Fetching image from request data 
-
 			image = request.FILES.get('image')
 
 			if image is not None: 
 
 				# Assign image to profile 
-
 				file_storage = FileSystemStorage() 
 				filename = file_storage.save(image.name, image) 
 				file_url = file_storage.url(filename) 
@@ -333,13 +304,9 @@ def create_contest(request):
 			msg = is_valid_contest(contest) 
 
 			if msg == 'OK': 
-
 				return redirect('quiz_home') 
-
-			else: 
-			
+			else: 	
 				return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg))
-
 
 			return HttpResponseRedirect('contest?contest_id={}&message={}'.format(contest_id, msg)) 
 
@@ -348,20 +315,9 @@ def create_contest(request):
 		message = request.GET.get('message') 
 
 		if message is not None:
-
 			args.update({'message' : message})
 		
 		msg = is_valid_contest(contest) 
-
-		'''
-		if msg == 'OK': 
-
-			return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
-
-		else: 
-
-			return render(request, 'quiz_contest_base.html', args) 
-		'''
 
 		return render(request, 'quiz_contest_base.html', args) 
 
@@ -848,6 +804,7 @@ def display_leaderboard(request):
 
 		if len(leaderboard_entry) == 1: 
 
+			print('Reading data straight from table') 
 			contest_user = ContestUser(user.username, leaderboard_entry[0].correct_answers, 
 			leaderboard_entry[0].time_taken) 
 			contest_users.append(contest_user) 
@@ -869,6 +826,7 @@ def display_leaderboard(request):
 		else: 
 
 			# This code will run only once
+			print('About to calculate user performance')
 			user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
 
 			correct_answers = 0 
