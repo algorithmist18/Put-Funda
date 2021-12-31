@@ -905,7 +905,7 @@ def update_ratings(request):
 			print('Contest ratings have already been updated') 
 			return display_leaderboard(request) 
 
-		if request.user.username != 'coder': 
+		if request.user.username != 'Avinash': 
 
 			return display_leaderboard(request) 
 
