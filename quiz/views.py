@@ -1137,7 +1137,8 @@ def add_player_to_leaderboard(user, contest):
 			time_taken += submission.time_taken 
 
 	print(user.username, contest.id, correct_answers, time_taken) 
-	leaderboard_entry = Leaderboard(contest=contest, user=user, correct_answers=correct_answers, time_taken=time_taken) 
+	leaderboard_entry = Leaderboard(contest=contest, user=user, 
+	correct_answers=correct_answers, time_taken=time_taken) 
 	leaderboard_entry.save() 
 
 # Method to restore ratings for this contest 
