@@ -9,15 +9,10 @@
 	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </a>
 
 	  	<span>
-
-  			<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
-	  			
+  			<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>	
   			<a style = "color: white; font-size: 12px;" id = "quiz-button" class = "navbar-brand" href = "{% url 'quiz_home' %}"> Quiz </a>
-
 	  		<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
-	  			
 	  		<a style = "color: white; font-size: 12px;" id = "blog-button" class = "navbar-brand" href = "{% url 'blog_home' %}"> Blogs </a>
-
   		</span>
 	  		
 	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>  	
@@ -110,7 +105,9 @@
 									<th>Correct answer</th>
 
 									<th>Points given</th> 
-								
+				
+									<th>Fraction of people answering correctly</th>
+				
 								</tr>
 
 							</thead>
@@ -118,15 +115,11 @@
 							{% for sub in submission %}
 
 								<tr>
-				 
 				  					<td id = "question-row">{{sub.0}}</td>
-				 
 				  					<td id = "your-answer">{{sub.1}}</td>
-				 
 				  					<td id = "correct-answer">{{sub.2}}</td>
-
 				  					<td id = "points">{{sub.3}}</td>
-				 
+				  					<td class = "accuracy">{{sub.4}} / {{sub.5}}</td>
 				   				</tr>
 
 							{% endfor %}
@@ -239,7 +232,6 @@
 			contestTime = toJSTime(contestTime); 
 
 			// Designing the countdown timer 
-
 			var x = setInterval(function()
 			{
 				var currentTime = new Date().getTime(); 
@@ -247,24 +239,20 @@
 				var distance = contestTime - currentTime;
 
 				// Extract days, hours, minutes and seconds 
-
 				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
 				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
 				// Display the result  
-
 				if(distance <= 0)
 				{
 					// Go to contest
-
-					 $("<p> Play contest <a onclick = 'newWindow()'> here. </a> </p>").replaceAll("#contest-show"); 
+					$("<p> Play contest <a onclick = 'newWindow()'> here. </a> </p>").replaceAll("#contest-show"); 
 				}
 				else
 				{
 					// Show waiting time 
-
 					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's'); 
 				}
 

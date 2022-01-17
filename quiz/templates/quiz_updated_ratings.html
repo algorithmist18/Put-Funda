@@ -120,9 +120,7 @@
 		for(i=0; i<timeTaken.length; i++)
 		{
 			var time = Number(timeTaken[i].innerHTML);
-
 			time = time.toFixed(3);
-
 			timeTaken[i].innerHTML = time;   
 		}
 
@@ -185,14 +183,6 @@
 		})
 
 		function updateRating() {
-
-			/*
-			console.log("Inside updateRating()"); 
-
-			var response = document.forms['rating_form'].submit(); 
-
-			console.log(response);
-			*/
 
 			var contestId = "{{contest.id}}"; 
 
