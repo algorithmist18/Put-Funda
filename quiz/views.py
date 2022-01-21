@@ -1077,6 +1077,7 @@ def restore_ratings(request):
 		contest = Contest.objects.get(id=contest_id) 
 		contest.has_rating_updated = False
 		contest.save()
+		
 		# For every user on the leaderboard, update profile
 		leaderboard = list(Leaderboard.objects.filter(contest=contest)) 
 
@@ -1094,6 +1095,33 @@ def restore_ratings(request):
 
 		return display_leaderboard(request) 
 
+"""
+	Method to view question analytics
+"""
+@login_required
+def view_question_analytics(request): 
+
+	if request.method == 'GET': 
+
+		contest_id = int(request.GET.get('contest_id'))
+		contest = Contest.objects.get(id=contest_id)
+		question_list = QuizQuestion.objects.filter(contest=contest) 
+
+		response = {} 
+		question_stats = [] 
+
+		for question in question_list: 
+
+			correct_subs, total_subs = fetch_question_attempts_accuracy(question) 
+			question_stats.append([question, correct_subs, total_subs])
+
+		response['question_stats'] = question_stats
+
+		return render(request, 'quiz_view_analytics.html', response)
+
+	else:
+
+		return display_leaderboard(request) 
 
 # Method to fetch question data (how many questions answered) 
 def fetch_question_attempts_accuracy(question): 

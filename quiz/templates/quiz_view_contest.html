@@ -31,11 +31,28 @@
 		{% if show_questions == 'YES' %}
 
 		<center>
-
-			<p style = "font-size: 12px;"> Edit the contest <a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}"> here. </a></p>
-
-			<p style = "font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
-
+			<p>
+				<span style = "font-size: 12px;">
+					Edit the contest
+					<a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}">
+						here
+					</a>
+				</span> 
+				|
+				<span style = "font-size: 12px;">
+					Check the leaderboard
+					<a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}">
+						here
+					</a>
+				</span>
+				|
+				<span style = "font-size: 12px;">
+					View response details
+					<a href = "{% url 'question_analytics' %}?contest_id={{contest.id}}">
+						here
+					</a>
+				</span>
+			</p>
 		</center>
 
 		<div id = "quiz-contest">
@@ -49,9 +66,7 @@
 					{% if question.image %}
 
 						<div id = "image-holder">
-
 							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image.url}}">
-
 						</div>
 
 					{% endif %}

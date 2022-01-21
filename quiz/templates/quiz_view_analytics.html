@@ -1,0 +1,40 @@
+{% extends 'quiz_homepage_base.html' %}
+
+{% block content %}
+
+<!-- Navigation bar --> 
+
+<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	<div>
+		<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+			<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+		</div>
+	</nav>
+
+	<center>
+		<div id="question-analytics-holder">
+
+			<table class = "table" style = "width: 1000px; font-size: 12px;">
+				
+				<thead>
+					<tr>
+						<th>Question</th>
+						<th>Answer</th>
+						<th>Fraction of people answering correctly</th>
+					</tr>
+				</thead>
+
+				{% for stat in question_stats %}
+
+				<tr>
+					<td id = "question">{{stat.0.question}}</td>
+					<td id = "answer">{{stat.0.answer}}</td>
+					<td id = "accuracy">{{stat.1}} / {{stat.2}}</td>
+				</tr>
+
+				{% endfor %}
+
+			</table>
+		</div>
+	</center>
+	{% endblock %}
