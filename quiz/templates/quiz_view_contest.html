@@ -313,7 +313,7 @@
 
 		if(minutes > timeTillContestValid)
 		{
-			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a> | <span style = 'font-size: 12px;'>View response details <a href = '{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></span></p>")
+			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a><span style = 'font-size: 12px;'>View response details <a href = '{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></span></p>")
 			.replaceAll("#contest-show"); 
 		}
 
