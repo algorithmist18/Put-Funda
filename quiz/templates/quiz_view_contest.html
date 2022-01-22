@@ -22,7 +22,8 @@
 		{% if request.user.username == 'Avinash' %}
 			<center>
 			<p>
-				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button" style="font-size: 12px;">Update ratings</a>
+				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button" style="font-size: 12px;">Update ratings</a> 
+				|
 				<a href = "{% url 'restore_rating' %}?contest_id={{contest.id}}" id = "restore-rating-button" style="font-size: 12px;">Restore ratings</a>
 			</p>
 			</center>
@@ -99,7 +100,7 @@
 
 			<center>
 
-				{% if played_contest == 'YES' %}
+					{% if played_contest == 'YES' %}
 
 						<p style = "margin-top: 30px;"> You have already played the contest. </p> 
 						<p style = "font-size: 12px;"> You have answered {{correct_answers}} questions correctly in {{time_taken}} seconds. </p> 
@@ -312,7 +313,8 @@
 
 		if(minutes > timeTillContestValid)
 		{
-			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a></p>").replaceAll("#contest-show"); 
+			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a> | <span style = 'font-size: 12px;'>View response details <a href = '{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></span></p>")
+			.replaceAll("#contest-show"); 
 		}
 
 		let params = new URLSearchParams(location.search); 
