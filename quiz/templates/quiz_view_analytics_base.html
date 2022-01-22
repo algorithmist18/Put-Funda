@@ -2,15 +2,35 @@
 
 <style type="text/css">
 
-	#question
-	{
-		width: 950px;
+	* {
+
+		font-family: 'Inter', sans-serif;
+	}
+
+	#question {
+
+		width: 550px;
 		margin-left: 20px;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+
+	#answer {
+
 		margin-top: 20px;
-		border-width: 1px;
-		border-color: gray; 
-		border-style: solid;
-		background-color: #FBFCFC;
+		margin-bottom: 20px;
+	}
+
+	#analytics-table {
+
+		width: 800px;
+		font-size: 12px;
+	}
+
+	#logout-button {
+
+		float: right;
+		margin-right: 10px;
 	}
 	
 </style>
@@ -31,6 +51,10 @@
 
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
 		{% block content %}{% endblock %} 
 

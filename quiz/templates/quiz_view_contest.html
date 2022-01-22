@@ -101,9 +101,20 @@
 
 				{% if played_contest == 'YES' %}
 
-						<p style = "margin-top: 30px;"> You have already played the contest. </p> <br>
-
+						<p style = "margin-top: 30px;"> You have already played the contest. </p> 
 						<p style = "font-size: 12px;"> You have answered {{correct_answers}} questions correctly in {{time_taken}} seconds. </p> 
+						<p style = "font-size: 12px;"> 
+							<span>
+								View leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here </a>
+							</span>
+							|
+							<span style = "font-size: 12px;">
+								View response details
+								<a href = "{% url 'question_analytics' %}?contest_id={{contest.id}}">
+									here
+								</a>
+							</span>
+						</p>
 
 						<!--Display submissions and correct answer--> 
 
@@ -140,8 +151,6 @@
 							{% endfor %}
 						
 						</table>
-
-					<p style = "font-size: 12px;"> Check the leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a></p>
 					
 					{% else %}
 

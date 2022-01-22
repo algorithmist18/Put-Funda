@@ -1,75 +1,85 @@
 <!DOCTYPE html>
 <style type="text/css">
 
-	#nav
-	{
-		background-color: #34495E;
-		color: white;
-	}
+* {
 
-	#logout-button
-	{
-		float: right;
-		margin-right: 20px;
-	}
+	font-family: 'Inter', sans-serif;
+}
 
-	#user-display
-	{
-		font-size: 15px;
-	}
+#nav
+{
+	background-color: #34495E;
+	color: white;
+}
 
-	#home-block
-	{
-		margin-top: 100px;
-		width: 800px;
-		background-color:#F4F6F7;
-		color: black;
-	}
+#logout-button
+{
+	float: right;
+	margin-right: 20px;
+}
 
-	#form-field 
-	{
-		width: 300%;
-	}
+#user-display
+{
+	font-size: 15px;
+}
 
-	#form-content
-	{
-		width: 100%;
-	}
+#home-block
+{
+	margin-top: 100px;
+	width: 800px;
+	background-color:#F4F6F7;
+	color: black;
+}
 
-	#header
-	{
-		font-size: 12px;
-		color: white;
-		margin-left: 570px;
-	}
+#form-field 
+{
+	width: 300%;
+}
+
+#form-content
+{
+	width: 100%;
+}
+
+#header
+{
+	font-size: 12px;
+	color: white;
+	margin-left: 570px;
+}
 
 </style>
 
 <html>
 
-	<head>
+<head>
 
-		<title> Qnondrum | Write a post </title>
+	<title> Qnondrum | Write a post </title>
 
-	</head>
+</head>
 
-	<body>
+<body>
 
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-		<!--Script for using CKEditor-->
-		<script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
+	<!--Script for using CKEditor-->
+	<script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
 
-		{% block content %}
-		{% endblock %}
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+	{% block content %}
+	{% endblock %}
 	
-	</body>
+</body>
 
 </html>

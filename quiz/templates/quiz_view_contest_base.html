@@ -2,6 +2,11 @@
 
 <style type="text/css">
 
+	* {
+
+		font-family: 'Inter', sans-serif;
+	}
+
 	#nav
 	{
 		background-color: #34495E;
@@ -74,36 +79,33 @@
 		width: 600px;
 	}
 
+
+
 </style>
 
 <html>
 	
 	<head>
-
 		<title> Qnondrum | View contest </title>
-		
 		<meta http-equiv="refresh" content="50"/>
-
 	</head>
 	
 	<body>
 		
 		<!-- Latest compiled and minified CSS -->
-		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
 		<!-- jQuery library -->
-		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 		<!-- Latest compiled JavaScript -->
-		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-	
-		{% block content %}
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
-		{% endblock %} 
+		{% block content %} {% endblock %} 
 
 	</body>
 </html>
