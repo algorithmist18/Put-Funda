@@ -57,7 +57,7 @@
 <html>
 	
 	<head>
-		<title> Qnondrum | Create contest </title>
+		<title>Put Funda | Create contest</title>
 	</head>
 	
 	<body  style="font-family: 'Open Sans', sans-serif;">
@@ -144,44 +144,31 @@
 		</center>
 
 		<div id = "guidelines">
-
 			<br><h4 style = "margin-left: 15px;">A few pointers</h4>
 			<br>
 			<ul>
 				<li class = "pointers">Your contest will not be public unless there are 10 questions.</li><br>
-				<li class = "pointers">Please keep the questions short, participants have 20 seconds to read, process and answer.</li><br>
-				<li class = "pointers">Since the answers are processed by a system, 'put funda' questions might be difficult to assess. Do ask accordingly.</li><br>
+				<li class = "pointers">Please keep the questions short, participants will have a short time to read, process and answer.</li><br>
+				<li class = "pointers">Since the answers are processed by a system, descriptive questions might be difficult to assess (yes, I am aware of the irony). Do ask accordingly.</li><br>
 				<li class = "pointers">If acronyms will do, (ISRO, FA) then do mention it in the question itself.</li><br>
 				<li class = "pointers">The second and third answers are when there more than one acceptable answers, these are not mandatory.</li>
 			</ul>
-
 		</div>	
-
 	</body>
-
 </html>
 
 <script type="text/javascript">
 	
 	// Access message parameter and display a success message 
-
 	let params = new URLSearchParams(location.search); 
-
 	var message = params.get('message') 
 
 	if(message == 'OK')
 	{
-		// Display success message 
-
-		console.log('s'); 
-
 		$("<div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your question was added.</div>").insertBefore("#quiz-question");
-
 	}
 	else if(message == 'INVALID_LESSQUESTIONS')
 	{
 		$("<div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Not finished yet!</strong> You still have some questions left to add.</div>").insertBefore("#quiz-question");
 	}
-	
-
 </script>

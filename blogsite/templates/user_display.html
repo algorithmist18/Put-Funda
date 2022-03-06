@@ -5,12 +5,8 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
-
       // Load the Visualization API and the corechart package  
-
       google.load("visualization", "1", {packages:["corechart"]});
-
- 	
  	</script>
 
 	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
@@ -20,7 +16,6 @@
 	</nav>
 
 	<!-- Block to display user details -->
-
 	<div id = "user-profile">
 
 		<div id = "user-details" style = "float: left;">
@@ -120,11 +115,8 @@
 	<script type="text/javascript">
 			
 		var ratingElem = document.getElementById("rating"); 
-
 		let rating = Number(ratingElem.innerHTML);
-
 		ratingElem.innerHTML = rating.toFixed(0); 
 
 	</script>
-
 {% endblock %}

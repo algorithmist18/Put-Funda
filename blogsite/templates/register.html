@@ -99,11 +99,9 @@
 <script type="text/javascript">
 	
 	// AJAX call to validate username
-
 	function validateUsername()
 	{
 		// Make AJAX call 
-
 		var username = $('#username').val(); 
 		var usernameConfirm = $('#confirm-username'); 
 
@@ -116,24 +114,20 @@
 				if(data['valid'] == 'YES')
 				{
 					// Unique username 
-
 					usernameConfirm.html(data['message']); 
 				}
 				else
 				{
 					// A username already exists 
-
 					usernameConfirm.html(data['message']); 
 				}
 			});		
 	}
 
 	// AJAX call to validate email 
-
 	function validateEmail()
 	{
 		// Make AJAX call here 
-
 		var email = $('#email').val(); 
 		var emailConfirm = $('#confirm-email'); 
 
@@ -146,13 +140,11 @@
 				if(data['valid'] == 'YES')
 				{
 					// Unique email address 
-
 					emailConfirm.html(data['message']);
 				}
 				else
 				{
 					// Email ID already taken 
-
 					emailConfirm.html(data['message']); 
 				}
 			}
@@ -160,9 +152,7 @@
 	} 
 
 	// AJAX call to validate other things 
-
 	// Function to track changes 
-
 	function onChange()
 	{
 		$('#username').change(function() {validateUsername()});
