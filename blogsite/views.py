@@ -20,19 +20,101 @@ from datetime import timezone
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
+from quiz.models import Contest, QuizQuestion
+import pytz
 
 # Create your views here.
 
 def index(request):
-	return render(request, 'index.html')
+
+	response = {} 
+	current_time = datetime.datetime.now(pytz.timezone('UTC')) 
+	new_contests = [] 
+	active_contests = [] 
+
+	# Fetch blogs 
+	blog_posts = Post.objects.all().order_by("-time")[0:10]
+
+	# Fetch leaderboard
+	users = Profile.objects.all().order_by("-rating")[0:10] 
+
+	# Fetch upcoming contests 
+	for contest in Contest.objects.all().order_by('-time'):
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+
+		# Append to active contests 
+		time_difference = (contest.time - current_time).total_seconds() 
+		time_difference /= 60 
+		time_difference *= -1
+
+		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 0: 
+			active_contests.append(contest) 
+
+
+	for contest in Contest.objects.all().filter(time__gt = current_time).order_by('time'): 
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+		
+		if question_count >= 0: 
+			new_contests.append(contest)
+
+
+	# Fetch latest two past contests 
+	response['blog_posts'] = blog_posts
+	response['users'] = users 
+	response['new_contests'] = new_contests
+	response['active_contests'] = active_contests
+
+	return render(request, 'index.html', response)
 
 @login_required
 def homepage(request):
 
 	username = request.GET.get('user')
+	user = request.user
+	response = {} 
+	current_time = datetime.datetime.now(pytz.timezone('UTC')) 
+	new_contests = [] 
+	active_contests = [] 
+
+	# Fetch blogs 
+	blog_posts = Post.objects.all().order_by("-time")[0:10]
+
+	# Fetch leaderboard
+	users = Profile.objects.all().order_by("-rating")[0:10] 
+
+	# Fetch upcoming contests 
+	for contest in Contest.objects.all().order_by('-time'):
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+
+		# Append to active contests 
+		time_difference = (contest.time - current_time).total_seconds() 
+		time_difference /= 60 
+		time_difference *= -1
+
+		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 0: 
+			active_contests.append(contest) 
+
+
+	for contest in Contest.objects.all().filter(time__gt = current_time).order_by('time'): 
+
+		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+		
+		if question_count >= 0: 
+			new_contests.append(contest)
+
+
+	# Fetch latest two past contests 
+	response['blog_posts'] = blog_posts
+	response['users'] = users 
+	response['new_contests'] = new_contests
+	response['active_contests'] = active_contests
+	response['user'] = user
 
 	if username == None:
-		return render(request, 'homepage.html', {'user' : request.user})
+		return render(request, 'homepage.html', response) 
 		
 # Function for registering a user
 
@@ -232,7 +314,7 @@ def delete_question(request):
 		return render(request, 'question_delete.html', args) 
 
 # Method to find all distinct genres from list 
-
+@login_required
 def find_all_genres(genre_list): 
 
 	genre_set = [] 

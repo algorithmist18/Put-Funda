@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <style type="text/css">
+
+	* {
+
+		font-family: 'Inter', sans-serif;
+	}
 	
 	#nav {
 
@@ -30,6 +35,49 @@
 		font-family: 'Open Sans', sans-serif;
 	}
 
+	#parent-blog-posts {
+
+		float: left;
+		box-sizing: content-box;
+		width: 300px;
+		float: left;
+	}
+
+	#blog-post {
+
+		float: left;
+		box-sizing: content-box;
+		width: 600px;
+		margin-left: 10px;
+		margin-top: 10px;
+		margin-right: 10px;
+	}
+
+	#blog-post-lg {
+
+		width: 300px;
+	}
+
+	#content {
+
+		position: relative;
+		width: 700px;
+		margin-left: 10px;
+	}
+
+	#leaderboard {
+
+		margin-top: 50px;
+		font-size: 13px;
+		width: 300px;
+		float: right;
+		border-width:  1px;
+		border-style: solid;
+		border-color: lightgray;
+		margin-left: 40%;
+		margin-right: 10px;
+	}
+
 </style>
 
 <html>
@@ -48,8 +96,9 @@
 		<!-- Latest compiled JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 
 		{% block content %}
 		{% endblock %}

@@ -22,95 +22,93 @@
 
 </style>
 <html>
-	<head>
-		<title>Put Funda | Updated ratings </title>
-	</head>
-	<body style="font-family: 'Open Sans', sans-serif;">
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<head>
+	<title>Put Funda | Updated ratings </title>
+</head>
+<body style="font-family: 'Open Sans', sans-serif;">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-		<!--Google font-->
-			
-		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-			
+	<!--Google font-->
 
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-		<!-- Navigation bar --> 
-		
+	<!-- Navigation bar --> 
+
 	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-	</nav>
+		<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+			<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+		</nav>
 
-	<!-- Display leaderboard here -->
+		<!-- Display leaderboard here -->
 
-	<center>
+		<center>
 
-		<div id = "leaderboard">
+			<div id = "leaderboard">
 
-			<!-- Button to update rating --> 
+				<!-- Button to update rating --> 
 
-			{% if request.user.username == 'Avinash' %}
-	
+				{% if request.user.username == 'Avinash' %}
+
 				<p><a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}" id = "update-rating-button">Leaderboard</a></p>
 
-			{% endif %}
+				{% endif %}
 
-			<!-- Leaderboard -->
+				<!-- Leaderboard -->
 
-			<table id = "table-leaderboard" class = "table" style="width:800px;">
-				
-				<thead>
-				  
-				  <tr>
-					
-				   <th>Username</th>	   
-				   
-				   <th>Rank</th>
-			
-				   <th>Old rating </th>
-				  	
-				   <th> New rating </th>
+				<table id = "table-leaderboard" class = "table" style="width:800px;">
 
-				   	<th>Difference</th>
-				  
-				  </tr>
+					<thead>
 
-				</thead>
+						<tr>
 
-				{% for u in users %}
-				  
-				  <tr>
+							<th>Username</th>	   
 
-				  	<td class = "rank-row">{{u.rank}}</td>
-				 
-				  	<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
-				 
-				  	<td class = "old-rating">{{u.old_rating}}</td>
+							<th>Rank</th>
 
-				  	<td class = "new-rating">{{u.new_rating}} </td>
+							<th>Old rating </th>
 
-				  	<td class = "diff"></td>
-				 
-				   </tr>
-			
-				{% endfor %}
-			
-			</table>
+							<th> New rating </th>
 
-		</div>
+							<th>Difference</th>
 
-	</center>
+						</tr>
 
-	<script type="text/javascript">
-		
+					</thead>
+
+					{% for u in users %}
+
+					<tr>
+
+						<td class = "rank-row">{{u.rank}}</td>
+
+						<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
+
+						<td class = "old-rating">{{u.old_rating}}</td>
+
+						<td class = "new-rating">{{u.new_rating}} </td>
+
+						<td class = "diff"></td>
+
+					</tr>
+
+					{% endfor %}
+
+				</table>
+
+			</div>
+
+		</center>
+
+		<script type="text/javascript">
+
 		// Round up the time-taken 
 
 		var timeTaken = document.getElementsByClassName("time-taken"); 
@@ -200,5 +198,5 @@
 
 	</script>
 	
-	</body>
+</body>
 </html>
