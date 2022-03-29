@@ -3,113 +3,116 @@
 <nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
 	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
 		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-	</div>
 </nav>
-{% if user.is_authenticated %}
-<div id="bottom-section">
-	<div id="container">
-		<div id="leaderboard">
-			{% if active_contests is not None > 0 %}
-			<div class="contests">
-				<p><h4 style="margin-top: 5px; margin-left: 10px">Active Contests</h4></p>
+	{% if user.is_authenticated %}
+	<div id="navbar-container">
+		<div id="navbar-links">
+			<p id="links"><span><a href="">Home</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/quiz">Contests</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/blogposts">Blogposts</a></span></p>
+		</div>
+	</div>
+	<div id="bottom-section" class="clearfix">
+		<div id="container" class="clearfix">
+			<div id="parent-blog-posts">
+				{% for post in blog_posts %}
+				<div id="blog-post">
+
+					<br><h3 align="left" style="margin-left: 10px;"> {{post.title}} </h3>
+					<p style = "margin-left: 10px; font-size: 13px;"> 
+
+						by 
+
+						{% if post.anon %}
+						<strong>anonymous</strong>
+						{% else %}
+						<a href="/users?user={{post.author.username}}"> {{post.author}} </a>
+						{% endif %}
+
+						at {{post.time}} 
+					</p>
+					<br>
+					<div id="content">
+						<p>{{post.content | safe}}</p>
+					</div>
+					<div id="like-comments">	
+						<div id="like">
+							<p id="like-txt">{{post.likes}}</p>
+						</div>
+						<div id="comments">
+						</div>
+					</div>
+					<br>
+				</div>
+				{% endfor %}
+			</div> <!-- Blog posts -->
+			<div id="leaderboard">
+				{% if active_contests is not None > 0 %}
+				<div class="contests">
+					<p><h4 style="margin-top: 5px; margin-left: 10px">Active Contests</h4></p>
+					<table class="table table-bordered table-striped" style="font-size: 13px;">
+						<thead>
+							<tr>	
+								<th scope="col">#</th>
+								<th scope="col">Username</th>
+								<th scope="col">Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for contest in new_contests %}
+							<tr>
+								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
+								<td><a class="username" href="">{{contest.host.username}}</a></td>
+								<td>{{contest.time}}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<br>
+				{% endif %}
+				{% if new_contests is not None %}
+				<div class="contests">
+					<p><h4 style="margin-top: 5px; margin-left: 10px">Upcoming Contests</h4></p>
+					<table class="table table-bordered table-striped" style="font-size: 13px;">
+						<thead>
+							<tr>	
+								<th scope="col">#</th>
+								<th scope="col">Username</th>
+								<th scope="col">Time</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for contest in new_contests %}
+							<tr>
+								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
+								<td><a class="username" href="">{{contest.host.username}}</a></td>
+								<td>{{contest.time}}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<br>
+				{% endif %}
+				<p><h4 style="margin-top: 5px; margin-left: 10px">Leaderboard</h4></p>
 				<table class="table table-bordered table-striped" style="font-size: 13px;">
 					<thead>
-						<tr>	
-							<th scope="col">#</th>
-							<th scope="col">Username</th>
-							<th scope="col">Time</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for contest in new_contests %}
 						<tr>
-							<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-							<td><a class="username" href="">{{contest.host.username}}</a></td>
-							<td>{{contest.time}}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
-			<br>
-			{% endif %}
-			{% if new_contests is not None %}
-			<div class="contests">
-				<p><h4 style="margin-top: 5px; margin-left: 10px">Upcoming Contests</h4></p>
-				<table class="table table-bordered table-striped" style="font-size: 13px;">
-					<thead>
-						<tr>	
-							<th scope="col">#</th>
 							<th scope="col">Username</th>
 							<th scope="col">Rating</th>
 						</tr>
 					</thead>
 					<tbody>
-						{% for contest in new_contests %}
+						{% for user in users %}
 						<tr>
-							<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-							<td><a class="username" href="">{{contest.host.username}}</a></td>
-							<td>{{contest.time}}</td>
+							<td>{{user.user.username}}</td>
+							<td class="rating">{{user.rating}}</td>
 						</tr>
 						{% endfor %}
 					</tbody>
 				</table>
 			</div>
-			<br>
-			{% endif %}
-
-			<p><h4 style="margin-top: 5px; margin-left: 10px">Leaderboard</h4></p>
-			<table class="table table-bordered table-striped" style="font-size: 13px;">
-				<thead>
-					<tr>
-						<th scope="col">Username</th>
-						<th scope="col">Rating</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for user in users %}
-					<tr>
-						<td>{{user.user.username}}</td>
-						<td class="rating">{{user.rating}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		<div id="parent-blog-posts">
-			{% for post in blog_posts %}
-			<div id="blog-post">
-
-				<br><h3 align="left" style="margin-left: 10px;"> {{post.title}} </h3>
-				<p style = "margin-left: 10px; font-size: 13px;"> 
-
-					by 
-
-					{% if post.anon %}
-					<strong>anonymous</strong>
-					{% else %}
-					<a href="/users?user={{post.author.username}}"> {{post.author}} </a>
-					{% endif %}
-
-					at {{post.time}} 
-				</p>
-				<br>
-				<div id="content">
-					<p>{{post.content | safe}}</p>
-				</div>
-				<div id="like-comments">	
-					<div id="like">
-						<p id="like-txt">{{post.likes}}</p>
-					</div>
-					<div id="comments">
-					</div>
-				</div>
-				<br>
-			</div>
-			{% endfor %}
-		</div> <!-- Blog posts -->
-	</div> <!-- Container -->
-</div> <!-- Bottom section -->
+		</div> <!-- Container -->
+	</div> <!-- Bottom section -->
 <!--<span style="margin-right: 10px; font-size: 12px;"><a style="font-size: 12px" href="{% url 'blog_home' %}">Blogs</a></span>
 |
 <span style="margin-right: 10px; font-size: 12px;"><a style="font-size: 12px" href="{% url 'view' %}">Feed</a></span>-->
@@ -128,5 +131,5 @@
 			ratings[i].innerHTML = rating.toFixed(0); 
 		}
 
-</script>
-{% endblock %}
+	</script>
+	{% endblock %}

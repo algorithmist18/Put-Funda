@@ -113,8 +113,7 @@ def homepage(request):
 	response['active_contests'] = active_contests
 	response['user'] = user
 
-	if username == None:
-		return render(request, 'homepage.html', response) 
+	return render(request, 'homepage.html', response)
 		
 # Function for registering a user
 
@@ -135,10 +134,9 @@ def register(request):
 			user = authenticate(username = user.username, password = raw_password)
 			
 			login(request, user)
-			
-			print('Logged in.')
-			
-			return render(request, 'homepage.html', {'user' : user})
+			print('Logged in.')		
+			request.user = user
+			return homepage(request) 
 		
 		else:
 
@@ -151,29 +149,20 @@ def register(request):
 	return render(request, 'register.html', {'form' : form})
 
 # Function for logging in
-
 def login_view(request):
 
 	# Redirecting to homepage if user already authenticated 
-
 	if request.user.is_authenticated:
-
-		return render(request, 'homepage.html', {'user' : request.user})
+		return homepage(request)
 
 	# If not authenticated, authenticate using Django authentication system 
-
 	if request.method == 'POST':
 
 		form = AuthenticationForm(request.POST)
 
 		# Retrieve username and password
-
 		username = request.POST.get('username')
 		passwd = request.POST.get('password')
-
-		# Checking if password is stored in plain text or not 
-
-		print(username, passwd)
 
 		if form.is_valid:
 

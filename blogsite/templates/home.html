@@ -10,20 +10,25 @@
 
 		background-color: #34495E;
 		color: white;
-		font-family: 'Open Sans', sans-serif;
+	}
+
+
+	#container {
+
+		display: flex;
+		margin-left: 15px;
+		margin-right: 15px;
 	}
 
 	#logout-button {
 
 		float: right;
 		margin-right: 20px;
-		font-family: 'Open Sans', sans-serif;
 	}
 
 	#user-display {
 
 		font-size: 15px;
-		font-family: 'Open Sans', sans-serif;
 	}
 
 	#home-block {
@@ -32,30 +37,23 @@
 		width: 800px;
 		background-color:#F4F6F7;
 		color: black;
-		font-family: 'Open Sans', sans-serif;
 	}
 
 	#parent-blog-posts {
 
-		float: left;
-		box-sizing: content-box;
-		width: 300px;
-		float: left;
+		width: 500px;
+		margin-right: 10%;
+		margin-left: 2%;
 	}
 
 	#blog-post {
 
 		float: left;
-		box-sizing: content-box;
 		width: 600px;
+		box-sizing: content-box;
 		margin-left: 10px;
 		margin-top: 10px;
 		margin-right: 10px;
-	}
-
-	#blog-post-lg {
-
-		width: 300px;
 	}
 
 	#content {
@@ -63,6 +61,7 @@
 		position: relative;
 		width: 700px;
 		margin-left: 10px;
+		margin-right: 10px;
 	}
 
 	#leaderboard {
@@ -71,38 +70,141 @@
 		font-size: 13px;
 		width: 300px;
 		float: right;
-		border-width:  1px;
-		border-style: solid;
-		border-color: lightgray;
-		margin-left: 40%;
+		margin-left: 50px;
 		margin-right: 10px;
+	}
+
+	@media only screen and (min-width: 480px) {
+
+		#parent-blog-posts {
+
+			width: 50%;
+		}
+
+		#blog-post {
+
+			width: 100%;
+		}
+
+		#leaderboard {
+
+			width: 28%;
+		}
+
+		#content {
+
+			width: 100%;
+		}
+
+		.contests {
+
+			width: 100%;
+		}
+
+		#navbar-container {
+
+			margin-left: 15px;
+		}
+	}
+
+	@media only screen and (min-width: 1025px) {
+
+		#parent-blog-posts {
+
+			width: 60%;
+		}
+
+		#blog-post {
+
+			width: 100%;
+		}
+
+		#leaderboard {
+
+			width: 28%;
+		}
+
+		#content {
+
+			width: 100%;
+		}
+
+		.contests {
+
+			width: 100%;
+		}
+
+		#navbar-container {
+
+			margin-left: 2%;
+		}
+	}
+
+	#navbar-links {
+
+		border-style: solid;
+		border-color: black;
+		display: contents;
+		font-size: 15px;
+		margin-left: 10px;
+		height: 90px;
+		padding-top: -5px;
+		padding-bottom: 5px;
+	}
+
+	#links {
+
+		margin-top: 0 auto;
+	}
+
+	#navbar-container {
+
+
+		height: 40px;
+		width: 800px;
+		margin-left: 60px;
+	}
+
+	#navbar {
+
+		width: 100%;
+	}
+
+	#links {
+
+		margin-top: 10px;
+	}
+
+	#bottom-section {
+
+		height: 100%;
 	}
 
 </style>
 
 <html>
 
-	<head>
-		<title>Put Funda</title>
-	</head>
+<head>
+	<title>Put Funda</title>
+</head>
+
+<body style="font-family: 'Open Sans', sans-serif;">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+	{% block content %}
+	{% endblock %}
 	
-	<body style="font-family: 'Open Sans', sans-serif;">
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-
-		{% block content %}
-		{% endblock %}
-	
-	</body>
+</body>
 
 </html>
