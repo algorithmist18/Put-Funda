@@ -48,7 +48,7 @@ def index(request):
 		time_difference /= 60 
 		time_difference *= -1
 
-		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 0: 
+		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 10: 
 			active_contests.append(contest) 
 
 
@@ -56,7 +56,7 @@ def index(request):
 
 		question_count = QuizQuestion.objects.filter(contest = contest).count() 
 		
-		if question_count >= 0: 
+		if question_count >= 10: 
 			new_contests.append(contest)
 
 
@@ -94,7 +94,7 @@ def homepage(request):
 		time_difference /= 60 
 		time_difference *= -1
 
-		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 0: 
+		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 10: 
 			active_contests.append(contest) 
 
 
@@ -102,7 +102,7 @@ def homepage(request):
 
 		question_count = QuizQuestion.objects.filter(contest = contest).count() 
 		
-		if question_count >= 0: 
+		if question_count >= 10: 
 			new_contests.append(contest)
 
 

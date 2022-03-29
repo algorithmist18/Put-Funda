@@ -1,212 +1,159 @@
 {% extends 'quiz_homepage_base.html' %}
 
 {% block content %}
-	
-	<!-- Navigation bar --> 
-		
-		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-  			<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-			</div>
-		</nav>
-	
-	{% if user.is_authenticated %}
-	
-		<center>
-			
-			<div id = "welcome-quiz">
 
-				<!-- List of upcoming contests -->
-				
-				<center>
+<!-- Navigation bar --> 
 
-					<!-- List of active contests --> 
+<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	</div>
+</nav>
 
-					<br> 
+{% if user.is_authenticated %}
 
-					<p><strong> List of all active contests: </strong></p>
 
-					<br>
+<div id="container">
+	<div id="leaderboard">
+		{% if active_contests is not None %}
+		<div class="contests">
+			<p><h4 style="margin-top: 5px; margin-left: 10px">Active Contests</h4></p>
+			<table class="table table-bordered table-striped" style="font-size: 13px;">
+				<thead>
+					<tr>	
+						<th scope="col">#</th>
+						<th scope="col">Host</th>
+						<th scope="col">Genre</th>
+						<th scope="col">Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for contest in active_contests %}
+					<tr>
+						<td><a href="/quiz/play_contest?contest_id={{contest.id}}">{{contest.id}}</a></td>
+						<td><a class="username" href="">{{contest.host.username}}</a></td>
+						<td>{{contest.genre}}</td>
+						<td>{{contest.time}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<br>
+		{% endif %}
+		{% if new_contests is not None %}
+		<div class="contests">
+			<p><h4 style="margin-top: 5px; margin-left: 10px">Upcoming Contests</h4></p>
+			<table class="table table-bordered table-striped" style="font-size: 13px;">
+				<thead>
+					<tr>	
+						<th scope="col">#</th>
+						<th scope="col">Host</th>
+						<th scope="col">Genre</th>
+						<th scope="col">Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for contest in new_contests %}
+					<tr>
+						<td><a href="/quiz/play_contest?contest_id={{contest.id}}">{{contest.id}}</a></td>
+						<td><a class="username" href="">{{contest.host.username}}</a></td>
+						<td>{{contest.genre}}</td>
+						<td>{{contest.time}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<br>
+		{% endif %}
 
-						{% if active_contests_size == 0 %}
+	</div>
 
-							<p> There are no active contests now. </p>
+	<div id = "past-contests">
 
-						{% else %}
+		<!-- List of past contests --> 
+		<p><h4 style="margin-top: 5px; margin-left: 10px">Past Contests</h4></p>
+		<br>
+		<table class="table table-bordered table-striped" style="font-size: 13px;">
 
-						<table class = "table">
-							
-							<center>
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Genre</th>
+					<th scope="col">Host</th>
+					<th scope="col">Time</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for contest in past_contests %}
+				<tr>
+					<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
+					<td>{{contest.genre}}</td>
+					<td><a href = "{% url 'show_user' %}?user={{contest.host.username}}">{{contest.host}}</a></td>
+					<td>{{contest.time}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<br> 
+	</div>
 
-								<thead>
-								    <tr>
-								      <th scope="col">Contest ID</th>
-								      <th scope="col">Genre</th>
-								      <th scope="col">Host</th>
-								      <th scope="col">Time</th>
-								    </tr>
-								</thead>
+	<div id = "user-contests">
 
-								<tbody>
-									
-									{% for contest in active_contests %}
+			<!-- List of past contests --> 
+		<p><h4 style="margin-top: 5px; margin-left: 10px">User Contests</h4></p>
+		<br>
+		<table class="table table-bordered table-striped" style="font-size: 13px;">
 
-									<tr>
-										<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-										<td>{{contest.genre}}</td>
-										<td><a href = "{% url 'show_user' %}?user={{contest.host.username}}">{{contest.host}}</a></td>
-										<td>{{contest.time}}</td>
-									</tr>
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Genre</th>
+					<th scope="col">Time</th>
+				</tr>
+			</thead>
 
-									{% endfor %}
-
-								</tbody>
-
-							</center>
-
-						</table>
-
-						{% endif %}
-
-					<br> 
-					
-					<!-- List of upcoming contests --> 
-
-					<p><strong> List of all upcoming contests: </strong> </p>
-
-					<br>
-
-						{% if new_contests_size == 0 %}
-
-							<p> There are no new contests, yet. </p>
-
-						{% else %}
-
-						<table class = "table">
-							
-							<center>
-
-								<thead>
-								    <tr>
-								      <th scope="col">Contest ID</th>
-								      <th scope="col">Genre</th>
-								      <th scope="col">Host</th>
-								      <th scope="col">Time</th>
-								    </tr>
-								</thead>
-
-								<tbody>
-									
-									{% for contest in new_contests %}
-
-									<tr>
-										<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-										<td>{{contest.genre}}</td>
-										<td><a href = "{% url 'show_user' %}?user={{contest.host.username}}">{{contest.host}}</a></td>
-										<td>{{contest.time}}</td>
-									</tr>
-
-									{% endfor %}
-
-								</tbody>
-
-							</center>
-
-						</table>
-
-						{% endif %}
-
-					<br> 
-
-					<!-- List of past contests --> 
-
-					<p><strong> List of past contests: </strong></p>
-
-					<br>
-
-						<table class = "table">
-							
-							<center>
-
-								<thead>
-								    <tr>
-								      <th scope="col">Contest ID</th>
-								      <th scope="col">Genre</th>
-								      <th scope="col">Host</th>
-								      <th scope="col">Time</th>
-								    </tr>
-								</thead>
-
-								<tbody>
-									
-									{% for contest in past_contests %}
-
-									<tr>
-										<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-										<td>{{contest.genre}}</td>
-										<td><a href = "{% url 'show_user' %}?user={{contest.host.username}}">{{contest.host}}</a></td>
-										<td>{{contest.time}}</td>
-									</tr>
-
-									{% endfor %}
-
-								</tbody>
-
-							</center>
-
-						</table>
-
-					<br> 
-
-				</center>
-					
-			</div>
-
-		</center>
-
-			<div id = "user-contests">
-
-				<!--List of your contest--> 
-
-				<br>
-
-				<p> Your contests: </p> 
-
-				<br> 
+			<tbody>
 
 				{% for contest in user_contests %}
 
-					<p> Contest <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}"> {{contest.id}} </a> scheduled at {{ contest.time }} </p>
-	 
+				<tr>
+					<td> <a href = "{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
+					<td>{{contest.genre}}</td>
+					<td>{{contest.time}}</td>
+				</tr>
+
 				{% endfor %}
 
-				<br> 
+			</tbody>
+		</table>
+		<br> 
+	</div>	
+</div>
 
-			</div>	
+<div id = "functions-quiz">
 
-		
-				<div id = "functions-quiz">
+	<!-- Functions of a participant / scheduler --> 
 
-					<!-- Functions of a participant / scheduler --> 
-
-					<p> Schedule a contest <a href = "{% url 'schedule_quiz' %}"> here. </a> </p>
+	<p> Schedule a contest <a href = "{% url 'schedule_quiz' %}"> here. </a> </p>
 
 
-				</div> 
-	
-	{% else %}
-		<p> You are not logged in. </p>
-	{% endif %}
+</div> 
 
-	<script type="text/javascript">
-		
-		function newWindow()
-		{
-			console.log('Control here.'); 
-			window.open("{% url 'view_contest' %}?contest_id={{contest.id}}"); 
-			window.focus(); 
-		}
+{% else %}
+<p> You are not logged in. </p>
+{% endif %}
 
-	</script>
+<script type="text/javascript">
+
+	function newWindow()
+	{
+		console.log('Control here.'); 
+		window.open("{% url 'view_contest' %}?contest_id={{contest.id}}"); 
+		window.focus(); 
+	}
+
+</script>
 
 {% endblock %}
