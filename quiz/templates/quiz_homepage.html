@@ -30,7 +30,7 @@
 				<tbody>
 					{% for contest in active_contests %}
 					<tr>
-						<td><a href="/quiz/play_contest?contest_id={{contest.id}}">{{contest.id}}</a></td>
+						<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
 						<td><a class="username" href="">{{contest.host.username}}</a></td>
 						<td>{{contest.genre}}</td>
 						<td>{{contest.time}}</td>

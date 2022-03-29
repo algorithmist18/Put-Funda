@@ -253,7 +253,7 @@
 						<thead>
 							<tr>	
 								<th scope="col">#</th>
-								<th scope="col">Username</th>
+								<th scope="col">Host</th>
 								<th scope="col">Time</th>
 							</tr>
 						</thead>
@@ -284,7 +284,7 @@
 						<tbody>
 							{% for contest in new_contests %}
 							<tr>
-								<td><a href="/quiz/play_contest?contest_id={{contest.id}}">{{contest.id}}</a></td>
+								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
 								<td><a class="username" href="">{{contest.host.username}}</a></td>
 								<td>{{contest.time}}</td>
 							</tr>
@@ -308,6 +308,26 @@
 						<tr>
 							<td>{{user.user.username}}</td>
 							<td class="rating">{{user.rating}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<br>
+				<p><h4 style="margin-top: 5px; margin-left: 10px">Previous contest leaderboard</h4></p>
+				<table class="table table-bordered table-striped" style="font-size: 13px;">
+					<thead>
+						<tr>
+							<th scope="col">Rank</th>
+							<th scope="col">Player</th>
+							<th scope="col">Correct Answers</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in players %}
+						<tr>
+							<td>{{user.rank}}</td>
+							<td>{{user.user.username}}</td>
+							<td class="rating">{{user.correct_answers}}</td>
 						</tr>
 						{% endfor %}
 					</tbody>

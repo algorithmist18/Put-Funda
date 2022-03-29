@@ -20,7 +20,7 @@ from datetime import timezone
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
-from quiz.models import Contest, QuizQuestion
+from quiz.models import Contest, QuizQuestion, Leaderboard
 import pytz
 
 # Create your views here.
@@ -38,8 +38,13 @@ def index(request):
 	# Fetch leaderboard
 	users = Profile.objects.all().order_by("-rating")[0:10] 
 
+	# Fetch leaderboard of previous contest 
+	previous_contest = Contest.objects.all().filter(time__lt = current_time, has_rating_updated = True).order_by('-time')[:1] 
+	print(previous_contest[0].id)
+	players = list(Leaderboard.objects.all().filter(contest = previous_contest, rank__lt = 11))[:10]
+
 	# Fetch upcoming contests 
-	for contest in Contest.objects.all().order_by('-time'):
+	for contest in Contest.objects.all().order_by("-time"):
 
 		question_count = QuizQuestion.objects.filter(contest = contest).count() 
 
@@ -52,7 +57,7 @@ def index(request):
 			active_contests.append(contest) 
 
 
-	for contest in Contest.objects.all().filter(time__gt = current_time).order_by('time'): 
+	for contest in Contest.objects.all().filter(time__gt = current_time).order_by("time"): 
 
 		question_count = QuizQuestion.objects.filter(contest = contest).count() 
 		
@@ -65,6 +70,7 @@ def index(request):
 	response['users'] = users 
 	response['new_contests'] = new_contests
 	response['active_contests'] = active_contests
+	response['players'] = players
 
 	return render(request, 'index.html', response)
 

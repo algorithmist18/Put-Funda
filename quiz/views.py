@@ -898,7 +898,7 @@ def update_ratings(request):
 			user_from_db = User.objects.get(username=user.username) # This is from user table
 			leaderboard_entry = Leaderboard.objects.get(user=user_from_db, contest=contest)
 
-			if leaderboard_entry.rank is None: 
+			if leaderboard_entry.rank == 0: 
 
 				# Save only when necessary
 				leaderboard_entry.rank = rank
