@@ -157,7 +157,6 @@ def show_post(request):
 		author = blog_post.author 
 
 		noOfComments = PostComment.objects.all().filter(post = blog_post).count() 
-
 		return render(request, 'blog_show.html', {'post' : blog_post, 'user': user, 'author' : author, 'commentCount' : noOfComments})
 
 @login_required
@@ -196,7 +195,7 @@ def edit_post(request):
 			message = 'Blog post updated, successfully.' 
 			print(message) 
 			url = reverse('show_post')
-			return HttpResponseRedirect('{}?user={}&post={}&preview={}'.format(url, author.username, post.title, post.preview)) 
+			return HttpResponseRedirect('{}?id={}'.format(url, author.username, post.title, post.preview)) 
 
 		else: 
 
