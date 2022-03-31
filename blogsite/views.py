@@ -52,6 +52,7 @@ def index(request):
 		time_difference = (contest.time - current_time).total_seconds() 
 		time_difference /= 60 
 		time_difference *= -1
+		print(contest.id, time_difference, contest.valid_for, question_count)
 
 		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 10: 
 			active_contests.append(contest) 
@@ -64,7 +65,7 @@ def index(request):
 		if question_count >= 10: 
 			new_contests.append(contest)
 
-
+	print(active_contests) 
 	# Fetch latest two past contests 
 	response['blog_posts'] = blog_posts
 	response['users'] = users 

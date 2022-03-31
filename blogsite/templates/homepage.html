@@ -57,7 +57,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							{% for contest in new_contests %}
+							{% for contest in active_contests %}
 							<tr>
 								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
 								<td><a class="username" href="">{{contest.host.username}}</a></td>
