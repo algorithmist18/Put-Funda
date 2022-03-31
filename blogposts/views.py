@@ -195,7 +195,7 @@ def edit_post(request):
 			message = 'Blog post updated, successfully.' 
 			print(message) 
 			url = reverse('show_post')
-			return HttpResponseRedirect('{}?id={}'.format(url, author.username, post.title, post.preview)) 
+			return HttpResponseRedirect('{}?id={}'.format(url, post.id)) 
 
 		else: 
 
