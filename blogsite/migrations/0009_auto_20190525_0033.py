@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='question',
-            field=models.TextField(unique=True),
+            field=models.TextField(unique=False),
         ),
     ]
