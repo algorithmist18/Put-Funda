@@ -10,6 +10,13 @@
 			<p id="links"><span><a href="">Home</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/quiz">Contests</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/blogposts">Blogposts</a></span></p>
 		</div>
 	</div>
+
+	{% if not user.profile.email_confirmed %}
+		<center>
+			<p>Please confirm your email <a href="#" onclick="sendActivationMail()">here</a>!</p>
+		</center>
+	{% endif %}
+
 	<div id="bottom-section" class="clearfix">
 		<div id="container" class="clearfix">
 			<div id="parent-blog-posts">
@@ -121,15 +128,27 @@
 {% endif %}
 
 <script type="text/javascript">
-	
-		// Round off rating values
-		var ratings = document.getElementsByClassName("rating"); 
 
-		for(let i=0; i<ratings.length; i++) {
+	// Round off rating values
+	var ratings = document.getElementsByClassName("rating"); 
 
-			let rating = Number(ratings[i].innerHTML); 
-			ratings[i].innerHTML = rating.toFixed(0); 
-		}
+	for(let i=0; i<ratings.length; i++) {
 
-	</script>
-	{% endblock %}
+		let rating = Number(ratings[i].innerHTML); 
+		ratings[i].innerHTML = rating.toFixed(0); 
+	}
+
+	function sendActivationMail() {
+
+		$.get("{% url 'mail_activate' %}", {} , 
+
+			function(data){
+
+				console.log(data['message']);
+			}
+		);
+	}
+
+</script>
+
+{% endblock %}

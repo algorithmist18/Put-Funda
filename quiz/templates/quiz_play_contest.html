@@ -18,6 +18,17 @@
 						<img id = "img" name = "question-image" src = "{{question.image.url}}" /> 
 					</div>
 				</div>
+			{% elif question.image_url %}
+				<div id="question-image-holder">
+					<div id = "question-holder">
+						<p style = "margin-left: 20px; margin-top: 20px; 
+						margin-right: 15px;">{{question.question}}</p>
+					</div>
+					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/> 		
+					<div id = "image-holder" style="float: right; width: 25%; margin-right: 15px">
+						<img id = "img" name = "question-image" src = "{{question.image_url}}" /> 
+					</div>
+				</div>
 			{% else %} 
 				<div id="question-image-holder">
 					<div id = "question-holder-full" style=" margin-left: 5px; margin-right: 5px;">

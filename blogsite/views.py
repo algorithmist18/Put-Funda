@@ -1,6 +1,4 @@
-
-#Importing libraries
-
+# Importing libraries
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import models
@@ -22,9 +20,16 @@ from graphos.renderers.gchart import PieChart
 from django.core.files.storage import FileSystemStorage 
 from quiz.models import Contest, QuizQuestion, Leaderboard
 import pytz
+from .tokens import account_activation_token, password_reset_token
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+from .forms import ResetPasswordForm, ForgotPasswordForm
 
 # Create your views here.
-
 def index(request):
 
 	response = {} 
@@ -122,8 +127,195 @@ def homepage(request):
 
 	return render(request, 'homepage.html', response)
 		
-# Function for registering a user
+# Activating a user 
+def activate(request, uidb64, token): 
 
+	"""Check the activation token sent via mail."""
+	print(uidb64, token) 
+	try:
+		
+		uid = force_text(urlsafe_base64_decode(uidb64))
+		print('UID = ', uid) 
+		user = User.objects.get(pk = uid)
+
+	except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
+		
+		#messages.add_message(request, messages.WARNING, str(e))
+		print('Caught exception') 
+		user = None
+
+	if user is not None and account_activation_token.check_token(user, token):
+		
+		user.profile.email_confirmed = True
+		user.save()
+		login(request, user)  # log the user in
+
+	return redirect('home') 
+
+# Activating a user 
+def allow_reset_password(request, uidb64, token): 
+
+	"""Check the activation token sent via mail."""
+	print(uidb64, token) 
+	try:
+		
+		uid = force_text(urlsafe_base64_decode(uidb64))
+		print('UID = ', uid) 
+		user = User.objects.get(pk = uid)
+
+	except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
+		
+		#messages.add_message(request, messages.WARNING, str(e))
+		print('Caught exception') 
+		user = None
+
+	if user is not None and password_reset_token.check_token(user, token):
+		
+		#user.profile.reset_password = True
+		user.save()
+		login(request, user)  # log the user in
+
+	return redirect('reset') 
+
+# Method to send the activation mail
+def send_activation_mail(request): 
+
+	if request.method == 'GET':
+
+		user = request.user
+		site = get_current_site(request) 
+		email = user.email
+
+		message = render_to_string('activate_account_mail.html', {
+
+			'user': user,
+			'protocol': 'http',
+			'domain': site.domain, 
+			'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+			'token': account_activation_token.make_token(user) 
+		})
+
+		print("Email ID", email)
+		
+		try:
+		
+			send_mail('Confirm your Email ID', message, 'putfundaofficial@gmail.com', [email], html_message = message)
+			return JsonResponse({'message': 'Mail has sent, successfully!'})
+		
+		except:
+		
+			return JsonResponse({'message': 'Mail has been sent, successfully!'})
+
+	else:
+
+		return redirect('home') 
+
+# Method rendering a forgot-password page 
+def forgot_password(request): 
+
+	print('forgot-password')
+	form = ForgotPasswordForm()
+
+	if request.method == 'GET':
+	
+		return render(request, 'forgot-password.html', {'form': form})
+	
+	else:
+
+		email = request.POST.get('email')
+		user_list = list(User.objects.filter(email = email)) 
+		print(user_list)
+		if len(user_list) > 0: 
+
+			user = user_list[0] 
+
+			# Taking the first user
+			if user is not None and user.profile.email_confirmed: 
+
+				# Send mail
+				site = get_current_site(request) 
+				response = send_password_reset_mail(user, site, email)
+				return render(request, 'forgot-password.html', {'message': 'Mail sent successfully!'})
+
+			else:
+
+				return render(request, 'forgot-password.html', {'message': 'Email has not been registered for a valid user'}) 
+
+		else:
+
+			return render(request, 'forgot-password.html', {'message': 'Email has no been registered for a valid user'}) 
+
+	return redirect('home') 
+
+# Method to send password reset mail
+def send_password_reset_mail(user, site, email): 
+
+	if not user.profile.email_confirmed: 
+
+		return render(request, 'forgot-password.html', {'user': user, 'msg': 'Your email is not confirmed, cannot send link!'}) 
+
+	message = render_to_string('reset_password_mail.html', {
+
+		'user': user,
+		'protocol': 'http',
+		'domain': site.domain, 
+		'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+		'token': password_reset_token.make_token(user) 
+	})
+	
+	try: 
+	
+		send_mail('Reset your password', message, 'putfundaofficial@gmail.com', [email], html_message = message)
+		response = {}
+		response['message'] = 'Mail sent successfully!' 
+		return JsonResponse(response)
+	
+	except:
+	
+		response = {}
+		response['message'] = 'There was an error sending the mail.\nPlease try again later.'
+		return JsonResponse(response)
+
+# Method for reseting a password
+def reset_password(request): 
+
+	user = request.user 
+	print(user) 
+
+	if request.method == 'POST': 
+
+		form = ResetPasswordForm(request.POST)
+	
+		if form.is_valid():
+			
+		#	user = form.save() 
+		#	user.refresh_from_db()
+		#	user.save()
+			print(user) 
+			raw_password = form.cleaned_data.get('password2')
+			
+			user.set_password(raw_password)
+			authenticate(username = user.username, password = raw_password)
+			user.save() 
+
+			if user is not None: 
+				
+				#login(request, user)	
+				#print('Logged in.')		
+				request.user = user
+				return redirect('login') 
+			
+			else:
+
+				# TODO: Failure case
+				return redirect('home') 
+
+	else:
+
+		form = ResetPasswordForm()
+		return render(request, 'reset-password.html', {'form': form, 'user': user}) 
+
+# Function for registering a user
 def register(request):
 
 	if request.method == 'POST':
@@ -132,17 +324,33 @@ def register(request):
 	
 		if form.is_valid():
 			
-			user = form.save()
+			user = form.save() 
 			user.refresh_from_db()
-			user.profile.birth_date = form.cleaned_data.get('birth_date')
+	
 			user.save()
 			raw_password = form.cleaned_data.get('password2')
-			user.set_password(raw_password)
-			user = authenticate(username = user.username, password = raw_password)
+			email = form.cleaned_data.get('email_id') 
 			
-			login(request, user)
-			print('Logged in.')		
-			request.user = user
+			if User.objects.filter(email = email).exists():
+
+				error_message = 'Invalid email, already taken'
+				return render(request, 'register.html', {'form': form, 'email_error_message': error_message})
+				
+			user.set_password(raw_password)
+			print(user.username, raw_password) 
+			user = authenticate(username = user.username, password = raw_password)
+
+			if user is not None: 
+				
+				login(request, user)	
+				print('Logged in.')		
+				request.user = user
+			
+			else:
+				
+				print('User is not authenticated') 
+				return render(request, 'register.html', {'form' : form})
+
 			return homepage(request) 
 		
 		else:
@@ -174,33 +382,24 @@ def login_view(request):
 		if form.is_valid:
 
 			# Authenticate the user 
-
 			print('Form is valid') 
 
 			try:
 
 				user = authenticate(username = username, password = passwd)
-
 				login(request, user)
-
 				next_page_url = 'home?username=' + username
-
 				print(next_page_url) 
-
 				return redirect('home')
 
 			except:
 
 				# Authentication error - redirect to login page with message 
-
 				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect'})
 		else:
-
 			print(form.errors)
 	else:
-
 		form = AuthenticationForm()
-
 	return render(request, 'login.html', {'form' : form})
 
 # Function for logging a person out
@@ -261,52 +460,37 @@ def load_comments(request, ques, comments):
 def delete_question(request): 
 
 	# Fetch question and user data
-
 	question_id = request.GET.get('question_id') 
 	author = request.GET.get('user') 
 	user = request.user 
 
 	# Make a DB call 
-
 	question = Question.objects.get(id = question_id) 
 	author = User.objects.get(username = author) 
 
 	# Check if valid request 
-
-	if author != user: 
-
+	if author != user:
 		# Invalid request 
-
 		return HttpResponseRedirect('view') 
 
 	# Valid request 
-
 	if request.method == 'POST': 
-
 		# Check action 
-
 		action = request.POST.get('action') 
 
 		if action == 'Cancel': 
-
 			# Cancel and return to list 
-
 			return HttpResponseRedirect('view') 
 
 		# Delete question 
-
 		question.delete() 
-
 		# Return with message 
-
 		return HttpResponseRedirect('view?message={}'.format('delete_q_success')) 
 
 	else:
 
 		# Update context 
-
 		args = {'user' : user, 'question' : question}  
-
 		return render(request, 'question_delete.html', args) 
 
 # Method to find all distinct genres from list 
@@ -334,7 +518,6 @@ def list_questions(request):
 	blogList = [] 
 
 	# Fetch top rated users 
-
 	top_rated_users = list(Profile.objects.all().order_by('-rating'))  
 	top_rated_user_list = [None] * min(5, len(top_rated_users))
 
@@ -357,7 +540,6 @@ def list_questions(request):
 		show = request.POST.get('show')
 		
 		# Getting details of question in context
-
 		q = request.POST.get('questions')
 		question = Question.objects.filter(question = q)[0]		
 		q_list = Question.objects.all().order_by('-time')
@@ -367,7 +549,6 @@ def list_questions(request):
 			print(element.comments) 
 
 		# Appending the timestamps for each question 
-
 		question_times = {}
 
 		for elem in q_list:
@@ -437,23 +618,18 @@ def list_questions(request):
 		elif act == "Delete": 
 
 			# Delete question 
-			
 			args = {'ques' : question, 'author' : author} 
-
 			# return redirect('delete?q={}')
-
 			return HttpResponseRedirect('delete_feed_question?question_id={}&user={}'.format(question.id, author)) 
 
 		elif act == "Edit": 
 
 			# Edit question 
-
 			return HttpResponseRedirect('edit_feed_question?question_id={}&user={}'.format(question.id, author)) 
 
 		else: 
 
 			# Show answer to the question
-
 			genres = Question.objects.values('title')
 
 			g = request.GET.get('genre')
@@ -481,54 +657,42 @@ def list_questions(request):
 	else:
 
 		# Designing an efficient Questions feed ranking system  
-
 		query = request.GET.get('query')
 
 		if query != None and query != ' ' and query != '':
 
 			# Redirecting to search page
-
 			return HttpResponseRedirect('search?query={}'.format(query))
 
 		else:
 
 			# Fetch all questions and rank them 
-
 			question_list = list(Question.objects.all().order_by('-time'))
 			
 			# Fetch chosen genre from request object  
-
 			genre = request.GET.get('genre')
 		
 			# All the genres of questions 
-			
 			genre_list = list(Question.objects.values('title')) 
 			genre_set = find_all_genres(genre_list) 
 
 			# Dictionary for time elapsed for every question  
-
 			question_times = {}
 
 			for elem in question_list:	
 				question_times.update({elem.question : (current_time - elem.time).total_seconds() / 3600 })
 			
 			# Check if user has clicked on specific genre 
-
 			if genre != None and genre != ' ':
 
 				# Display genre questions 
-
 				list_of_questions = list(Question.objects.filter(title = genre).order_by('-time'))
 				genre_question_times = {} 
-
 				# Update the question times for genre 
-
 				for question in list_of_questions: 
-
 					genre_question_times.update({question.question : (current_time - question.time).total_seconds() / 3600 })
 
 				args = {'q_list' : list_of_questions, 'g_list' : genre_set, 'q_times' : genre_question_times, 'author' : author, 'blogs' : blogList, 'top_rated_users': top_rated_user_list}
-				
 				return render(request, 'question_list_display_genre.html', args)
 
 			else:
@@ -551,15 +715,11 @@ def add_comment(request):
 		comment.save()
 
 		if question.comments == 0: 
-
 			question.comments = Comment.objects.filter(question = question).count() 
-
 		else:
-
 			question.comments = question.comments + 1 
 
 		question.save() 
-
 		print(question.comments) 
 
 # Method to return questions asked by users 
@@ -571,16 +731,13 @@ def questions_by_user(username):
 	questions = Question.objects.filter(author = user).order_by('-time')
 
 	# Create lists of genres and questions 
-
 	genreList = [] 
 	questionList = [] 
 
 	# Append questions and genres 
-
 	for question in questions: 
 
 		genre = question.title 
-
 		questionList.append(question) 
 		genreList.append(genre) 
 
@@ -763,12 +920,10 @@ def show_search(request):
 	query = request.GET.get('query')
 
 	# Defining data to pass to templates
-	
 	question_list = []
 	question_times = {}
 
 	# Searching for data
-
 	questions = Question.objects.all()
 
 	for element in questions:
@@ -781,34 +936,24 @@ def show_search(request):
 		question_times.update({elem.question : (current_time - elem.time).total_seconds() / 3600 })
 
 	# Show search results of questions
-
 	if request.method == 'GET':
-
 		if query != None and query != ' ' and query != '':
-
 			# Redirect to search page
-
 			print('Searching for {}'.format(query))
-
 			return render(request, 'search_results.html', {'q_list' : question_list, 'q_times' : question_times})
 
 		else:
-
 			return render(request, 'search_results.html', {'q_list' : {}, 'q_times' : {}})
-
 	else: 
 
 		# Load/Submit comment or Show the answer
-
 		act = request.POST.get('act')
 		
 		# Getting details of question in context
-
 		q = request.POST.get('questions')
 		question = Question.objects.filter(question = q)[0]
 
 		# Taking action according to act variable
-
 		if act == 'Submit':
 			# Submit comment
 			add_comment(request)
@@ -862,17 +1007,13 @@ def search_users(request):
 def edit_profile(request): 
 
 	# Method for editing and saving the profile 
-
 	username = request.GET.get('user') 
 	user = User.objects.get(username = username)
 	logged_in_user = request.user 
 
 	# Check if user is logged into their own profile 
-
 	if logged_in_user != user: 
-
 		# Redirect to home 
-
 		return HttpResponseRedirect('edit?user={}&msg={}'.format(logged_in_user.username, 'bad_request'))  
 
 
@@ -881,38 +1022,30 @@ def edit_profile(request):
 	if request.method == 'POST': 
 
 		# Save user profile 
-
 		image = request.FILES.get('avatar')
 
 		if image is not None: 
 
 			# Assign image to profile 
-
 			file_storage = FileSystemStorage() 
 			filename = file_storage.save(image.name, image) 
 			file_url = file_storage.url(filename) 
 
 			# Check if image is valid 
-		
 			user.profile.picture = image 
 
 		# Getting POST data 
-
 		location = request.POST.get('location')
 		dateOfBirth = request.POST.get('dateOfBirth')
 
 		# Assign to user profile
-
 		user.profile.location = location 
 
 		if dateOfBirth != '': 
-
 			user.profile.birth_date = dateOfBirth
 
 		# Save profile 
-
 		user.profile.save() 
-
 		message = 'Edits saved successfully.'
 
 		print(message) 
@@ -935,23 +1068,16 @@ def like_question(request):
 		new_like = Like.objects.get_or_create(user = request.user, question = question_object) 
 
 		# Get the number of likes for the question 
-
 		likes = Like.objects.all().filter(question = question_object) 
-
 		print(likes) 
-
 		number_of_likes = len(likes) 
 
 		for like in likes:
-
 			print(like.user.username) 
 
 		question_object.likes = number_of_likes
-
 		question_object.save()  
-
 		print('Number of likes obtained = ', number_of_likes) 
-
 		return HttpResponse(number_of_likes) 
 
 	else:
@@ -963,15 +1089,10 @@ def like_question(request):
 def count_alphabet(token): 
 
 	alpha_count = 0 
-
 	# Check if string has an alphabet 
-
 	for character in token: 
-
 		if character.isalpha(): 
-
 			alpha_count = alpha_count + 1 
-
 	return alpha_count 
 
 # Method to validate a username 
@@ -986,10 +1107,10 @@ def validate_username(request):
 
 		username = request.GET.get('username')
 
-		if count_alphabet(username) == 0: 
+		if len(username) > 20 or count_alphabet(username) == 0: 
 
 			response['valid'] = 'NO'
-			response['message'] = 'Username is not a valid string'
+			response['message'] = 'Username is not valid'
 
 			return JsonResponse(response) 
 
@@ -1024,17 +1145,13 @@ def validate_email(request):
 	# Initialize JSON response 
 
 	response = {} 
-
-	extensions = ['@gmail.com', '@yahoo.co.in', '@yahoo.com', '@rediffmail.com'] 
+	extensions = ['@gmail.com', '@protonmail.com', '@yahoo.co.in', '@yahoo.com', '@rediffmail.com'] 
 
 	if request.method == 'GET': 
 
 		# Extract email ID 
-
 		email = request.GET.get('email') 
-
 		# Check if email string is an email ID or not 
-
 		found = False 
 
 		for extension in extensions: 
@@ -1047,14 +1164,11 @@ def validate_email(request):
 		if found == False:
 
 			# Invalid email ID 
-
 			response['valid'] = 'NO'
 			response['message'] = 'This is not a valid email ID'
-
 			return JsonResponse(response) 
 
 		# Validate string form 
-
 		print(email) 
 
 		try: 
@@ -1064,7 +1178,6 @@ def validate_email(request):
 		except User.DoesNotExist: 
 
 			# Email unique 
-
 			response['valid'] = 'YES' 
 			response['message'] = 'Email ID is valid'
 
@@ -1075,14 +1188,12 @@ def validate_email(request):
 		if noOfUsers == 0: 
 
 			# Unique email ID 
-
 			response['valid'] = 'YES' 
 			response['message'] = 'Email ID is valid'
 
 		else:
 
 			# Email has been taken 
-
 			response['valid'] = 'NO'
 			response['message'] = 'This email ID has been used before'
 

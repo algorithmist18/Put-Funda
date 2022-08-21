@@ -31,22 +31,27 @@
 			    </ul>
 
 		    </div>	
-		  	
-		  
 		    {% endif %}
-
 		</center>
 
-		<div id = "left-part">
-			
+		<div>
+			<br><br>
 		    <div class="form-group">
 		      <p><label>Username:</label></p>
-		      <p><span>{{form.username}}</span><br> <p><small id = "username-helptext" class="form-text text-muted">{{form.username.help_text}}</small></p>
-		      <span id = "confirm-username" style = "font-size: 12px;"></span></p>
-		      <p><small class="form-text text-muted">{{form.username.help_text}}</small></p>
+		      <p><input type="text" name="username" id="username"><br> <p><small id = "username-helptext" class="form-text text-muted">Required. 15 characters or fewer. Letters, digits and @/./+/-/_ only. Cannot be changed. Use wisely.</small></p>
+		      <span id = "confirm-username" style = "font-size: 12px;" class="form-text text-muted"></span></p>
+		      
+		    </div>
+
+		    <div class="form-group">
+		      <p><label>Email:</label></p>
+		      <p><input type="email" name="email" id="email"><br>
+		      	 <span id = "confirm-email" style = "font-size: 12px;" class="form-text text-muted">
+		      	 	{{email_error_message}} 
+		      	 </span></p>	      
 		    </div>
 		
-		    <div class="form-group">
+		  <span>  <div class="form-group">
 		      <p><label>First name:</label></p>
 		      <p id = "first-name"><span>{{form.first_name}}</span></p>
 		    </div>
@@ -54,25 +59,8 @@
 		    <div class="form-group">
 		      <p><label>Last name:</label></p>
 		      <p>{{form.last_name}}</p>
-		    </div>
+		    </div> </span>
 
-		    <br>
-		
-		     <div class="form-group">
-		      <p><label for="exampleInputEmail1">DOB:</label><p>
-		      <p id = "birth-date"><span>{{form.birth_date}}</span></p>
-		      <p><small class="form-text text-muted">{{form.birth_date.help_text}}</small></p>
-		    </div>
-		
-		</div>
-
-		<div id = "right-part">
-		
-		    <div class="form-group">
-		      <p><label for="exampleInputEmail1">City:</label></p>
-		      <p><span>{{form.location}}</span></p>
-		    </div>
-		 
 		    <div class="form-group">
 		      <p><label for="exampleInputEmail1">Password:</label></p>
 		      <p><span>{{form.password1}}</span></p>
@@ -84,14 +72,12 @@
 		      <p>{{form.password2}}</p>
 		      <p><small class="form-text text-muted">{{form.password2.help_text}}</small></p>
 		    </div>
-		
+
+		    <center>
+	  	 		<input style = "font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
+	  		</center>
 		</div>
   	
-  		<center>
-  	 		<input style = "margin-top: 400px; font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
-  		</center>
-  		<br><br>
-		
 		</form>
 
 	</div>
@@ -105,6 +91,7 @@
 		var username = $('#username').val(); 
 		var usernameConfirm = $('#confirm-username'); 
 
+		console.log("Username: " + username); 
 		username = username.trim(); 
 
 		$.get("{% url 'username_check' %}", {username : username},
@@ -131,6 +118,7 @@
 		var email = $('#email').val(); 
 		var emailConfirm = $('#confirm-email'); 
 
+		console.log("Email: " + email);
 		email = email.trim(); 
 
 		$.get("{% url 'email_check' %}", {email : email},

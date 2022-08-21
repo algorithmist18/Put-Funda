@@ -25,6 +25,9 @@ from django.db.models import Min, Max, Count, Q
 from functools import cmp_to_key 
 from django.urls import reverse 
 import pytz
+import codecs
+import io
+import csv
 from quiz.rating_system import update_rating
 
 # Class to represent custom data structure 
@@ -213,6 +216,7 @@ def schedule_quiz(request):
 		genre = request.POST.get('genre') 
 		valid_for = request.POST.get('valid-for') 
 		time_per_question = request.POST.get('seconds-per-question') 
+		tsv_file = request.FILES.get('tsv-question-file') 
 
 		contestTime = date + ' ' + time + ':00'
 
@@ -226,9 +230,19 @@ def schedule_quiz(request):
 
 		# Save contest 
 		contest = Contest(host = user, genre = genre, time = date + ' ' + time, valid_for = int(valid_for), time_per_question = int(time_per_question)) 
+
+		# Persist to database
 		contest.save() 
 		contest_id = contest.id 
 
+		# Parse the questions if file is present
+		if tsv_file is not None: 
+
+			# Add questions from tsv file 
+			result = parse_csv_file(contest, tsv_file)  
+			if result == True:
+				print('Successfully inserted questions from TSV!') 
+		
 		return HttpResponseRedirect('contest?contest_id={}'.format(contest_id)) 
 
 	else:
@@ -246,7 +260,8 @@ def is_valid_contest(contest):
 	
 	return 'OK'
 
-# Method to add questions to a contest 
+# Method to add questions to a contest
+# Name it better
 @login_required
 def create_contest(request): 
 
@@ -1136,3 +1151,31 @@ def fetch_question_attempts_accuracy(question):
 			correct_subs += 1
 
 	return correct_subs, total_subs
+
+
+# Method to read TSV file and add questions
+def parse_csv_file(contest, csv_file): 
+
+	# Uploading the TSV file into a contest
+	encoded_csv_file = csv_file.read().decode('utf-8') 
+	io_string = io.StringIO(encoded_csv_file) 
+	csv_file_reader = csv.DictReader(io_string) 
+
+	for row in csv_file_reader: 
+
+		# Parse the csv row 
+		question_txt = row['questionText']
+		answer = row['answerText']
+		second_answer = row['secondAnswerText']
+		#image_url = row['imageUrl']
+
+		# Add question to database
+		quiz_question = QuizQuestion(contest = contest, question = question_txt, answer = answer)  
+
+		if second_answer is not None:
+
+			quiz_question.second_answer = second_answer
+
+		quiz_question.save()
+
+	return True

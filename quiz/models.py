@@ -14,17 +14,14 @@ class Contest(models.Model):
 	time = models.DateTimeField() 
 	genre = models.CharField(max_length = 20, default = 'General')
 	has_rating_updated = models.BooleanField(default = False, blank = True, null = True) 
-
-	# Seconds per question
 	time_per_question = models.IntegerField(default = 30, blank = True, null = True) 
-
-	# Minutes to be valid for 
 	valid_for = models.IntegerField(default = 20, blank = True, null = True) 
 
 class QuizQuestion(models.Model): 
 
 	question = models.TextField()
 	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
+	image_url = models.URLField(blank = True) 
 	guess = models.TextField(blank = True)
 	answer = models.TextField()
 	second_answer = models.TextField(blank = True) 

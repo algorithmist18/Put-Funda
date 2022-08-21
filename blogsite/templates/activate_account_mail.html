@@ -1,0 +1,10 @@
+
+<p>
+    Hi {{ user.get_username }},
+</p>
+
+<p>Here is the <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">link</a>
+you can use to activate your account.
+<br>
+If clicking the link above doesn't work, please copy and paste the URL in a new browser
+window instead.<br><br>Happy Quizzing,<br>Avinash</p>

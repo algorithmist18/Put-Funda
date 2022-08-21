@@ -39,7 +39,7 @@ class Profile(models.Model):
 	rating = models.FloatField(default = 1500.0, null=True, blank=True)
 	volatility = models.FloatField(default = 150.0, null = True, blank = True) 
 	no_of_contests_played = models.IntegerField(default = 0, null = True, blank = True) 
-
+	email_confirmed = models.BooleanField(default = False, null = True, blank = True) 
 	# Add image field
 	picture = models.ImageField(upload_to = 'images/', max_length = 200, blank = True)  
 

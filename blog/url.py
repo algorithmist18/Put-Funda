@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^login/', views.login_view, name='login'),
 	url(r'^home/', views.homepage, name='home'),
 	url(r'^logout/', views.logout_view, name='logout'),
-	url(r'$users/', views.show_user, name='show_user')
-	url(r'$search', views.show_search, name='show_search')
+	url(r'$users/', views.show_user, name='show_user'),
+	url(r'$search', views.show_search, name='show_search'),
+
 ]

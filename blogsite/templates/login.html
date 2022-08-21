@@ -16,17 +16,11 @@
 	<center>
 
 	<div id = "container">	
-
 		<h1 id="sign-in-header">Sign in.</h1><br>
-		
 		<div id="login-form">
-
 		<form id="login" action="{% url 'login' %}" method="post">
-
 		  {% csrf_token %}
-
 		  <div class="mb-3" id="form-container">
-			
 			{% if error %}
 
 		  		<div style="margin-top: 5px; margin-left: 5px; margin-right: 5px;" class="alert alert-danger">
@@ -34,9 +28,7 @@
 		  		</div>
 
 		  	{% endif %}
-
 		  	<br>
-		  
 			<div class="form-group">
 				
 				<!--
@@ -100,13 +92,10 @@
 				-->	
 
 			<input type="submit" class = "btn btn-primary" value="Login"/>
-
 		</form>
-
 		<br>
-
 		</div>
-
+		<p><a href="{% url 'forgot' %}">Forgot password?</a></p>
 	</div>
 
 	</center>
