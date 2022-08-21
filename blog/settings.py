@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'wmyh(tjuvu0f#wyas&9mpb33sp!dk4j(!v49^8v*qoxbx6+c^j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'algorithmist.pythonanywhere.com', 'qnondrum.pythonanywhere.com', 'www.putfunda.com']
 
@@ -130,19 +130,29 @@ STATIC_URL = '/static/'
 #STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 
-# For serving files uploaded by user (development) 
+# For serving files uploaded by user (development)
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
-MEDIA_URL = '/media/' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
-# Login variables 
+# Login variables
 
 LOGIN_URL = 'login'
- 
-# Support for CKEditor 
+
+# Support for CKEditor
 
 CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }
 
-# Setting for session expiry 
+# Setting for session expiry
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'putfundaofficial@gmail.com'
+EMAIL_HOST_PASSWORD = 'ojjttojillpfsmcu'
+EMAIL_PORT = 587
+
+# Properties for re-captcha
+RECAPTCHA_PRIVATE_KEY = '6Lf1LWQhAAAAAD7HxM0TxDY0Cr-TMfcJtuo5vW3r'
+RECAPTCHA_PUBLIC_KEY = '6Lf1LWQhAAAAAFBp7VbX4faQoGN_l2EPJELUUxZI'
