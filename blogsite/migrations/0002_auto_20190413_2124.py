@@ -24,6 +24,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='comment',
             name='question',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='blogsite.Question'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='blogsite.Question'),
         ),
     ]
