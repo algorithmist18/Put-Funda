@@ -3,11 +3,8 @@
 	
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-
       // Load the Visualization API and the corechart package  
-
       google.load("visualization", "1", {packages:["corechart"]});
-
  	</script>
 
 	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
@@ -15,14 +12,18 @@
   	<!-- Navbar content -->
 
   		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-  	
   		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
 	
 	</nav>
 
+	<style type="text/css">
+
+	</style>
+
 	<!-- Block to display user details -->
 
-		<div id = "user-details" style = "float: left;">
+		<center>
+		<div id = "user-details">
 
 			<div id = "edit-form">
 					
@@ -33,13 +34,13 @@
 					<div id = "text-inputs">
 
 
-							First name: &nbsp;<input type = "text" value = "{{user.first_name}}" readonly = "readonly"> <br> <br> 
+							First name: &nbsp;<input type = "text" name = "first_name" value = "{{user.first_name}}"> <br> <br> 
 
-							Last name:	&nbsp;<input type = "text" value = "{{user.last_name}}" readonly = "readonly"> <br><br> 
+							Last name:	&nbsp;<input type = "text" name = "last_name" value = "{{user.last_name}}"> <br><br> 
 
 							DOB: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 
-							<input type = "text" name = "displayDOB" value = "{{user.profile.birth_date}}" readonly><br><br>
+							<input type = "text" name = "displayDOB" value = "{{user.profile.birth_date}}"><br><br>
 
 							New DOB: &nbsp;
 
@@ -49,8 +50,13 @@
 
 							<input type = "text" id = "user-location" name = "location" value = "{{user.profile.location}}"/> <br><br>
 
-							<br> <br> 
+							Email:&nbsp; &nbsp; &nbsp; 
 
+							<input type = "email" id = "email" name = "email" value = "{{user.email}}"/> <br><br>
+							<span id = "confirm-email" style = "font-size: 12px;" class="form-text text-muted">
+		      	 	{{email_error_message}} 
+		      	 </span></p>	  
+						
 							<input type = "submit" value = "Save edits" style = "margin-left: 20px" /> <br><br>	
 
 					</div>
@@ -89,6 +95,8 @@
 
 		</div>
 
+	</center>
+
 		<script type="text/javascript">
 
 			// Function to preview an image on upload 
@@ -115,7 +123,6 @@
 			function validateImage(e)
 			{
 				var imageFile = $('#image-input').val(); 
-
 				var fileConfirm = $('#image-confirm'); 
 
 				$.get("{% url 'image_check' %}", {imageFile : imageFile},
@@ -127,7 +134,6 @@
 							fileConfirm.html(data['message']);  
 
 							// Show image in the field
-
 							previewImage(e); 
 						}
 						else
@@ -139,11 +145,39 @@
 
 			}
 
+			// AJAX call to validate email 
+			function validateEmail()
+			{
+				// Make AJAX call here 
+				var email = $('#email').val(); 
+				var emailConfirm = $('#confirm-email'); 
+
+				console.log("Email: " + email);
+				email = email.trim(); 
+
+				$.get("{% url 'email_check' %}", {email : email},
+
+					function (data)
+					{
+						if(data['valid'] == 'YES')
+						{
+							// Unique email address 
+							emailConfirm.html(data['message']);
+						}
+						else
+						{
+							// Email ID already taken 
+							emailConfirm.html(data['message']); 
+						}
+					}
+				);
+			} 
+
 			function onChange()
 			{
 				// List of inputs to validate 
-
 				$('#image-input').change(function() { validateImage(this) }); 
+				$('#email').change(function() {validateEmail()});  
 
 			}
 

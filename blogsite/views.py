@@ -1037,6 +1037,23 @@ def edit_profile(request):
 		# Getting POST data 
 		location = request.POST.get('location')
 		dateOfBirth = request.POST.get('dateOfBirth')
+		email = request.POST.get('email') 
+		first_name = request.POST.get('first_name') 
+		last_name = request.POST.get('last_name')
+
+		# Check for email uniqueness
+		user_count = User.objects.all().filter(email = email).count()
+
+		if user_count > 0: 
+			
+			users = list(User.objects.all().filter(email = email)) 
+			if user.username != users[0].username: 
+				# Already taken
+				return render(request, 'edit_profile.html', {'user': user, 
+				'email_error_message': 'Email is already used'})
+
+		# Assign new email
+		user.email = email 
 
 		# Assign to user profile
 		user.profile.location = location 
@@ -1044,11 +1061,21 @@ def edit_profile(request):
 		if dateOfBirth != '': 
 			user.profile.birth_date = dateOfBirth
 
+		if first_name != '':
+			user.first_name = first_name
+
+		if last_name != '':
+			user.last_name = last_name
+
+		if email != '':
+			user.email = email 
+
 		# Save profile 
-		user.profile.save() 
+		user.profile.save()
+		user.save() 
 		message = 'Edits saved successfully.'
 
-		print(message) 
+		print(message)
 
 		return HttpResponseRedirect('users?user={}'.format(username)) 
 
