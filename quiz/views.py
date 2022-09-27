@@ -239,11 +239,14 @@ def schedule_quiz(request):
 		if tsv_file is not None: 
 
 			# Add questions from tsv file 
-			result = parse_csv_file(contest, tsv_file)  
+			result, err = parse_csv_file(contest, tsv_file)  
+			
 			if result == True:
 				print('Successfully inserted questions from TSV!') 
-		
-		return HttpResponseRedirect('contest?contest_id={}'.format(contest_id)) 
+			else: 
+				print("Exception has occurred") 
+
+		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
 
 	else:
 
@@ -449,6 +452,7 @@ def edit_contest(request):
 		date = request.POST.get('date') 
 		valid_for = request.POST.get('valid-for') 
 		time_per_question = request.POST.get('seconds-per-question')
+		csv_file = request.FILES.get('tsv-question-file') 
 
 		# TODO: Check if timings clash
 
@@ -461,6 +465,15 @@ def edit_contest(request):
 		# Save edits 
 		contest.save() 
 
+		# Parse the questions if file is present
+		if csv_file is not None: 
+
+			# Add questions from tsv file 
+			result, err = parse_csv_file(contest, tsv_file)  
+			if result == True:
+				print('Successfully inserted questions from TSV!') 
+			else:
+				print("Exception has occurred") 
 		# Redirect with acknowledgement 
 		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'edit_success'))
 	
@@ -1161,21 +1174,43 @@ def parse_csv_file(contest, csv_file):
 	io_string = io.StringIO(encoded_csv_file) 
 	csv_file_reader = csv.DictReader(io_string) 
 
-	for row in csv_file_reader: 
+	try:
 
-		# Parse the csv row 
-		question_txt = row['questionText']
-		answer = row['answerText']
-		second_answer = row['secondAnswerText']
-		#image_url = row['imageUrl']
+		for row in csv_file_reader: 
 
-		# Add question to database
-		quiz_question = QuizQuestion(contest = contest, question = question_txt, answer = answer)  
+			# Parse the csv row 
+			question_txt = row['questionText']
+			answer = row['answerText']
+			second_answer = row['secondAnswerText']
+			image_url = row['imageUrl']
+			third_answer = row['thirdAnswerText'] 
 
-		if second_answer is not None:
+			# Add question to database
+			quiz_question = QuizQuestion(contest = contest, question = question_txt, answer = answer)  
 
-			quiz_question.second_answer = second_answer
+			if second_answer is not None:
+				quiz_question.second_answer = second_answer
 
-		quiz_question.save()
+			if image_url is not None:
+				quiz_question.image_url = image_url
 
-	return True
+			if second_answer is not None:
+				quiz_question.third_answer = third_answer
+
+			quiz_question.save()
+
+	except Exception as ex: 
+
+		print('Exception occurred while parsing CSV file') 
+		message = "Exception occurred while parsing CSV file" 
+		print(ex) 
+		return False, ex 
+
+	except KeyError as error: 
+
+		print("Key error while parsing csv file") 
+		message = "Key error while parsing csv file" 
+		print(error) 
+		return False, error
+
+	return True, "" 

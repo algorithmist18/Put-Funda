@@ -29,25 +29,21 @@
 <html>
 	
 	<head>
-		<title> Qnondrum | Edit quiz contest </title>
+		<title> Put Funda | Edit quiz contest </title>
 	</head>
 	
 	<body>
 		
 		<!-- Latest compiled and minified CSS -->
-		
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
 		<!-- jQuery library -->
-		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 
 		<!-- Latest compiled JavaScript -->
-		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 		<!-- Navigation bar --> 
-
 		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
 	  		
 	  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
@@ -62,7 +58,6 @@
 		<center>
 
 			<p style = "margin-top: 50px; font-size: 12px;"> Edit the Quiz contest here. </p>
-
 
 			<div id = "quiz-edit">
 
@@ -84,22 +79,17 @@
 
 					<b>Valid for (minutes):</b> <br><br><input id="number" name="valid-for" value="{{contest.valid_for}}" min="30" /><br><br>
 
+					<b>CSV file:</b> <br><br><input id = "question-file" type = "file" name = "tsv-question-file"/><br><br>
+
 					<span style="font-size: 12px;">1 day: 1440 mins</span><br><br>
 
 					<input type = "submit" name = "Schedule"/><br><br>
-
 				</form>
-
 			</div>
-			
 			<br>
-			
-			<p style = "font-size: 12px;"> The time will be considered invalid if it is within 15 minutes (before/after) another contest. </p>
-						
+			<p style = "font-size: 12px;"> The time will be considered invalid if it is within 15 minutes (before/after) another contest. </p>		
 		</center>
-
 	</body>
-
 </html>
 
 <script type="text/javascript">

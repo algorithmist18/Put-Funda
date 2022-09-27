@@ -70,11 +70,15 @@
 							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image.url}}">
 						</div>
 
+					{% elif question.image_url %}
+
+						<div id = "image-holder">
+							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image_url}}">
+						</div>
+
 					{% endif %}
 
-
 					<p style = "margin-left: 10px; margin-top: 10px;"> {{question.question}} </p> 
-
 
 					<p style = "margin-left: 10px; margin-top: 10px;" > 
 						<strong> Answer: </strong> 
