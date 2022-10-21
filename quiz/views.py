@@ -645,6 +645,10 @@ def play_contest(request):
 	contest_id = request.GET.get('contest_id') 
 	instruction = request.GET.get('instruction') 
 
+	# Check if they are invalid
+	if question_id is None or contest_id is None:
+		return redirect('quiz_home') 
+
 	# Fetch data from database call 
 	contest = Contest.objects.get(id = contest_id) 
 	question = QuizQuestion.objects.get(id = question_id) 
@@ -878,13 +882,35 @@ def update_ratings(request):
 
 		for user in users: 
 
-			is_user_present = Leaderboard.objects.get(contest=contest, user=user)
+			is_user_present = Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id)
 
-			if is_user_present is None: 
+			if is_user_present is not None: 
+
+				# Ideally, there should only be one 
+				# entry in the leaderboard 
+				no_of_entries = len(list(is_user_present)) 
+				if no_of_entries > 0: 
+
+					# Delete all other entries 
+					# except the last one 
+					if no_of_entries > 1: 
+
+						if no_of_entries >= 2:
+							leaderboard_entries_deleted = list(is_user_present)[0 : no_of_entries - 2]
+						else:
+							leaderboard_entries_deleted = list(is_user_present)[0] 
+
+						for entry in leaderboard_entries_deleted: 
+							print("Deleting ", entry.id) 
+							entry.delete() 
+					else:
+
+						is_user_present = Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id)[0] 
+			else:
 
 				# Add them to leaderboard
 				add_player_to_leaderboard(user, contest) 
-				is_user_present = Leaderboard.objects.get(contest=contest, user=user)
+				is_user_present = Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id)[0] 
 
 			contest_user = ContestUser(user.username, 
 			is_user_present.correct_answers, is_user_present.time_taken) 
@@ -907,7 +933,8 @@ def update_ratings(request):
 		differential_score_array = [] 
 
 		# Fetch number of people who played the contest
-		no_of_contest_players = len(list(Leaderboard.objects.filter(contest=contest))) 
+		print(contest.id)
+		no_of_contest_players = len(list(Leaderboard.objects.filter(contest__id=contest.id))) 
 		print('No of people who played this contest =', no_of_contest_players) 
 
 		i = 0 
@@ -1087,9 +1114,22 @@ def add_player_to_leaderboard(user, contest):
 			time_taken += submission.time_taken 
 
 	print(user.username, contest.id, correct_answers, time_taken) 
-	leaderboard_entry = Leaderboard(contest=contest, user=user, 
-	correct_answers=correct_answers, time_taken=time_taken) 
-	leaderboard_entry.save() 
+
+	# Check if already present before making inserts
+	already_present = Leaderboard.objects.filter(contest = contest, user = user) 
+
+	if len(list(already_present)) > 0: 
+
+		leaderboard_entry = list(already_present)[0] 
+		leaderboard_entry.correct_answers = correct_answers
+		leaderboard_entry.time_taken = time_taken 
+		leaderboard_entry.save()
+
+	else:
+
+		leaderboard_entry = Leaderboard(contest=contest, user=user, 
+		correct_answers=correct_answers, time_taken=time_taken) 
+		leaderboard_entry.save() 
 
 # Method to restore ratings for this contest 
 @login_required
@@ -1183,7 +1223,13 @@ def parse_csv_file(contest, csv_file):
 			answer = row['answerText']
 			second_answer = row['secondAnswerText']
 			image_url = row['imageUrl']
-			third_answer = row['thirdAnswerText'] 
+
+			third_answer = None 
+			try: 
+				if row['thirdAnswerText'] is not None: 
+					third_answer = row['thirdAnswerText'] 
+			except: 
+				print('Exception has occurred') 
 
 			# Add question to database
 			quiz_question = QuizQuestion(contest = contest, question = question_txt, answer = answer)  
@@ -1195,6 +1241,9 @@ def parse_csv_file(contest, csv_file):
 				quiz_question.image_url = image_url
 
 			if second_answer is not None:
+				quiz_question.second_answer = second_answer
+
+			if third_answer is not None: 
 				quiz_question.third_answer = third_answer
 
 			quiz_question.save()
