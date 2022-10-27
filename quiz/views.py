@@ -919,7 +919,7 @@ def update_ratings(request):
 
 			print('is_user_present', is_user_present_single) 
 			contest_user = ContestUser(user.username, 
-			is_user_present_single.correct_answers, is_user_present_single.time_taken) 
+			is_user_present_single[0].correct_answers, is_user_present_single[0].time_taken) 
 
 			contest_users.append(contest_user) 
 
