@@ -882,7 +882,7 @@ def update_ratings(request):
 
 		for user in users: 
 
-			is_user_present = Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id)
+			is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
 
 			if is_user_present is not None: 
 
@@ -912,6 +912,7 @@ def update_ratings(request):
 				add_player_to_leaderboard(user, contest) 
 				is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
 
+			print('is_user_present', is_user_present) 
 			contest_user = ContestUser(user.username, 
 			is_user_present.correct_answers, is_user_present.time_taken) 
 
