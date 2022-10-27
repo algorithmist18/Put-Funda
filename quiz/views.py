@@ -882,15 +882,16 @@ def update_ratings(request):
 
 		for user in users: 
 
-			is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
+			is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id)) 
 
 			if is_user_present is not None: 
 
 				# Ideally, there should only be one 
 				# entry in the leaderboard 
-				no_of_entries = len(list(is_user_present)) 
+				no_of_entries = len(is_user_present) 
 				if no_of_entries > 0: 
 
+					print('Leaderboard entries for ', user.username, ' = ', no_of_entries) 
 					# Delete all other entries 
 					# except the last one 
 					if no_of_entries > 1: 
@@ -901,7 +902,7 @@ def update_ratings(request):
 							leaderboard_entries_deleted = list(is_user_present)[0] 
 
 						for entry in leaderboard_entries_deleted: 
-							print("Deleting ", entry.id) 
+							#print("Deleting ", entry.id) 
 							entry.delete() 
 					else:
 
