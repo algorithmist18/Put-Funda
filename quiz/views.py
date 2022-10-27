@@ -906,16 +906,20 @@ def update_ratings(request):
 							entry.delete() 
 					else:
 
-						is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
+						is_user_present_single = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
+
+				else:
+
+					is_user_present_single = is_user_present[0] 
 			else:
 
 				# Add them to leaderboard
 				add_player_to_leaderboard(user, contest) 
-				is_user_present = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
+				is_user_present_single = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
 
-			print('is_user_present', is_user_present) 
+			print('is_user_present', is_user_present_single) 
 			contest_user = ContestUser(user.username, 
-			is_user_present.correct_answers, is_user_present.time_taken) 
+			is_user_present_single.correct_answers, is_user_present_single.time_taken) 
 
 			contest_users.append(contest_user) 
 
