@@ -913,11 +913,12 @@ def update_ratings(request):
 				is_user_present_single = list(Leaderboard.objects.filter(contest_id=contest.id, user_id=user.id))[0] 
 
 			print('is_user_present', is_user_present_single)
+			
 			if type(is_user_present_single) == list:  
 				contest_user = ContestUser(user.username, is_user_present_single[0].correct_answers, is_user_present_single[0].time_taken) 
 			else:
 				contest_user = ContestUser(user.username, is_user_present_single.correct_answers, is_user_present_single.time_taken) 
-				
+
 			contest_users.append(contest_user) 
 
 		# Sort the submissions
@@ -954,6 +955,25 @@ def update_ratings(request):
 			
 			# Adding to leaderboard
 			user_from_db = User.objects.get(username=user.username) # This is from user table
+			# TODO: Handling bugs with multiple leaderboard entries for 
+			# one contest and one user 
+			leaderboard_entries = list(Leaderboard.objects.filter(user = user_from_db, contest = contest)) 
+			entries_size = len(leaderboard_entries) 
+			leaderboard_entry = leaderboard_entries[entries_size - 1] 
+			print('Leaderboard entries', entries_size) 
+			
+			if entries_size > 1: 
+				# Delete rest of them 
+				leaderboard_entries = leaderboard_entries[0 : entries_size - 1] 
+				for entry in leaderboard_entries: 
+					# Delete 
+					print('Deleting', entry.id) 
+					entry.delete() 
+
+			else: 
+				# Only one entry, no problem 
+				leaderboard_entry = leaderboard_entries[0] 
+
 			leaderboard_entry = Leaderboard.objects.get(user=user_from_db, contest=contest)
 
 			if leaderboard_entry.rank == 0: 
