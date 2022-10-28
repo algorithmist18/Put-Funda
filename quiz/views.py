@@ -797,7 +797,11 @@ def display_leaderboard(request):
 					time_taken += submission.time_taken 
 
 			contest_user = ContestUser(user.username, correct_answers, time_taken) 
-			contest_users.append(contest_user) 
+			contest_users.append(contest_user)
+
+			# Delete all the leaderboard entries first 
+			for entry in leaderboard_entry: 
+				entry.delete() 
 
 			# Adding to leaderboard table
 			user_from_db = User.objects.get(username=user.username)
@@ -961,7 +965,7 @@ def update_ratings(request):
 			entries_size = len(leaderboard_entries) 
 			leaderboard_entry = leaderboard_entries[entries_size - 1] 
 			print('Leaderboard entries', entries_size) 
-			
+
 			if entries_size > 1: 
 				# Delete rest of them 
 				leaderboard_entries = leaderboard_entries[0 : entries_size - 1] 
