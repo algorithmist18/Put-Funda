@@ -1037,7 +1037,7 @@ def update_ratings(request):
 			differential_score_array.append(differential_score) 
 
 		new_rating, new_volatility = update_rating(rating_array, volatility_array, rankings, 
-		correct_answer_array, no_of_contest_players, no_of_contests_played) 
+		correct_answer_array, len(no_of_contest_players), no_of_contests_played) 
 
 		i = 0 
 		delta = 0 
