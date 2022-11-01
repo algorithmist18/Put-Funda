@@ -1,0 +1,63 @@
+{% extends 'quiz_display_leaderboard_base.html' %}
+
+{% block content %}
+	
+	<!-- Navigation bar --> 
+		
+	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
+  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
+	</nav>
+
+	<!-- Display leaderboard here -->
+
+	<center>
+
+		<div style = "font-size: 12px;" id = "submissions">
+
+			<!-- Leaderboard -->
+
+			<p> Submissions for {{ user.username }} </p>
+
+			<table id = "table-leaderboard" class = "table" style="width:800px;">
+				
+				<thead>
+				  
+				  <tr>
+					
+				   <th>Question</th>
+			
+				   <th>Correct Answer</th>
+				
+				   <th>Answer</th>
+
+				   <th>Time taken(secs)</th>
+				  
+				  </tr>
+
+				</thead>
+
+				{% for submission in submissions %}
+				  
+				  <tr>
+
+				  	<td>{{submission.question.question}}</td>
+				 
+				  	<td>{{submission.question.answer}}</td>
+				 
+				  	<td>{{submission.answer}}</td>
+				 
+				  	<td class = "time-taken">{{submission.time_taken}}</td>
+				 
+				   </tr>
+			
+				{% endfor %}
+			
+			</table>
+
+		</div>
+
+	</center>
+	</script>
+
+{% endblock %}	

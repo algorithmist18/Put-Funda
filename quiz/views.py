@@ -29,6 +29,8 @@ import codecs
 import io
 import csv
 from quiz.rating_system import update_rating
+from quiz.analysis_views import fetch_submissions_by_user_contest, fetch_correct_submissions
+from quiz import contest_utils
 
 # Class to represent custom data structure 
 
@@ -66,13 +68,11 @@ def compare(x):
 def homepage(request): 
 
 	# Fetch all contests 
-
 	user = request.user 
 	user_contests = Contest.objects.filter(host = user) 
 	all_contests = Contest.objects.all() 
 
 	# Contests 
-
 	contests = [] 
 	past_contests = [] 
 	new_contests = [] 
@@ -747,13 +747,27 @@ def display_leaderboard(request):
 	contest = Contest.objects.get(id = int(contest_id))
 
 	questions = list(QuizQuestion.objects.filter(contest = contest)) 
+	current_time = datetime.datetime.now(pytz.timezone('UTC')) 
 
+	# Append to active contests 
+	time_difference = (contest.time - current_time).total_seconds() 
+	time_difference /= 60 
+	time_difference *= -1
+	is_contest_active = False 
+
+	if time_difference <= contest.valid_for: 
+		is_contest_active = True 
+	
 	# Design leaderboard from submissions 
 	contest_users = [] 
 	users = users_in_contest(contest) 
 	
+	# For every user that is participating 
+	# in the contest, update their submissions 
+	# TODO: Optimizations 
 	for user in users: 
 
+		# If it is already there, no need to re-compute 
 		leaderboard_entry = list(Leaderboard.objects.filter(contest=contest, user=user)) 
 
 		if len(leaderboard_entry) == 1: 
@@ -829,7 +843,7 @@ def display_leaderboard(request):
 
 	# Update context 
 	args = {} 
-	args.update({'user' : original_user, 'contest' : contest, 'users' : contest_users})
+	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active})
 	return render(request, 'quiz_display_leaderboard.html', args) 
 
 # Method to fetch number of contests user has played from certan contest
@@ -1292,3 +1306,80 @@ def parse_csv_file(contest, csv_file):
 		return False, error
 
 	return True, "" 
+
+
+
+# Method to view user submissions 
+@login_required
+def view_user_submissions(request): 
+
+	response = {} 
+
+	if request.method == 'GET': 
+
+		user = request.user 
+		username = request.GET['username'] 
+		contest_id = request.GET['contest_id'] 
+		print(user.username, username, contest_id) 
+
+		
+
+		# Fetch user and contest
+		try: 
+			
+			user_object = User.objects.get(username = username) 
+			contest = Contest.objects.get(id = int(contest_id)) 
+	
+			# Redirect to leaderboard if 
+			# contest is active
+			is_active = contest_utils.is_contest_active(contest) 
+			if is_active and user.username is not 'coder': 
+				return redirect('quiz') 
+
+			submissions = fetch_submissions_by_user_contest(user_object, contest) 
+			response['user'] = user_object
+			response['contest'] = contest 
+			response['submissions'] = submissions 
+
+			return render(request, 'quiz_view_user_submissions.html', response) 
+
+		except: 
+
+			print('Exception caught')  
+			return redirect('quiz_home')
+
+
+	else: 
+
+		return display_leaderboard(request) 
+
+
+# Method to view correct submissions 
+@login_required  
+def view_correct_submissions(request): 
+
+	response = {} 
+
+	if request.method == 'GET': 
+
+		user = request.user 
+		question_id = request.GET['question_id'] 
+
+		question = QuizQuestion.objects.get(id = int(question_id))
+
+		# Redirect to leaderboard if 
+		# contest is active
+		is_active = contest_utils.is_contest_active(question.contest)  
+		if is_active and user.username is not 'coder': 
+			return redirect('quiz_home')  
+	
+		submissions = fetch_correct_submissions(question) 
+		
+		response['submissions'] = submissions 
+		response['question'] = question 
+
+		return render(request, 'quiz_view_correct_submissions.html', response) 
+
+	else: 
+
+		return HttpResponseRedirect('quiz_home') 

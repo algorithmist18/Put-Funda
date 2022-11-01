@@ -44,6 +44,8 @@
 			
 				   <th>Time taken(secs)</th>
 				  
+				   <th> Submissions </th>
+				  
 				  </tr>
 
 				</thead>
@@ -59,7 +61,13 @@
 				  	<td>{{u.correct_answers}}</td>
 				 
 				  	<td class = "time-taken">{{u.time_taken}}</td>
-				 
+
+					{% if is_valid_contest %}
+						<td class>Submission</td>
+					{% else %}
+						<td class><a href = "{% url 'view_user_submissions' %}?username={{u.username}}&contest_id={{contest.id}}">Submission</a></td>
+					{% endif %}
+
 				   </tr>
 			
 				{% endfor %}
