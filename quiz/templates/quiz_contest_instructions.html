@@ -1,82 +1,57 @@
+{% load static %}
 <!DOCTYPE html>
-
-<style type="text/css">
-
-	body {
-
-		font-family: 'Open Sans', sans-serif; 
-	}
-
-
-#instructions
-{
-	border-style: solid;
-	border-width: 1px;
-	border-color: gray;
-
-	font-size: 12px;
-	width: 600px;
-
-	margin-top: 40px;
-}
-	
-</style>
-
 <html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Contest instructions</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
+	</head>
+	<body class="pf-theme">
 
-<head>
-	<title> Qnondrum | Contest instructions </title>
-</head>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">Before you begin.</p>
+		</header>
 
-<body>
+		<div class="pf-metabar">
+			<span>How to play</span>
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+			</span>
+		</div>
 
-	<!-- Latest compiled and minified CSS -->
-		
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<div class="pf-shell">
 
-	<!-- jQuery library -->
-		
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+			<div class="pf-section-label pf-section-label--first"><span>Rules</span></div>
 
-	<!-- Latest compiled JavaScript -->
-		
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+			<div class="pf-card pf-card--blue">
+				<div class="pf-card-title">{{ no_of_questions }} questions, one point each</div>
+				<div class="pf-card-body">No negative marking.</div>
+			</div>
 
-		<!--Google font-->
-			<link rel="preconnect" href="https://fonts.gstatic.com">
-			<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-			
+			<div class="pf-card pf-card--peach">
+				<div class="pf-card-title">Every question is timed</div>
+				<div class="pf-card-body">{{ contest.time_per_question }} seconds per question — exceeding it moves you on and counts the question as passed.</div>
+			</div>
 
+			<div class="pf-card pf-card--yellow">
+				<div class="pf-card-title">Submit as soon as you know it</div>
+				<div class="pf-card-body">Less time taken means you rank higher on the leaderboard. You can 'pass' by submitting a blank answer, but you can't go back.</div>
+			</div>
 
-	<center>
+			<div class="pf-card pf-card--pink">
+				<div class="pf-card-title">Case doesn't matter</div>
+				<div class="pf-card-body">Correct answer: Dhoni. Answered: dhoni. Still correct.</div>
+			</div>
 
-		<h4 style = "margin-top: 60px;"> Instructions, Rules and Regulations for the contest </h4>
+			<p class="pf-note" style="margin-top: 20px;">This is a good time to maximise this window.</p>
 
-		<div id = "instructions">
-
-			<br><br>
-
-			<ul>
-				
-				<p> {{no_of_questions}} questions follow, with 1 point each for every question answered correctly. No negative marking. </p><br>
-				<p> Press the 'Submit' button as soon as you write your answer, less time taken means you are higher on the leaderboard. </p><br>
-				<p> Every question has a timer of {{contest.time_per_question}} seconds - exceeding which you will be redirected to the next question and the previous question will be considered passed. </p><br>
-				<p> You can 'pass' the question by pressing the Submit button, but you cannot return back to the question. </p><br>
-				<p> Difference in cases will not matter (Correct answer: Dhoni, Answered: dhoni) will be considered correct. </p><br>
-
-				<br>
-
-				<p> This is a good time to maximise this window. </p>
-
-				<br> 
-
-				<p> If you are ready, the contest can be played <a href = "{% url 'play_contest' %}?contest_id={{contest_id}}&question_id={{question_id}}"> here. </a> </p><br>
-
-			</ul>
+			<p class="pf-center" style="margin-top: 24px;">
+				<a class="pf-btn pf-btn--accent" href="{% url 'play_contest' %}?contest_id={{ contest_id }}&question_id={{ question_id }}">I'm ready — start</a>
+			</p>
 
 		</div>
 
-	</center>
-</body>
-
+	</body>
 </html>

@@ -1,46 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
-
-<style type="text/css">
-	
-	.body {
-
-		font-family: 'Inter', sans-serif;
-		font-size: 12px;
-	}
-
-	#exit-message {
-
-		margin-top: 200px;
-	}
-
-</style>
-
 <html>
-	
 	<head>
-		<title>Put Funda | Exit window </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Contest complete</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
 	</head>
-	
-	<body>
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<body class="pf-theme">
 
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">That's a wrap.</p>
+		</header>
 
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<div class="pf-shell pf-center" style="padding-top: 60px;">
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+			<div class="pf-section-label pf-section-label--first"><span>Contest complete</span></div>
+			<h1 style="font-style: italic; font-size: 32px; margin-bottom: 14px;">Nicely played.</h1>
+			<p class="pf-note" style="margin-bottom: 24px;">Thank you for participating. You can close this window now.</p>
 
-		<!-- Exit announcment --> 
-		<center>
-			<div id = "exit-message">
-				<h4> The Quiz has ended! </h4>
-				<p> Thank you for participating. You can close the window now. </p>
-			</div>
-		</center>
+			{% if contest %}
+			<a class="pf-btn pf-btn--accent" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">See the leaderboard</a>
+			{% endif %}
+
+		</div>
+
 	</body>
 </html>

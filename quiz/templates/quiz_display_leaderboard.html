@@ -1,90 +1,56 @@
 {% extends 'quiz_display_leaderboard_base.html' %}
 
 {% block content %}
-	
-	<!-- Navigation bar --> 
-		
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-	</nav>
 
-	<!-- Display leaderboard here -->
+	<div class="pf-section-label pf-section-label--first"><span>Leaderboard</span></div>
 
-	<center>
+	{% if request.user.username == 'Avinash' %}
+	<p class="pf-note" style="margin-bottom: 14px;">
+		<a class="pf-link" href="{% url 'update_rating' %}?contest_id={{ contest.id }}" id="update-rating-button">Update ratings</a>
+		&nbsp;&middot;&nbsp;
+		<a class="pf-link" href="{% url 'restore_rating' %}?contest_id={{ contest.id }}" id="restore-rating-button">Restore ratings</a>
+	</p>
+	{% endif %}
 
-		<div id = "leaderboard">
+	<div class="pf-card">
+		<table id="table-leaderboard" class="pf-table">
 
-			<!-- Button to update rating --> 
+			<thead>
+				<tr>
+					<th>Rank</th>
+					<th>Username</th>
+					<th>Correct answers</th>
+					<th>Time taken (secs)</th>
+					<th>Submissions</th>
+				</tr>
+			</thead>
 
-			{% if request.user.username == 'Avinash' %}
-
-			<p>
-				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button">Update ratings</a>
-				<a href = "{% url 'restore_rating' %}?contest_id={{contest.id}}" id = "restore-rating-button">Restore ratings</a>
-			</p>
-
-			{% endif %}
-
-			<!-- Leaderboard -->
-
-			<p> Leaderboard </p>
-
-			<table id = "table-leaderboard" class = "table" style="width:800px;">
-				
-				<thead>
-				  
-				  <tr>
-					
-				   <th>Rank</th>	   
-				   
-				   <th>Username</th>
-			
-				   <th>Correct Answers</th>
-			
-				   <th>Time taken(secs)</th>
-				  
-				   <th> Submissions </th>
-				  
-				  </tr>
-
-				</thead>
-
+			<tbody>
 				{% for u in users %}
-				  
-				  <tr>
-
-				  	<td class = "rank-row">1</td>
-				 
-				  	<td><a href = "{% url 'show_user' %}?user={{u.username}}">{{u.username}}</a></td>
-				 
-				  	<td>{{u.correct_answers}}</td>
-				 
-				  	<td class = "time-taken">{{u.time_taken}}</td>
-
+				<tr>
+					<td class="rank-row">1</td>
+					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ u.username }}">{{ u.username }}</a></td>
+					<td>{{ u.correct_answers }}</td>
+					<td class="time-taken">{{ u.time_taken }}</td>
 					{% if is_valid_contest %}
-						<td class>Submission</td>
+						<td>Submission</td>
 					{% else %}
-						<td class><a href = "{% url 'view_user_submissions' %}?username={{u.username}}&contest_id={{contest.id}}">Submission</a></td>
+						<td><a class="pf-link" href="{% url 'view_user_submissions' %}?username={{ u.username }}&contest_id={{ contest.id }}">Submission</a></td>
 					{% endif %}
-
-				   </tr>
-			
+				</tr>
 				{% endfor %}
-			
-			</table>
+			</tbody>
 
-		</div>
-
-	</center>
+		</table>
+	</div>
 
 	<script type="text/javascript">
-		
-		// Round up the time-taken 
 
-		var timeTaken = document.getElementsByClassName("time-taken"); 
+		// Round up the time-taken
 
-		var i; 
+		var timeTaken = document.getElementsByClassName("time-taken");
+
+		var i;
 
 		for(i=0; i<timeTaken.length; i++)
 		{
@@ -92,28 +58,28 @@
 
 			time = time.toFixed(3);
 
-			timeTaken[i].innerHTML = time;   
+			timeTaken[i].innerHTML = time;
 		}
 
-		// Rank the participants 
+		// Rank the participants
 
-		var rank = document.getElementsByClassName('rank-row'); 
-		var counter = 1; 
+		var rank = document.getElementsByClassName('rank-row');
+		var counter = 1;
 
 		for(i=0; i<rank.length; i++)
 		{
-			// If time is same, then same rank 
+			// If time is same, then same rank
 
-			rank[i].innerHTML = counter.toString(10); 
-			counter++; 
+			rank[i].innerHTML = counter.toString(10);
+			counter++;
 
 			if(i > 0)
 			{
 				if(timeTaken[i].innerHTML == timeTaken[i - 1].innerHTML)
 				{
-					// Same time taken 
+					// Same time taken
 
-					rank[i].innerHTML = rank[i - 1].innerHTML; 
+					rank[i].innerHTML = rank[i - 1].innerHTML;
 				}
 			}
 		}
@@ -125,4 +91,4 @@
 
 	</script>
 
-{% endblock %}	
+{% endblock %}

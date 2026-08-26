@@ -2,49 +2,45 @@
 
 {% block content %}
 
-	<!-- Display question --> 
+	<div class="pf-section-label pf-section-label--first"><span>Question</span></div>
 
-	<div id = "contest">
-		<form method = "post" action = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}">
+	<div id="contest" class="pf-card">
+		<form method="post" action="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ question.id }}">
 			{% csrf_token %}
 			{% if question.image %}
-				<div id="question-image-holder">
-					<div id = "question-holder">
-						<p style = "margin-left: 20px; margin-top: 20px; 
-						margin-right: 15px;">{{question.question}}</p>
+				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
+					<div id="question-holder" style="flex: 1;">
+						<p class="pf-question-text">{{ question.question }}</p>
 					</div>
-					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/> 		
-					<div id = "image-holder" style="float: right; width: 25%; margin-right: 15px">
-						<img id = "img" name = "question-image" src = "{{question.image.url}}" /> 
+					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
+					<div id="image-holder" style="width: 35%;">
+						<img id="img" class="pf-question-image" name="question-image" src="{{ question.image.url }}" />
 					</div>
 				</div>
 			{% elif question.image_url %}
-				<div id="question-image-holder">
-					<div id = "question-holder">
-						<p style = "margin-left: 20px; margin-top: 20px; 
-						margin-right: 15px;">{{question.question}}</p>
+				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
+					<div id="question-holder" style="flex: 1;">
+						<p class="pf-question-text">{{ question.question }}</p>
 					</div>
-					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/> 		
-					<div id = "image-holder" style="float: right; width: 25%; margin-right: 15px">
-						<img id = "img" name = "question-image" src = "{{question.image_url}}" /> 
+					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
+					<div id="image-holder" style="width: 35%;">
+						<img id="img" class="pf-question-image" name="question-image" src="{{ question.image_url }}" />
 					</div>
 				</div>
-			{% else %} 
+			{% else %}
 				<div id="question-image-holder">
-					<div id = "question-holder-full" style=" margin-left: 5px; margin-right: 5px;">
-						<p style = "margin-left: 20px; margin-top: 20px; margin-right: 15px;">{{question.question}}</p>
+					<div id="question-holder-full">
+						<p class="pf-question-text">{{ question.question }}</p>
 					</div>
-					<input id = "time_taken" type = "hidden" name = "time_taken" value = "0"/>
+					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 				</div>
 			{% endif %}
-			<br><br><br>
-			<center>
-				<div id="bottom-div" style="margin-bottom: 5px">
-					<p><span style = "margin-left: 20px; margin-top: 20px; font-size: 12.5px;" id = "timer">0</span> 
-					<input style = "margin-left: 20px; margin-top: 20px;" type = "text" id = "option" name = "answer" />
-					<input style = "margin-left: 20px; margin-top: 20px;" id = "submit-button" type = "submit" name = "action" value = "Submit" /></p>
-				</div>
-			</center>
+
+			<div id="bottom-div" class="pf-answer-row">
+				<span id="timer" class="pf-timer">0</span>
+				<input class="pf-answer-input" type="text" id="option" name="answer" autocomplete="off" placeholder="Your answer" />
+				<button class="pf-btn pf-btn--accent" id="submit-button" type="submit" name="action" value="Submit">Submit</button>
+			</div>
 		</form>
 	</div>
 
@@ -52,58 +48,58 @@
 
 	<script type="text/javascript">
 
-		var currentDate = new Date(); 
-		var currentTime = $('#timer').html(); 
-		var timeLimitStr = "{{contest.time_per_question}}"; 
-		var timeLimit = Number(timeLimitStr); 
+		var currentDate = new Date();
+		var currentTime = $('#timer').html();
+		var timeLimitStr = "{{contest.time_per_question}}";
+		var timeLimit = Number(timeLimitStr);
 
 		function setTime() {
 
 			currentTime = Number(currentTime) + 1;
-			
-			// Method to detect page has been refreshed or not 
+
+			// Method to detect page has been refreshed or not
 			if(performance.navigation.type == performance.navigation.TYPE_RELOAD)
 			{
-				// Page has been refreshed 
-				currentTime = localStorage.storedTime; 
+				// Page has been refreshed
+				currentTime = localStorage.storedTime;
 			}
 
 			// Set time
-			localStorage.storedTime = currentTime;  
+			localStorage.storedTime = currentTime;
 
 			$('#timer').html(currentTime);
-			$('#time_taken').val(currentTime.toString(10)); 
+			$('#time_taken').val(currentTime.toString(10));
 
-			// Go to next question if timer exceeded 
+			// Go to next question if timer exceeded
 			if(currentTime == timeLimit)
 			{
-				// Create a POST request and send it to server 
-				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'}; 
-				const URL = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}"; 
+				// Create a POST request and send it to server
+				const data = {answer: "", time_taken: "0000", csrfmiddlewaretoken: '{{csrf_token}}'};
+				const URL = "{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{question.id}}";
 
 				// Redirecting with a form submission
-				var form = document.createElement('form'); 
+				var form = document.createElement('form');
 
-				document.body.appendChild(form); 
+				document.body.appendChild(form);
 
 				form.method = 'post';
-				form.action = URL; 
+				form.action = URL;
 
 				for(var name in data)
 				{
-					var input = document.createElement('input'); 
+					var input = document.createElement('input');
 
-					input.type = 'hidden'; 
-					input.name = name; 
-					input.value = data[name]; 
+					input.type = 'hidden';
+					input.name = name;
+					input.value = data[name];
 
-					form.appendChild(input); 
+					form.appendChild(input);
 				}
 
-				localStorage.storedTime = 0; 
+				localStorage.storedTime = 0;
 				form.submit();
-				return; 
-			} 
+				return;
+			}
 
 		}
 
@@ -113,21 +109,21 @@
 			setInterval(setTime, 1000);
 		}
 
-		
-		// Clear cache on submit 		
+
+		// Clear cache on submit
 		$('#submit-button').click(function()
 		{
-			// Clear storage time for next question 
-			var newDate = new Date(); 
-			$('#time_taken').val(newDate - currentDate); 
-			localStorage.storedTime = 0; 
+			// Clear storage time for next question
+			var newDate = new Date();
+			$('#time_taken').val(newDate - currentDate);
+			localStorage.storedTime = 0;
 
 		});
-		
-		// Entry point 
-		$(document).ready(countdownBegin);  
 
-		// Load time on load 
+		// Entry point
+		$(document).ready(countdownBegin);
+
+		// Load time on load
 
 	</script>
 

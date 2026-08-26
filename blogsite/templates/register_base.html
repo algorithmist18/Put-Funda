@@ -1,84 +1,31 @@
+{% load static %}
 <!DOCTYPE html>
-<style type="text/css">
-
-	#sign-in-header {
-
-		font-size: 50px;
-	}
-
-	#login-form {
-
-		border-style: solid; 
-		border-width: 1px;
-		border-color: gray;
-		width: 400px;
-		border-radius: 2px;
-	}
-
-	#container
-	{
-		margin-top: 100px;
-	}
-
-	#registration-form
-	{
-		border-color: gray;
-		border-width: 1px;
-		border-style: solid;
-		width: 1000px;
-		position: absolute;
-		margin-left: 180px;
-		margin-top: 40px;
-	}
-
-	#left-part
-	{
-		float: left;
-		width: 200px;
-		margin-top: 50px;
-		margin-left: 200px;
-	}
-
-	#right-part
-	{
-		float: right;
-		margin-top: 50px;
-		margin-right: 200px;
-		width: 200px;
-	}
-
-	#password-helper
-	{
-		border-style: solid;
-	}
-
-	#errors
-	{
-		margin-top: 30px;
-	}
-
-</style>
 <html>
 	<head>
-		<title> Put Funda | Login / Register </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Login / Register</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	</head>
-	<body style="font-family: 'Open Sans', sans-serif;">
-			<!-- Latest compiled and minified CSS -->
-			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<body class="pf-theme">
 
-			<!-- jQuery library -->
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">You don't know what you don't know.</p>
+		</header>
 
-			<!-- Latest compiled JavaScript -->
-			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<div class="pf-metabar">
+			<span>Daily trivia &amp; quiz contests</span>
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'index' %}">Home</a>
+			</span>
+		</div>
 
-			<!--Google font-->
-			<link rel="preconnect" href="https://fonts.gstatic.com">
-			<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-			
-			<center>
-				{% block content %}
-				{% endblock %}
-			</center>
+		<div class="pf-shell">
+			{% block content %}
+			{% endblock %}
+		</div>
+
 	</body>
 </html>

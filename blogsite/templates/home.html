@@ -1,211 +1,45 @@
+{% load static %}
 <!DOCTYPE html>
-<style type="text/css">
-
-	* {
-
-		font-family: 'Inter', sans-serif;
-	}
-	
-	#nav {
-
-		background-color: #34495E;
-		color: white;
-	}
-
-
-	#container {
-
-		display: flex;
-		margin-left: 15px;
-		margin-right: 15px;
-	}
-
-	#logout-button {
-
-		float: right;
-		margin-right: 20px;
-	}
-
-	#user-display {
-
-		font-size: 15px;
-	}
-
-	#home-block {
-
-		margin-top: 100px;
-		width: 800px;
-		background-color:#F4F6F7;
-		color: black;
-	}
-
-	#parent-blog-posts {
-
-		width: 500px;
-		margin-right: 10%;
-		margin-left: 2%;
-	}
-
-	#blog-post {
-
-		float: left;
-		width: 600px;
-		box-sizing: content-box;
-		margin-left: 10px;
-		margin-top: 10px;
-		margin-right: 10px;
-	}
-
-	#content {
-
-		position: relative;
-		width: 700px;
-		margin-left: 10px;
-		margin-right: 10px;
-	}
-
-	#leaderboard {
-
-		margin-top: 50px;
-		font-size: 13px;
-		width: 300px;
-		float: right;
-		margin-left: 50px;
-		margin-right: 10px;
-	}
-
-	@media only screen and (min-width: 480px) {
-
-		#parent-blog-posts {
-
-			width: 50%;
-		}
-
-		#blog-post {
-
-			width: 100%;
-		}
-
-		#leaderboard {
-
-			width: 28%;
-		}
-
-		#content {
-
-			width: 100%;
-		}
-
-		.contests {
-
-			width: 100%;
-		}
-
-		#navbar-container {
-
-			margin-left: 15px;
-		}
-	}
-
-	@media only screen and (min-width: 1025px) {
-
-		#parent-blog-posts {
-
-			width: 60%;
-		}
-
-		#blog-post {
-
-			width: 100%;
-		}
-
-		#leaderboard {
-
-			width: 28%;
-		}
-
-		#content {
-
-			width: 100%;
-		}
-
-		.contests {
-
-			width: 100%;
-		}
-
-		#navbar-container {
-
-			margin-left: 2%;
-		}
-	}
-
-	#navbar-links {
-
-		border-style: solid;
-		border-color: black;
-		display: contents;
-		font-size: 15px;
-		margin-left: 10px;
-		height: 90px;
-		padding-top: -5px;
-		padding-bottom: 5px;
-	}
-
-	#links {
-
-		margin-top: 0 auto;
-	}
-
-	#navbar-container {
-
-
-		height: 40px;
-		width: 800px;
-		margin-left: 60px;
-	}
-
-	#navbar {
-
-		width: 100%;
-	}
-
-	#links {
-
-		margin-top: 10px;
-	}
-
-	#bottom-section {
-
-		height: 100%;
-	}
-
-</style>
-
 <html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	</head>
+	<body class="pf-theme">
 
-<head>
-	<title>Put Funda</title>
-	
-</head>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">You don't know what you don't know.</p>
+		</header>
 
-<body style="font-family: 'Open Sans', sans-serif;">
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<div class="pf-metabar">
+			{% if user.is_authenticated %}
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'home' %}">Home</a>
+				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+				<a class="pf-link" href="{% url 'blog_home' %}">Blogposts</a>
+			</span>
+			<span>
+				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
+				&nbsp;&middot;&nbsp;
+				<a class="pf-link" href="{% url 'logout' %}">Log out</a>
+			</span>
+			{% else %}
+			<span>Daily trivia &amp; quiz contests</span>
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'login' %}">Log in</a>
+			</span>
+			{% endif %}
+		</div>
 
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+		<div class="pf-shell pf-shell--wide">
+			{% block content %}
+			{% endblock %}
+		</div>
 
-	<!-- Latest compiled JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-
-	{% block content %}
-	{% endblock %}
-	
-</body>
-
+	</body>
 </html>

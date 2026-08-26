@@ -1,51 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
-<style type="text/css">
-	
-	* {
-
-		font-family: 'Inter', sans-serif;
-	}
-
-	#nav {
-
-		background-color: #34495E;
-		color: white;
-	}
-
-	#logout-button {
-
-		float: right;
-		margin-right: 20px;
-	}
-
-	#leaderboard {
-
-		font-size: 12px;
-		margin-top: 50px;
-		margin-left: 20px;
-	}
-
-</style>
 <html>
 	<head>
-		<title>Put Funda | Contest Leaderboard </title>
-	</head>
-	<body>
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-		<!-- jQuery library -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Contest leaderboard</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	</head>
+	<body class="pf-theme">
 
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">Where you stand.</p>
+		</header>
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+		<div class="pf-metabar">
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+			</span>
+			<span>
+				{% if user.is_authenticated %}
+				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
+				&nbsp;&middot;&nbsp;
+				<a class="pf-link" href="{% url 'logout' %}">Log out</a>
+				{% endif %}
+			</span>
+		</div>
 
-		{% block content %}
-		{% endblock %}
-	
+		<div class="pf-shell pf-shell--wide">
+			{% block content %}
+			{% endblock %}
+		</div>
+
 	</body>
 </html>

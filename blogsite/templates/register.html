@@ -1,99 +1,83 @@
 {% extends 'register_base.html' %}
 {% block content %}
-	<h4 style = "margin-top: 50px;"> Register yourself below. Sign-up is free. </h4>
 
-	<div id = "registration-form">
-	
-		<form method="post" action="{% url 'register' %}">
+	<div class="pf-section-label pf-section-label--first"><span>Join in</span></div>
+	<h1 style="font-style: italic; font-size: 34px; margin-bottom: 8px;">Sign up.</h1>
+	<p class="pf-note" style="margin-bottom: 20px;">Registration is free.</p>
 
-		{% csrf_token %}
-	
-		<center>
+	<div class="pf-card">
 
-			{% if form.errors %}
-			        
-			<div style = "width: 500px;" class = "alert alert-danger" id = "errors">
-		      		
-		      	<ul>
-
-				    {% for field in form %}
-				        {% for error in field.errors %}
-				        	<li><strong>{{ error|escape }}</strong><br></li>
-				        {% endfor %}
-				    {% endfor %}
-
-				    {% for error in form.non_field_errors %}
-				            
-				        <li><strong>{{ error|escape }}</strong></li>
-				  
-				    {% endfor %}
-				      
-			    </ul>
-
-		    </div>	
-		    {% endif %}
-		</center>
-
-		<div>
-			<br><br>
-		    <div class="form-group">
-		      <p><label>Username:</label></p>
-		      <p><input type="text" name="username" id="username"><br> <p><small id = "username-helptext" class="form-text text-muted">Required. 15 characters or fewer. Letters, digits and @/./+/-/_ only. Cannot be changed. Use wisely.</small></p>
-		      <span id = "confirm-username" style = "font-size: 12px;" class="form-text text-muted"></span></p>
-		      
-		    </div>
-
-		    <div class="form-group">
-		      <p><label>Email:</label></p>
-		      <p><input type="email" name="email" id="email"><br>
-		      	 <span id = "confirm-email" style = "font-size: 12px;" class="form-text text-muted">
-		      	 	{{email_error_message}} 
-		      	 </span></p>	      
-		    </div>
-		
-		  <span>  <div class="form-group">
-		      <p><label>First name:</label></p>
-		      <p id = "first-name"><span>{{form.first_name}}</span></p>
-		    </div>
-		
-		    <div class="form-group">
-		      <p><label>Last name:</label></p>
-		      <p>{{form.last_name}}</p>
-		    </div> </span>
-
-		    <div class="form-group">
-		      <p><label for="exampleInputEmail1">Password:</label></p>
-		      <p><span>{{form.password1}}</span></p>
-		       <p><small class="form-text text-muted">Your password cannot be similar to your personal information.<br> Your password cannot be entirely numeric.</small></p>
-		    </div>
-		 
-		    <div class="form-group">
-		      <p><label for="exampleInputEmail1">Confirmation:</label></p>
-		      <p>{{form.password2}}</p>
-		      <p><small class="form-text text-muted">{{form.password2.help_text}}</small></p>
-		    </div>
-
-		    <center>
-	  	 		<input style = "font-size: 12px;" type = "submit" class="btn btn-success" name="action" value="Register">
-	  		</center>
+		{% if form.errors %}
+		<div class="pf-alert pf-alert--danger">
+			<ul style="margin: 0; padding-left: 18px;">
+				{% for field in form %}
+					{% for error in field.errors %}
+					<li>{{ error|escape }}</li>
+					{% endfor %}
+				{% endfor %}
+				{% for error in form.non_field_errors %}
+				<li>{{ error|escape }}</li>
+				{% endfor %}
+			</ul>
 		</div>
-  	
+		{% endif %}
+
+		<form method="post" action="{% url 'register' %}">
+			{% csrf_token %}
+
+			<div class="pf-field">
+				<label for="username">Username</label>
+				<input type="text" name="username" id="username">
+				<div class="pf-field-hint">Required. 15 characters or fewer. Letters, digits and @/./+/-/_ only. Cannot be changed.</div>
+				<div class="pf-field-hint" id="confirm-username"></div>
+			</div>
+
+			<div class="pf-field">
+				<label for="email">Email</label>
+				<input type="email" name="email" id="email">
+				<div class="pf-field-hint" id="confirm-email">{{ email_error_message }}</div>
+			</div>
+
+			<div class="pf-field">
+				<label for="{{ form.first_name.id_for_label }}">First name</label>
+				{{ form.first_name }}
+			</div>
+
+			<div class="pf-field">
+				<label for="{{ form.last_name.id_for_label }}">Last name</label>
+				{{ form.last_name }}
+			</div>
+
+			<div class="pf-field">
+				<label for="{{ form.password1.id_for_label }}">Password</label>
+				{{ form.password1 }}
+				<div class="pf-field-hint">Your password cannot be similar to your personal information, and cannot be entirely numeric.</div>
+			</div>
+
+			<div class="pf-field">
+				<label for="{{ form.password2.id_for_label }}">Confirmation</label>
+				{{ form.password2 }}
+				<div class="pf-field-hint">{{ form.password2.help_text }}</div>
+			</div>
+
+			<button type="submit" name="action" value="Register" class="pf-btn pf-btn--accent pf-btn--block">Register</button>
 		</form>
 
 		{% if google_client_id %}
-		<center>
-			<p>or sign up with</p>
-			<script src="https://accounts.google.com/gsi/client" async defer></script>
-			<div id="g_id_onload"
-				data-client_id="{{ google_client_id }}"
-				data-callback="handleGoogleCredentialResponse">
-			</div>
+		<div class="pf-divider">or sign up with</div>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
+		<div id="g_id_onload"
+			data-client_id="{{ google_client_id }}"
+			data-callback="handleGoogleCredentialResponse">
+		</div>
+		<div class="pf-center">
 			<div style="display: inline-block;" class="g_id_signin"
 				data-type="standard"
 				data-size="medium"
-				data-width="240">
+				data-width="240"
+				data-theme="filled_black">
 			</div>
-		</center>
+		</div>
 		<script>
 			function handleGoogleCredentialResponse(response) {
 
@@ -122,72 +106,54 @@
 
 	</div>
 
+	<p class="pf-center" style="margin-top: 16px;">
+		<a class="pf-link" href="{% url 'login' %}">Already have an account? Sign in</a>
+	</p>
+
 <script type="text/javascript">
-	
+
 	// AJAX call to validate username
 	function validateUsername()
 	{
-		// Make AJAX call 
-		var username = $('#username').val(); 
-		var usernameConfirm = $('#confirm-username'); 
+		// Make AJAX call
+		var username = $('#username').val();
+		var usernameConfirm = $('#confirm-username');
 
-		console.log("Username: " + username); 
-		username = username.trim(); 
+		username = username.trim();
 
 		$.get("{% url 'username_check' %}", {username : username},
 
 			function (data)
 			{
-				if(data['valid'] == 'YES')
-				{
-					// Unique username 
-					usernameConfirm.html(data['message']); 
-				}
-				else
-				{
-					// A username already exists 
-					usernameConfirm.html(data['message']); 
-				}
-			});		
+				usernameConfirm.html(data['message']);
+			});
 	}
 
-	// AJAX call to validate email 
+	// AJAX call to validate email
 	function validateEmail()
 	{
-		// Make AJAX call here 
-		var email = $('#email').val(); 
-		var emailConfirm = $('#confirm-email'); 
+		var email = $('#email').val();
+		var emailConfirm = $('#confirm-email');
 
-		console.log("Email: " + email);
-		email = email.trim(); 
+		email = email.trim();
 
 		$.get("{% url 'email_check' %}", {email : email},
 
 			function (data)
 			{
-				if(data['valid'] == 'YES')
-				{
-					// Unique email address 
-					emailConfirm.html(data['message']);
-				}
-				else
-				{
-					// Email ID already taken 
-					emailConfirm.html(data['message']); 
-				}
+				emailConfirm.html(data['message']);
 			}
 		);
-	} 
+	}
 
-	// AJAX call to validate other things 
-	// Function to track changes 
+	// Function to track changes
 	function onChange()
 	{
 		$('#username').change(function() {validateUsername()});
-		$('#email').change(function() {validateEmail()});  
+		$('#email').change(function() {validateEmail()});
 	}
 
-	$(document).ready(onChange); 
+	$(document).ready(onChange);
 
 </script>
 

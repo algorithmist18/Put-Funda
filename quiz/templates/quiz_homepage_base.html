@@ -1,111 +1,37 @@
+{% load static %}
 <!DOCTYPE html>
-<style type="text/css">
-
-	* {
-
-		font-family: 'Inter', sans-serif; 
-		font-size: 12px;
-	}
-
-	#container {
-
-		width: 100%;
-		display: flex;
-	}
-
-	#leaderboard {
-
-		width: 25%;
-		float: left;
-		margin-left: 5%;
-	}
-
-	#nav
-	{
-		background-color: #34495E;
-		color: white;
-	}
-
-	#logout-button
-	{
-		float: right;
-		margin-right: 20px;
-	}
-
-	#user-display
-	{
-		font-size: 12px;
-	}
-
-	#home-block
-	{
-		margin-top: 100px;
-		width: 800px;
-		background-color:#F4F6F7;
-		color: black;
-	}
-
-	#functions-quiz
-	{
-		width: 200px;
-		font-size: 12px;
-		margin-top: 30px;
-		margin-left: 45%;
-	}
-
-	#user-contests {
-
-		width: 15%;
-		float: right;
-		margin-left: 10%;
-		margin-right: 5%;
-	}
-
-	#welcome-quiz
-	{
-		border-color: gray;
-		border-width: 1px;
-		border-style: solid;
-		font-size: 12px;
-		margin-top: 50px;
-		width: 500px;
-		margin-left: 32.5%;
-		position: absolute;
-		align-content: center;
-	}
-
-	#past-contests {
-
-		width: 40%;
-		margin-left: 10%;
-	}
-
-</style>
 <html>
 	<head>
-		<title> Welcome to the Quiz. </title>
-	</head>
-	<body>
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-		<!-- jQuery library -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Contests</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	</head>
+	<body class="pf-theme">
 
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">Contests &amp; leaderboards.</p>
+		</header>
 
-		<!--Google font-->
-		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-			
+		<div class="pf-metabar">
+			<span class="pf-metabar-links">
+				<a class="pf-link" href="{% url 'home' %}">Home</a>
+			</span>
+			<span>
+				{% if user.is_authenticated %}
+				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
+				&nbsp;&middot;&nbsp;
+				<a class="pf-link" href="{% url 'logout' %}">Log out</a>
+				{% endif %}
+			</span>
+		</div>
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+		<div class="pf-shell pf-shell--wide">
+			{% block content %}
+			{% endblock %}
+		</div>
 
-		{% block content %}
-		{% endblock %}
-	
 	</body>
 </html>
