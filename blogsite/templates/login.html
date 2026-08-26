@@ -96,7 +96,44 @@
 		<br>
 		</div>
 		<p><a href="{% url 'forgot' %}">Forgot password?</a></p>
+
+		{% if google_client_id %}
+		<p>or</p>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
+		<div id="g_id_onload"
+			data-client_id="{{ google_client_id }}"
+			data-callback="handleGoogleCredentialResponse">
+		</div>
+		<div class="g_id_signin" data-type="standard"></div>
+		{% endif %}
 	</div>
 
 	</center>
+
+	{% if google_client_id %}
+	<script>
+		function handleGoogleCredentialResponse(response) {
+
+			var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+			fetch("{% url 'google_login' %}", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"X-CSRFToken": csrfToken
+				},
+				body: "credential=" + encodeURIComponent(response.credential)
+			})
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+				if (data.redirect) {
+					window.location.href = data.redirect;
+				} else {
+					alert(data.error || "Google sign-in failed.");
+				}
+			})
+			.catch(function () { alert("Google sign-in failed."); });
+		}
+	</script>
+	{% endif %}
 {% endblock %}

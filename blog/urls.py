@@ -19,6 +19,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from blogsite import views
+from blogsite import google_auth_views
 from blogposts import views as post_views
 from quiz import views as quiz_views
 from django.conf import settings
@@ -39,6 +40,7 @@ urlpatterns = [
     path('forgot', views.forgot_password, name = 'forgot'),
     path('register', views.register, name = 'register'),
     path('login', views.login_view, name = 'login'),
+    path('google-login', google_auth_views.google_login, name = 'google_login'),
     path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),

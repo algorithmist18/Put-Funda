@@ -333,7 +333,7 @@ def register(request):
 			if User.objects.filter(email = email).exists():
 
 				error_message = 'Invalid email, already taken'
-				return render(request, 'register.html', {'form': form, 'email_error_message': error_message})
+				return render(request, 'register.html', {'form': form, 'email_error_message': error_message, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 				
 			user.set_password(raw_password)
 			print(user.username, raw_password) 
@@ -348,19 +348,19 @@ def register(request):
 			else:
 				
 				print('User is not authenticated') 
-				return render(request, 'register.html', {'form' : form})
+				return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 			return homepage(request) 
 		
 		else:
 
-			return render(request, 'register.html', {'form' : form})
+			return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 			
 	else:
 
 		form = RegisterForm()
 
-	return render(request, 'register.html', {'form' : form})
+	return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 # Function for logging in
 def login_view(request):
@@ -394,12 +394,12 @@ def login_view(request):
 			except:
 
 				# Authentication error - redirect to login page with message 
-				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect'})
+				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect', 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 		else:
 			print(form.errors)
 	else:
 		form = AuthenticationForm()
-	return render(request, 'login.html', {'form' : form})
+	return render(request, 'login.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 # Function for logging a person out
 def logout_view(request):

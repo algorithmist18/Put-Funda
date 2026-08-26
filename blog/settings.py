@@ -197,3 +197,8 @@ EMAIL_PORT = int(get_env('EMAIL_PORT', '587'))
 # Properties for re-captcha
 RECAPTCHA_PRIVATE_KEY = get_env('RECAPTCHA_PRIVATE_KEY')
 RECAPTCHA_PUBLIC_KEY = get_env('RECAPTCHA_PUBLIC_KEY')
+
+# Google Sign-In (Google Identity Services). Optional: left blank, the
+# Google sign-in button simply doesn't render. See .env.example for how
+# to obtain a Client ID.
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')

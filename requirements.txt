@@ -37,3 +37,8 @@ pytz
 # Required by django.db.models.ImageField (blogsite.Profile.picture,
 # quiz.QuizQuestion.image)
 Pillow>=8.0,<10.0
+
+# Verifies Google Identity Services ID tokens for Google sign-in
+# (blogsite/google_auth_views.py)
+google-auth>=1.35,<3
+requests>=2.25,<3
