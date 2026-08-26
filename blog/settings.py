@@ -93,23 +93,32 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-#DATABASES = {
- #   'default': {
-  #      'ENGINE': 'django.db.backends.sqlite3',
-   #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #}
-#}
+# Database backend is selected via DB_ENGINE:
+#   'sqlite'  -> local file database, no server needed (good for local dev)
+#   'mysql'   -> the production MySQL configuration (the default)
+DB_ENGINE = os.environ.get('DB_ENGINE', 'mysql').lower()
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env('DB_NAME', 'qnondrum$default'),
-        'USER': get_env('DB_USER', 'qnondrum'),
-        'PASSWORD': get_env('DB_PASSWORD'),
-        'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
-        'PORT': int(get_env('DB_PORT', '3306')),
+if DB_ENGINE == 'sqlite':
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': get_env('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
+        }
     }
-}
+
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': get_env('DB_NAME', 'qnondrum$default'),
+            'USER': get_env('DB_USER', 'qnondrum'),
+            'PASSWORD': get_env('DB_PASSWORD'),
+            'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
+            'PORT': int(get_env('DB_PORT', '3306')),
+        }
+    }
 
 
 # Password validation

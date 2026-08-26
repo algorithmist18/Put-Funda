@@ -1,0 +1,25 @@
+# Put Funda dependencies
+#
+# The project is pinned to Django 2.x: blogsite/tokens.py imports
+# django.utils.six, which was removed in Django 3.0.
+
+Django>=2.2,<3.0
+
+# Rich-text editor for blog posts
+django-ckeditor>=6.0,<6.3
+
+# reCAPTCHA field/widget used on the registration form
+django-recaptcha>=2.0,<3.0
+
+# Charting (genre distribution on profile pages)
+graphos==0.3.4
+
+# registration.views.RegistrationView (blogsite/user_auth_views.py)
+django-registration-redux>=2.8,<3.0
+
+# Timezone data
+pytz
+
+# MySQL driver — only needed when DB_ENGINE=mysql (production).
+# Not required for local development with DB_ENGINE=sqlite.
+mysqlclient>=1.4,<2.2
