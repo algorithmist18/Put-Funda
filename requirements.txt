@@ -2,6 +2,11 @@
 #
 # The project is pinned to Django 2.x: blogsite/tokens.py imports
 # django.utils.six, which was removed in Django 3.0.
+#
+# This file is enough to run locally with DB_ENGINE=sqlite. For production
+# (DB_ENGINE=mysql) also install requirements-mysql.txt — it needs MySQL's
+# client dev headers on the system and is kept separate so it doesn't block
+# a plain local setup.
 
 Django>=2.2,<3.0
 
@@ -12,7 +17,12 @@ django-ckeditor>=6.0,<6.3
 django-recaptcha>=2.0,<3.0
 
 # Charting (genre distribution on profile pages)
-graphos==0.3.4
+# NOTE: install as "django-graphos", not "graphos" — the "graphos" name on
+# PyPI has since been taken over by an unrelated terminal graph-visualization
+# tool. django-graphos is the correct package: it provides the `graphos`
+# module with `graphos.sources.simple` and `graphos.renderers.gchart` used
+# in blogsite/views.py.
+django-graphos>=0.3,<0.4
 
 # registration.views.RegistrationView (blogsite/user_auth_views.py)
 django-registration-redux>=2.8,<3.0
@@ -20,6 +30,6 @@ django-registration-redux>=2.8,<3.0
 # Timezone data
 pytz
 
-# MySQL driver — only needed when DB_ENGINE=mysql (production).
-# Not required for local development with DB_ENGINE=sqlite.
-mysqlclient>=1.4,<2.2
+# Required by django.db.models.ImageField (blogsite.Profile.picture,
+# quiz.QuizQuestion.image)
+Pillow>=8.0,<10.0
