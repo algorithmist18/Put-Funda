@@ -12,8 +12,14 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Load a local .env file if present (see .env.example). Real deployments
+# set these directly in the environment instead of committing a .env file.
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 
 def get_env(name, default=None):

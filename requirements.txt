@@ -10,6 +10,10 @@
 
 Django>=2.2,<3.0
 
+# Loads a local .env file (see .env.example) so settings.py doesn't need
+# environment variables exported by hand every session
+python-dotenv>=0.19,<1.0
+
 # Rich-text editor for blog posts
 django-ckeditor>=6.0,<6.3
 
