@@ -44,8 +44,7 @@ def index(request):
 	users = Profile.objects.all().order_by("-rating")[0:10] 
 
 	# Fetch leaderboard of previous contest 
-	previous_contest = Contest.objects.all().filter(time__lt = current_time, has_rating_updated = True).order_by('-time')[:1] 
-	print(previous_contest[0].id)
+	previous_contest = Contest.objects.all().filter(time__lt = current_time, has_rating_updated = True).order_by('-time')[:1]
 	players = list(Leaderboard.objects.all().filter(contest = previous_contest, rank__lt = 11))[:10]
 
 	# Fetch upcoming contests 
