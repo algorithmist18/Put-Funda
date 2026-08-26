@@ -35,7 +35,7 @@ def expected_rank(index, ratings, volatility):
 
 		if i != index:
 
-			expected_rank_sum += elo_probability(ratings[index], rating[i], volatility[index], volatility[i])
+			expected_rank_sum += elo_probability(ratings[index], ratings[i], volatility[index], volatility[i])
 
 	return expected_rank_sum
 
@@ -79,11 +79,10 @@ def update_rating(rating_array, volatility_array, ranking, correct_answers, no_o
 	new_volatility = [None] * no_of_players
 
 	# Average rating
-	rating_avg = 0 
-	i = 0 
+	rating_avg = 0
 
 	for rating in rating_array:
-		rating_avg += rating_array[i] 
+		rating_avg += rating
 
 	rating_avg /= no_of_players
 

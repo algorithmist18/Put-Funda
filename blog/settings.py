@@ -16,14 +16,28 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def get_env(name, default=None):
+    """Read a setting from the environment.
+
+    Raises a clear error at startup if a required secret (no default) is
+    missing, instead of silently falling back to a hardcoded value.
+    """
+    value = os.environ.get(name, default)
+    if value is None:
+        raise RuntimeError(
+            "Missing required environment variable: {}".format(name)
+        )
+    return value
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'wmyh(tjuvu0f#wyas&9mpb33sp!dk4j(!v49^8v*qoxbx6+c^j'
+SECRET_KEY = get_env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'algorithmist.pythonanywhere.com', 'qnondrum.pythonanywhere.com', 'www.putfunda.com']
 
@@ -89,11 +103,11 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'qnondrum$default',
-        'USER': 'qnondrum',
-        'PASSWORD': 'root1234',
-        'HOST': 'qnondrum.mysql.pythonanywhere-services.com',
-        'PORT': 3306,
+        'NAME': get_env('DB_NAME', 'qnondrum$default'),
+        'USER': get_env('DB_USER', 'qnondrum'),
+        'PASSWORD': get_env('DB_PASSWORD'),
+        'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
+        'PORT': int(get_env('DB_PORT', '3306')),
     }
 }
 
@@ -160,11 +174,11 @@ CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'putfundaofficial@gmail.com'
-EMAIL_HOST_PASSWORD = 'ojjttojillpfsmcu'
-EMAIL_PORT = 587
+EMAIL_HOST = get_env('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST_USER = get_env('EMAIL_HOST_USER', 'putfundaofficial@gmail.com')
+EMAIL_HOST_PASSWORD = get_env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = int(get_env('EMAIL_PORT', '587'))
 
 # Properties for re-captcha
-RECAPTCHA_PRIVATE_KEY = '6Lf1LWQhAAAAAD7HxM0TxDY0Cr-TMfcJtuo5vW3r'
-RECAPTCHA_PUBLIC_KEY = '6Lf1LWQhAAAAAFBp7VbX4faQoGN_l2EPJELUUxZI'
+RECAPTCHA_PRIVATE_KEY = get_env('RECAPTCHA_PRIVATE_KEY')
+RECAPTCHA_PUBLIC_KEY = get_env('RECAPTCHA_PUBLIC_KEY')
