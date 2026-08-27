@@ -13,13 +13,18 @@
 
 		<header class="pf-masthead">
 			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			{% if user.is_authenticated and user.profile.current_streak %}
+			<span class="pf-masthead-badge">&#128293; {{ user.profile.current_streak }} day streak</span>
+			{% else %}
 			<p class="pf-tagline">You don't know what you don't know.</p>
+			{% endif %}
 		</header>
 
 		<div class="pf-metabar">
 			{% if user.is_authenticated %}
 			<span class="pf-metabar-links">
 				<a class="pf-link" href="{% url 'home' %}">Home</a>
+				<a class="pf-link" href="{% url 'qotd_home' %}">Question of the day</a>
 				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
 				<a class="pf-link" href="{% url 'blog_home' %}">Blogposts</a>
 			</span>

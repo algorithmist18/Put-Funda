@@ -1,0 +1,74 @@
+{% extends 'qotd_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>Question of the day</span></div>
+
+	{% if not qotd %}
+
+		<div class="pf-card">
+			<p class="pf-note">There's no question of the day yet. Check back soon.</p>
+		</div>
+
+	{% elif not submission %}
+
+		<div class="pf-card">
+			<form method="post" action="{% url 'qotd_home' %}">
+				{% csrf_token %}
+
+				{% if qotd.image %}
+				<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ qotd.image.url }}" alt="">
+				{% elif qotd.image_url %}
+				<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ qotd.image_url }}" alt="">
+				{% endif %}
+
+				<p class="pf-question-text">{{ qotd.question }}</p>
+
+				<div class="pf-answer-row">
+					<input class="pf-answer-input" type="text" name="answer" autocomplete="off" placeholder="Your answer" autofocus />
+					<button class="pf-btn pf-btn--accent" type="submit">Submit</button>
+				</div>
+			</form>
+		</div>
+
+	{% else %}
+
+		<div class="pf-card">
+
+			{% if qotd.image %}
+			<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ qotd.image.url }}" alt="">
+			{% elif qotd.image_url %}
+			<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ qotd.image_url }}" alt="">
+			{% endif %}
+
+			<p class="pf-question-text">{{ qotd.question }}</p>
+
+			<div class="pf-tile-row" style="margin-top: 16px;">
+				<span class="pf-tile{% if submission.is_correct %} pf-tile--correct{% endif %}" style="width: auto; padding: 0 16px;">
+					{% if submission.is_correct %}Correct{% else %}Not quite{% endif %}
+				</span>
+			</div>
+
+			<p class="pf-note" style="margin-top: 14px;">
+				You answered <em>{{ submission.answer }}</em>.
+				{% if not submission.is_correct %}The answer was <em>{{ qotd.answer }}</em>.{% endif %}
+			</p>
+
+		</div>
+
+		<div class="pf-section-label"><span>Your streak</span></div>
+
+		<div class="pf-stats">
+			<div class="pf-stat">
+				<div class="pf-stat-value">{{ profile.current_streak|default:0 }}</div>
+				<div class="pf-stat-label">Current streak</div>
+			</div>
+			<div class="pf-stat">
+				<div class="pf-stat-value">{{ profile.longest_streak|default:0 }}</div>
+				<div class="pf-stat-label">Longest streak</div>
+			</div>
+		</div>
+
+	{% endif %}
+
+{% endblock %}

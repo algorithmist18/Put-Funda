@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Put Funda | Contests</title>
+		<title>Put Funda | Question of the day</title>
 		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	</head>
@@ -12,13 +12,16 @@
 
 		<header class="pf-masthead">
 			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
-			<p class="pf-tagline">Contests &amp; leaderboards.</p>
+			<p class="pf-tagline">One question a day.</p>
 		</header>
 
 		<div class="pf-metabar">
 			<span class="pf-metabar-links">
 				<a class="pf-link" href="{% url 'home' %}">Home</a>
-				<a class="pf-link" href="{% url 'qotd_home' %}">Question of the day</a>
+				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+				{% if can_release %}
+				<a class="pf-link" href="{% url 'qotd_release' %}">Release</a>
+				{% endif %}
 			</span>
 			<span>
 				{% if user.is_authenticated %}
@@ -29,7 +32,7 @@
 			</span>
 		</div>
 
-		<div class="pf-shell pf-shell--wide">
+		<div class="pf-shell">
 			{% block content %}
 			{% endblock %}
 		</div>

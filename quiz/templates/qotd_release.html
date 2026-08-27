@@ -1,0 +1,73 @@
+{% extends 'qotd_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>Release the question of the day</span></div>
+
+	<div class="pf-card">
+		<form method="post" action="{% url 'qotd_release' %}" enctype="multipart/form-data">
+			{% csrf_token %}
+
+			<div class="pf-field">
+				<label for="date">Date</label>
+				<input type="text" id="date" name="date" value="{{ todays_qotd.date|default:today|date:'Y-m-d' }}" placeholder="YYYY-MM-DD">
+				<div class="pf-field-hint">Defaults to today. Releasing for a date that already has a question replaces it.</div>
+			</div>
+
+			<div class="pf-field">
+				<label for="question">Question</label>
+				<textarea id="question" name="question" rows="4" required>{{ todays_qotd.question }}</textarea>
+			</div>
+
+			<div class="pf-field">
+				<label for="answer">Answer</label>
+				<input type="text" id="answer" name="answer" value="{{ todays_qotd.answer }}" required>
+			</div>
+
+			<div class="pf-field">
+				<label for="second_answer">Second answer</label>
+				<input type="text" id="second_answer" name="second_answer" value="{{ todays_qotd.second_answer }}">
+				<div class="pf-field-hint">Optional, for when there's more than one accepted answer.</div>
+			</div>
+
+			<div class="pf-field">
+				<label for="third_answer">Third answer</label>
+				<input type="text" id="third_answer" name="third_answer" value="{{ todays_qotd.third_answer }}">
+			</div>
+
+			<div class="pf-field">
+				<label for="image_url">Image URL</label>
+				<input type="text" id="image_url" name="image_url" value="{{ todays_qotd.image_url }}">
+			</div>
+
+			<div class="pf-field">
+				<label for="image">Or upload an image</label>
+				<input type="file" id="image" name="image">
+			</div>
+
+			<button type="submit" class="pf-btn pf-btn--accent pf-btn--block">Release</button>
+		</form>
+	</div>
+
+	{% if upcoming %}
+	<div class="pf-section-label"><span>Scheduled</span></div>
+	<div class="pf-card">
+		<table class="pf-table">
+			<thead><tr><th>Date</th><th>Question</th></tr></thead>
+			<tbody>
+				{% for q in upcoming %}
+				<tr>
+					<td>{{ q.date }}</td>
+					<td>{{ q.question|truncatechars:60 }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% endif %}
+
+	<p class="pf-center" style="margin-top: 16px;">
+		<a class="pf-link" href="{% url 'qotd_home' %}">Go play it</a>
+	</p>
+
+{% endblock %}
