@@ -7,7 +7,9 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
+from blogposts.models import Post
 from quiz.analysis_views import similarity_quotient
 from quiz.models import QuestionOfTheDay, QOTDSubmission
 
@@ -50,6 +52,18 @@ def update_streak(profile, qotd_date, answered_correctly):
 		profile.current_streak = 0
 
 	profile.save()
+
+
+def announce_qotd(qotd, releaser):
+
+	title = 'Question of the day: {}'.format(qotd.date.isoformat())
+	content = '<p>Today\'s question is live. <a href="{}">Go play it</a>.</p>'.format(
+		reverse('qotd_home')
+	)
+
+	Post.objects.update_or_create(
+		title = title, author = releaser, defaults = {'content': content, 'anon': False}
+	)
 
 
 @login_required
@@ -118,6 +132,9 @@ def release_qotd(request):
 		if image:
 			qotd.image = image
 			qotd.save()
+
+		if release_date == today:
+			announce_qotd(qotd, request.user)
 
 		return redirect('qotd_release')
 
