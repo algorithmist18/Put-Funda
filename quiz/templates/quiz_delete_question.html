@@ -1,49 +1,26 @@
-{% extends 'quiz_delete_question_base.html' %}
+{% extends 'quiz_homepage_base.html' %}
 
 {% block content %}
-	
-	<!-- Navigation bar --> 
 
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		
-	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-	  		
-	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
-		
-	</nav>
+	<div class="pf-section-label pf-section-label--first"><span>Delete question</span></div>
 
-	<!-- Question delete form --> 
-
-	<center>
-
-	<div id = "question-delete">
-
-		<form method = "post" action = "{% url 'delete_question' %}?question_id={{question.id}}">
-			
+	<div class="pf-card" id="question-delete">
+		<form method="post" action="{% url 'delete_question' %}?question_id={{ question.id }}">
 			{% csrf_token %}
 
-			<textarea id = "question-input" rows = "5" cols = "70" name = "question" readonly>{{question.question}}</textarea>
+			<div class="pf-field">
+				<label>Question</label>
+				<textarea rows="5" cols="70" name="question" readonly>{{ question.question }}</textarea>
+			</div>
 
-			<br> <br> 
+			<div class="pf-field">
+				<label>Answer</label>
+				<input type="text" name="answer" value="{{ question.answer }}" readonly>
+			</div>
 
-			Answer:
-
-			<br><br>
-
-			<input type = "text" name = "answer" value = "{{question.answer}}" readonly>
-
-			<br> <br> 
-
-			<input type = "submit" name = "action" value = "Confirm delete">
-
-			<input type = "submit" name = "action" value = "Back">
-						
-			<br> <br> 
-
+			<button type="submit" name="action" value="Confirm delete" class="pf-btn pf-btn--accent">Confirm delete</button>
+			<button type="submit" name="action" value="Back" class="pf-btn">Back</button>
 		</form>
-
 	</div>
-
-	</center>
 
 {% endblock %}

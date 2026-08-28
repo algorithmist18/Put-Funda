@@ -1,182 +1,87 @@
-<!DOCTYPE html>
+{% extends 'quiz_homepage_base.html' %}
 
-<style type="text/css">
+{% block content %}
 
+	<div class="pf-section-label pf-section-label--first"><span>Schedule a contest</span></div>
+	<p id="schedule-message" class="pf-note" style="margin-bottom: 16px;">Schedule the quiz timings here.</p>
 
-	#nav
-	{
-		background-color: #34495E;
-		color: white;
-	}
+	<div class="pf-card" id="quiz-schedule">
+		<form method="post" action="{% url 'schedule_quiz' %}" enctype="multipart/form-data">
+			{% csrf_token %}
 
-	#logout-button
-	{
-		float: right;
-		margin-right: 20px;
-	}
-
-	#quiz-schedule
-	{
-		border-style: solid;
-		border-color: gray;
-		border-width: 1px;
-		width: 500px;
-		font-size: 13px;
-		margin-top: 50px;
-	}
-
-	#alert
-	{
-		width: 500px;
-	}
-
-</style>
-
-<html>
-	
-	<head>
-		<title> Put Funda | Schedule a Quiz. </title>
-	</head>
-	
-	<body style="font-family: 'Open Sans', sans-serif;">
-		
-		<!-- Latest compiled and minified CSS -->
-		
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
-		<!-- jQuery library -->
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-
-		<!-- Latest compiled JavaScript -->
-		
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-		<!--Google font-->
-			
-		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-			
-
-		<!-- Navigation bar --> 
-
-		<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		
-	  		<a style="color: white; font-size: 13px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-	  		
-	  		<a style="color: white; font-size: 13px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
-		
-		</nav>
-
-		<!-- Quiz schedule form --> 
-
-
-		<center>
-
-			<p id = "schedule-message" style = "margin-top: 50px; font-size: 13px;"> Schedule the Quiz timings here. </p>
-
-			<div id = "quiz-schedule">
-
-				<form method = "post" action = "{% url 'schedule_quiz' %}" enctype="multipart/form-data">
-					
-					<br>
-
-					{% csrf_token %} 
-
-					<b>Genre:</b> <br><br><input type = "text" name = "genre" placeholder = "Genre" /><br><br>
-
-					<b>Date:</b> <br><br><input id = "date" type = "date" name = "date" required/><br><br>
-
-					<b>Time:</b> <br><br><input id = "time" type = "time" name = "time" required/><br><br>
-
-					<span id = "confirm-date" style = "font-size: 12px;"></span></p><br>
-
-					<b>Seconds per question:</b> <br><br><input id="number" name="seconds-per-question" placeholder="30"/><br><br>
-
-					<b>Valid for (minutes):</b> <br><br><input id="number" name="valid-for" placeholder="30" min="30" /><br><br>
-
-					<b>CSV file:</b> <br><br>
-
-					<p> Please use this 
-						<a href = "https://docs.google.com/spreadsheets/d/1EzRsG0BmTXG0kycBpjaY2H1FbmdjdbKs5NXGpuXAoLs/edit?usp=sharing"> sheet format </a> 
-					for uploading CSV files </p>
-
-					<input id = "question-file" type = "file" name = "tsv-question-file"/><br><br>
-
-
-
-					<span style="font-size: 12px;">1 day: 1440 mins</span><br><br>
-
-					<input type = "submit" name = "Schedule"/><br><br>
-
-				</form>
-
-				<br> 
-
+			<div class="pf-field">
+				<label>Genre</label>
+				<input type="text" name="genre" placeholder="Genre">
 			</div>
 
-			<br>
-			
-			<p style = "font-size: 12px;"> The time will be considered invalid if it is within 15 minutes (before/after) another contest. </p>
-						
-		</center>
+			<div class="pf-field">
+				<label for="date">Date</label>
+				<input id="date" type="date" name="date" required>
+			</div>
 
-	</body>
+			<div class="pf-field">
+				<label for="time">Time</label>
+				<input id="time" type="time" name="time" required>
+				<div class="pf-field-hint" id="confirm-date"></div>
+			</div>
 
-</html>
+			<div class="pf-field">
+				<label>Seconds per question</label>
+				<input name="seconds-per-question" placeholder="30">
+			</div>
 
-<script type="text/javascript">
+			<div class="pf-field">
+				<label>Valid for (minutes)</label>
+				<input name="valid-for" placeholder="30" min="30">
+				<div class="pf-field-hint">1 day: 1440 mins</div>
+			</div>
 
-	// Generate AJAX request for validating time 
-	function validateContestTime()
-	{
-		var date = $('#date').val(); 
-		var time = $('#time').val();
+			<div class="pf-field">
+				<label>CSV file</label>
+				<div class="pf-field-hint">Please use this <a class="pf-link" href="https://docs.google.com/spreadsheets/d/1EzRsG0BmTXG0kycBpjaY2H1FbmdjdbKs5NXGpuXAoLs/edit?usp=sharing">sheet format</a> for uploading CSV files.</div>
+				<input id="question-file" type="file" name="tsv-question-file">
+			</div>
 
-		var contestTime = date + ' ' + time;
+			<button type="submit" name="Schedule" class="pf-btn pf-btn--accent">Schedule</button>
+		</form>
+	</div>
 
-		console.log('Called'); 
+	<p class="pf-note pf-muted" style="margin-top: 12px;">The time will be considered invalid if it is within 15 minutes (before/after) another contest.</p>
 
-		// Make AJAX call to backend
-		if(time != null && date != null)
-		{
-			$.get("{% url 'is_valid_date' %}", {contestTime : contestTime},
+	<script type="text/javascript">
 
-				function (data)
-				{
-					if(data['validDate'] == 'YES')
-					{
-						$('#confirm-date').html(data['message']); 
-					} 
-					else
-					{
-						$('#confirm-date').html(data['message']); 
+		function validateContestTime() {
+
+			var date = $('#date').val();
+			var time = $('#time').val();
+			var contestTime = date + ' ' + time;
+
+			if (time != null && date != null) {
+
+				$.get("{% url 'is_valid_date' %}", {contestTime: contestTime},
+
+					function (data) {
+						$('#confirm-date').html(data['message']);
 					}
-				}
-
-			);
+				);
+			}
 		}
-	}
 
-	function onChange()
-	{
-		$('#date').change(function() {validateContestTime()}); 
-		$('#time').change(function() {validateContestTime()});
-	}
+		function onChange() {
 
-	$(document).ready(onChange); 
+			$('#date').change(function () { validateContestTime() });
+			$('#time').change(function () { validateContestTime() });
+		}
 
-	// Display alert 
+		$(document).ready(onChange);
 
-	let params = new URLSearchParams(location.search); 
+		let params = new URLSearchParams(location.search);
+		var message = params.get('message');
 
-	var message = params.get('message'); 
+		if (message && message.length > 0) {
+			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> Your contest does not have a valid time or it might be clashing with a different contest.</div>").insertBefore("#schedule-message");
+		}
 
-	console.log(message); 
+	</script>
 
-	if(message.length > 0)
-	{
-		$("<center><div id = 'alert' class = 'alert alert-warning' role = 'alert'><strong>Error!</strong> Your contest does not have a valid time or it might be clashing with a different contest.</div></center>").insertBefore("#schedule-message");
-	}
-
-</script>
+{% endblock %}

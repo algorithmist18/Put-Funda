@@ -1,63 +1,40 @@
-{% extends 'quiz_edit_question_base.html' %}
+{% extends 'quiz_homepage_base.html' %}
 
 {% block content %}
-	
-	<!-- Navigation bar --> 
 
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		
-	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-	  		
-	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
-		
-	</nav>
+	<div class="pf-section-label pf-section-label--first"><span>Edit question</span></div>
 
-	<center>
+	<div class="pf-card" id="question-box">
+		<form method="post" enctype="multipart/form-data" action="{% url 'edit_question' %}?question_id={{ question.id }}">
+			{% csrf_token %}
 
-		<div id = "question-box">
+			<div class="pf-field">
+				<label id="question-input">Question</label>
+				<textarea rows="5" cols="70" name="question" required>{{ question.question }}</textarea>
+			</div>
 
-			<center>
+			<div class="pf-field">
+				<label>Image</label>
+				<input type="file" name="image">
+			</div>
 
-				<form method = "post" enctype="multipart/form-data" action = "{% url 'edit_question' %}?question_id={{question.id}}">
-							
-					{% csrf_token %}
+			<div class="pf-field">
+				<label>Answer</label>
+				<input type="text" name="answer" value="{{ question.answer }}" required>
+			</div>
 
-					<textarea id = "question-input" rows = "5" cols = "70" name = "question" required>{{question.question}}</textarea>
+			<div class="pf-field">
+				<label>Second answer</label>
+				<input type="text" name="second_answer" value="{{ question.second_answer }}">
+			</div>
 
-					<br> <br> 
+			<div class="pf-field">
+				<label>Third answer</label>
+				<input type="text" name="third_answer" value="{{ question.third_answer }}">
+			</div>
 
-					<input style = "margin-left: 65px;" type = "file" name = "image" />
-
-					<br>
-
-					Answer:
-
-					<br>
-
-					<br>
-
-					<input type = "text" name = "answer" value = "{{question.answer}}" required = "required">
-
-					<br> <br> 
-
-					<input type = "text" name = "second_answer" value = "{{question.second_answer}}" />
-
-					<br><br>
-
-					<input type = "text" name = "third_answer" value = "{{question.third_answer}}" />
-
-					<br><br> 
-
-					<input type = "submit" name = "action" value = "Edit question">
-					
-					<br> <br> 
-
-				</form>
-
-			</center>
-
-		</div>
-
-	</center>
+			<button type="submit" name="action" value="Edit question" class="pf-btn pf-btn--accent">Save</button>
+		</form>
+	</div>
 
 {% endblock %}

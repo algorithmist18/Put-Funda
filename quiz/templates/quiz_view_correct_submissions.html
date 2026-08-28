@@ -1,63 +1,30 @@
 {% extends 'quiz_display_leaderboard_base.html' %}
 
 {% block content %}
-	
-	<!-- Navigation bar --> 
-		
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-	</nav>
 
-	<!-- Display leaderboard here -->
+	<div class="pf-section-label pf-section-label--first"><span>Correct answers for {{ question.answer }}</span></div>
 
-	<center>
-
-		<div style = "font-size: 12px;" id = "submissions">
-
-			<!-- Leaderboard -->
-
-			<p> Correct answers for {{ question.answer }} </p>
-
-			<table id = "table-leaderboard" class = "table" style="width:800px;">
-				
-				<thead>
-				  
-				  <tr>
-					
-				   <th>User</th>
-			
-				   <th>Correct Answer</th>
-				
-				   <th>Answer</th>
-
-				   <th>Time taken(secs)</th>
-				  
-				  </tr>
-
-				</thead>
-
+	<div class="pf-card">
+		<table class="pf-table" id="table-leaderboard">
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Correct answer</th>
+					<th>Answer</th>
+					<th>Time taken (secs)</th>
+				</tr>
+			</thead>
+			<tbody>
 				{% for submission in submissions %}
-				  
-				  <tr>
-
-				  	<td><a href="{% url 'show_user' %}?user={{u.username}}">{{submission.user.username}}</a></td>
-				 
-				  	<td>{{submission.question.answer}}</td>
-				 
-				  	<td>{{submission.answer}}</td>
-				 
-				  	<td class = "time-taken">{{submission.time_taken}}</td>
-				 
-				   </tr>
-			
+				<tr>
+					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ submission.user.username }}">{{ submission.user.username }}</a></td>
+					<td>{{ submission.question.answer }}</td>
+					<td>{{ submission.answer }}</td>
+					<td class="time-taken">{{ submission.time_taken }}</td>
+				</tr>
 				{% endfor %}
-			
-			</table>
+			</tbody>
+		</table>
+	</div>
 
-		</div>
-
-	</center>
-	</script>
-
-{% endblock %}	
+{% endblock %}

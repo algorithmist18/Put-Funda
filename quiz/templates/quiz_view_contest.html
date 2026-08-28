@@ -1,343 +1,200 @@
-{% extends 'quiz_view_contest_base.html' %}
+{% extends 'quiz_homepage_base.html' %}
 
 {% block content %}
 
-	<!-- Navigation bar --> 
+	<div class="pf-section-label pf-section-label--first"><span>{{ contest.genre }}</span></div>
 
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	  		
-	  	<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </a>
+	{% if request.user.username == 'Avinash' %}
+	<p class="pf-note" style="margin-bottom: 12px;">
+		<a class="pf-link" href="{% url 'update_rating' %}?contest_id={{ contest.id }}" id="update-rating-button">Update ratings</a>
+		&nbsp;&middot;&nbsp;
+		<a class="pf-link" href="{% url 'restore_rating' %}?contest_id={{ contest.id }}" id="restore-rating-button">Restore ratings</a>
+	</p>
+	{% endif %}
 
-	  	<span>
-  			<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>	
-  			<a style = "color: white; font-size: 12px;" id = "quiz-button" class = "navbar-brand" href = "{% url 'quiz_home' %}"> Quiz </a>
-	  		<a id = "button" style = "color: white;" class = "navbar-brand" href = "#"> | </a>
-	  		<a style = "color: white; font-size: 12px;" id = "blog-button" class = "navbar-brand" href = "{% url 'blog_home' %}"> Blogs </a>
-  		</span>
-	  		
-	  	<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>  	
-		
-	</nav>	
+	{% if show_questions == 'YES' %}
 
-		{% if request.user.username == 'Avinash' %}
-			<center>
-			<p>
-				<a href = "{% url 'update_rating' %}?contest_id={{contest.id}}" id = "update-rating-button" style="font-size: 12px;">Update ratings</a> 
-				|
-				<a href = "{% url 'restore_rating' %}?contest_id={{contest.id}}" id = "restore-rating-button" style="font-size: 12px;">Restore ratings</a>
-			</p>
-			</center>
-		{% endif %}
+		<p class="pf-note" style="margin-bottom: 16px;">
+			Edit the contest <a class="pf-link" href="{% url 'edit_contest' %}?contest_id={{ contest.id }}&user={{ user.username }}">here</a>
+			&middot; Check the leaderboard <a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">here</a>
+			&middot; View response details <a class="pf-link" href="{% url 'question_analytics' %}?contest_id={{ contest.id }}">here</a>
+		</p>
 
-		{% if show_questions == 'YES' %}
-
-		<center>
-			<p>
-				<span style = "font-size: 12px;">
-					Edit the contest
-					<a href = "{% url 'edit_contest' %}?contest_id={{contest.id}}&user={{user.username}}">
-						here
-					</a>
-				</span> 
-				|
-				<span style = "font-size: 12px;">
-					Check the leaderboard
-					<a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}">
-						here
-					</a>
-				</span>
-				|
-				<span style = "font-size: 12px;">
-					View response details
-					<a href = "{% url 'question_analytics' %}?contest_id={{contest.id}}">
-						here
-					</a>
-				</span>
-			</p>
-		</center>
-
-		<div id = "quiz-contest">
-			
-			<p style = "margin-top: 10px; font-size: 16px; margin-left: 20px;"> {{contest.genre}} </p>
+		<div id="quiz-contest">
 
 			{% for question in questions %}
+			<div class="pf-card">
 
-				<div id = "question">
+				{% if question.image %}
+				<img class="pf-question-image" style="max-width: 120px; float: right;" src="{{ question.image.url }}">
+				{% elif question.image_url %}
+				<img class="pf-question-image" style="max-width: 120px; float: right;" src="{{ question.image_url }}">
+				{% endif %}
 
-					{% if question.image %}
+				<p class="pf-question-text">{{ question.question }}</p>
+				<p class="pf-note"><strong>Answer:</strong> {{ question.answer }}</p>
 
-						<div id = "image-holder">
-							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image.url}}">
-						</div>
-
-					{% elif question.image_url %}
-
-						<div id = "image-holder">
-							<img id = "img-preview" alt = "image" width = "60" height = "60" src = "{{question.image_url}}">
-						</div>
-
-					{% endif %}
-
-					<p style = "margin-left: 10px; margin-top: 10px;"> {{question.question}} </p> 
-
-					<p style = "margin-left: 10px; margin-top: 10px;" > 
-						<strong> Answer: </strong> 
-						{{question.answer}} 
-					</p>
-
-					<a style = "margin-left: 10px; margin-top: 10px;" href = "{% url 'edit_question' %}?question_id={{question.id}}"> Edit </a>
-
-					| 
-
-					<a style = "margin-top: 10px;" href = "{% url 'delete_question' %}?question_id={{question.id}}"> Delete  </a>
-
-				</div>
-
+				<a class="pf-link" href="{% url 'edit_question' %}?question_id={{ question.id }}">Edit</a>
+				&nbsp;&middot;&nbsp;
+				<a class="pf-link" href="{% url 'delete_question' %}?question_id={{ question.id }}">Delete</a>
+			</div>
 			{% endfor %}
 
-			
-			<a href = "contest?contest_id={{contest.id}}" style = "float: right; margin-right: 10px;" > Add question </a> <br>
-		
+			<a class="pf-btn pf-btn--accent" href="contest?contest_id={{ contest.id }}">Add question</a>
 		</div>
+
+	{% else %}
+
+		{% if played_contest == 'YES' %}
+
+			<p class="pf-note">You have already played the contest.</p>
+			<p class="pf-note pf-muted">You answered {{ correct_answers }} questions correctly in {{ time_taken }} seconds.</p>
+			<p class="pf-note" style="margin-bottom: 16px;">
+				View leaderboard <a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">here</a>
+				&middot; View response details <a class="pf-link" href="{% url 'question_analytics' %}?contest_id={{ contest.id }}">here</a>
+			</p>
+
+			<div class="pf-card">
+				<table class="pf-table" id="table-submission">
+					<thead>
+						<tr>
+							<th>Question</th>
+							<th>Your answer</th>
+							<th>Correct answer</th>
+							<th>Points given</th>
+							<th>Fraction of people answering correctly</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for sub in submission %}
+						<tr>
+							<td id="question-row">{{ sub.0 }}</td>
+							<td>{{ sub.1 }}</td>
+							<td>{{ sub.2 }}</td>
+							<td>{{ sub.3 }}</td>
+							<td class="accuracy">{{ sub.4 }} / {{ sub.5 }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 
 		{% else %}
 
-			<center>
-
-					{% if played_contest == 'YES' %}
-
-						<p style = "margin-top: 30px;"> You have already played the contest. </p> 
-						<p style = "font-size: 12px;"> You have answered {{correct_answers}} questions correctly in {{time_taken}} seconds. </p> 
-						<p style = "font-size: 12px;"> 
-							<span>
-								View leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here </a>
-							</span>
-							|
-							<span style = "font-size: 12px;">
-								View response details
-								<a href = "{% url 'question_analytics' %}?contest_id={{contest.id}}">
-									here
-								</a>
-							</span>
-						</p>
-
-						<!--Display submissions and correct answer--> 
-
-						<table class = "table" style = "width: 1000px; font-size: 12px;" id = "table-submission">
-							
-							<thead>
-								
-								<tr>
-									
-									<th>Question</th>
-
-									<th>Your answer</th>
-
-									<th>Correct answer</th>
-
-									<th>Points given</th> 
-				
-									<th>Fraction of people answering correctly</th>
-				
-								</tr>
-
-							</thead>
-
-							{% for sub in submission %}
-
-								<tr>
-				  					<td id = "question-row">{{sub.0}}</td>
-				  					<td id = "your-answer">{{sub.1}}</td>
-				  					<td id = "correct-answer">{{sub.2}}</td>
-				  					<td id = "points">{{sub.3}}</td>
-				  					<td class = "accuracy">{{sub.4}} / {{sub.5}}</td>
-				   				</tr>
-
-							{% endfor %}
-						
-						</table>
-					
-					{% else %}
-
-					<div id = "contest-update">
-
-						<p style = "margin-top: 30px;"> This contest is to be scheduled at {{contest.time}} </p>
-						<p id = "contest-show" style = "margin-top: 10px;"> Time to go to contest: <span id = "time"> </span></p><br>
-					
-					</div>
-
-					{% endif %}
-					
-					<!--
-					<p id = "show-leaderboard"> Find leaderboard <a href = "{% url 'leaderboard' %}?contest_id={{contest.id}}"> here. </a> </p>
-					-->
-
-			</center>
+			<div class="pf-card">
+				<p class="pf-note">This contest is to be scheduled at {{ contest.time }}.</p>
+				<p class="pf-note" id="contest-show">Time to go to contest: <span id="time"></span></p>
+			</div>
 
 		{% endif %}
 
-	<script type = "text/javascript">
+	{% endif %}
+
+	<script type="text/javascript">
 
 		var timeTillContestValidStr = "{{contest.valid_for}}";
-		var timeTillContestValid = Number(timeTillContestValidStr); 
+		var timeTillContestValid = Number(timeTillContestValidStr);
 
-		// Function to fix standard time 
+		function toJSTime(contestTime) {
 
-		function toJSTime(contestTime)
-		{		
-			var tokens = contestTime.split(" "); 
+			var tokens = contestTime.split(" ");
 
-			// Transforming date-time standards from Django to JavaScript  
-
-			if(tokens[tokens.length - 1] == "noon")
-			{
-				tokens[tokens.length - 1] = "12:00"; 
-				tokens.push("p.m."); 
+			if (tokens[tokens.length - 1] == "noon") {
+				tokens[tokens.length - 1] = "12:00";
+				tokens.push("p.m.");
+			} else if (tokens[tokens.length - 1] == "midnight") {
+				tokens[tokens.length - 1] = "12:00";
+				tokens.push("a.m");
 			}
-			else if(tokens[tokens.length - 1] == "midnight")
-			{
-				tokens[tokens.length - 1] = "12:00"; 
-				tokens.push("a.m"); 
-			}
-			
-			if(tokens[tokens.length - 1] == "p.m.")
-			{
-				var time = tokens[tokens.length - 2]; 
 
-				// Change here
+			if (tokens[tokens.length - 1] == "p.m.") {
 
+				var time = tokens[tokens.length - 2];
 				var x = time.indexOf(":");
 
-				if(x == -1)
-				{
-					// No minutes 
-
-					x = time.length; 
-
+				if (x == -1) {
+					x = time.length;
 				}
 
 				var hour = time.substring(0, x);
-                var mins = time.substring(x+1);
+				var mins = time.substring(x + 1);
 
-                if(hour == 12)
-                {
-                	hour = 0; 
-                }
-
-				if(mins != null)
-				{
-					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":" + mins;
+				if (hour == 12) {
+					hour = 0;
 				}
-				else
-				{
+
+				if (mins != null) {
+					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":" + mins;
+				} else {
 					tokens[tokens.length - 2] = parseInt(hour) + 12 + ":00";
 				}
 			}
-				
-			var time = ""; 
 
-			for(i=0; i<tokens.length - 1; i++)
-			{
-				time += tokens[i] + " "; 
+			var time = "";
+
+			for (i = 0; i < tokens.length - 1; i++) {
+				time += tokens[i] + " ";
 			}
 
-			time = time.trim(); 
+			time = time.trim();
 
-			return new Date(time).getTime(); 
+			return new Date(time).getTime();
 		}
 
-		function onEnter()
-		{
-			var contestTime = "{{contest.time}}"; 
+		function onEnter() {
 
-			console.log('Contest time = ' + contestTime); 
+			var contestTime = "{{contest.time}}";
+			var tokens = contestTime.split(" ");
+			contestTime = toJSTime(contestTime);
 
-			// Split contest time into tokens 
+			var x = setInterval(function () {
 
-			var tokens = contestTime.split(" "); 
-
-			// Transforming date-time standards from Django to JavaScript  
-
-			contestTime = toJSTime(contestTime); 
-
-			// Designing the countdown timer 
-			var x = setInterval(function()
-			{
-				var currentTime = new Date().getTime(); 
-
+				var currentTime = new Date().getTime();
 				var distance = contestTime - currentTime;
 
-				// Extract days, hours, minutes and seconds 
 				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
 				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-				// Display the result  
-				if(distance <= 0)
-				{
-					// Go to contest
-					$("<p> Play contest <a onclick = 'newWindow()'> here. </a> </p>").replaceAll("#contest-show"); 
-				}
-				else
-				{
-					// Show waiting time 
-					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's'); 
+				if (distance <= 0) {
+					$("<p>Play contest <a onclick='newWindow()'>here.</a></p>").replaceAll("#contest-show");
+				} else {
+					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's');
 				}
 
-			}, 1000); 
+			}, 1000);
 		}
 
-		$(document).ready(onEnter); 
+		$(document).ready(onEnter);
 
-		function newWindow()
-		{
-			// Setting time to zero 
-			
-			localStorage.storedTime = 0;  
-			
-			// Open new popup window 
+		function newWindow() {
 
-			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}&instruction=show", "Play contest", 
-						directories=0, titlebar=0, toolbar=0, menubar=0, width=400, height=350); 
+			localStorage.storedTime = 0;
+
+			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}&instruction=show", "Play contest",
+				directories = 0, titlebar = 0, toolbar = 0, menubar = 0, width = 400, height = 350);
 		}
 
-		// Display leaderboard after 10 minutes have passed 
-
-		var contestTime = toJSTime("{{contest.time}}"); 
-		var currentTime = new Date().getTime(); 
-
-		console.log(new Date()); 
-
+		var contestTime = toJSTime("{{contest.time}}");
+		var currentTime = new Date().getTime();
 		var distance = currentTime - contestTime;
-
-		// Extract minutes 
-
 		var minutes = Math.floor((distance / 1000) / 60);
 
-		if(minutes > timeTillContestValid)
-		{
-			$("<p> The contest is over. Check leaderboard <a href = '{% url 'leaderboard' %}?contest_id={{contest.id}}'> here. </a><span style = 'font-size: 12px;'>View response details <a href = '{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></span></p>")
-			.replaceAll("#contest-show"); 
+		if (minutes > timeTillContestValid) {
+			$("<p>The contest is over. Check leaderboard <a href='{% url 'leaderboard' %}?contest_id={{contest.id}}'>here.</a> View response details <a href='{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></p>")
+				.replaceAll("#contest-show");
 		}
 
-		let params = new URLSearchParams(location.search); 
+		let params = new URLSearchParams(location.search);
+		var message = params.get('msg');
 
-		var message = params.get('msg') 
-
-		// Give alert warning based on message 
-
-		if(message == 'edit_success')
-		{
-			$("<center><div id = 'alert' class = 'alert alert-success' role = 'alert'><strong>Success!</strong> Your contest was edited.</div></center>").insertBefore("#quiz-contest");
-		}
-		else if(message == 'bad_request')
-		{
-			$("<center><div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Error!</strong> It seems there was an illegal request made.</div></center>").insertBefore("#quiz-contest");
-		}
-		else if(message == 'contest_past')
-		{
-			$("<center><div id = 'alert' class = 'alert alert-danger' role = 'alert'><strong>Error!</strong> You cannot edit the contest now.</div></center>").insertBefore("#quiz-contest");
+		if (message == 'edit_success') {
+			$("<div class='pf-alert pf-alert--success'><strong>Success!</strong> Your contest was edited.</div>").insertBefore("#quiz-contest");
+		} else if (message == 'bad_request') {
+			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> It seems there was an illegal request made.</div>").insertBefore("#quiz-contest");
+		} else if (message == 'contest_past') {
+			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> You cannot edit the contest now.</div>").insertBefore("#quiz-contest");
 		}
 
 	</script>

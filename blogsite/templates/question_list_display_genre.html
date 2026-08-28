@@ -1,118 +1,115 @@
-{% extends 'question_list_genre.html' %}
+{% extends 'home.html' %}
 {% block content %}
-	
-	<center>
 
-		<p style = "font-size: 12px;">This is the Questions feed.<br><br> If you want to play contests, head over <a href = "{% url 'quiz_home' %}">here.</a></p>
+	<div class="pf-section-label pf-section-label--first"><span>Questions feed</span></div>
+	<p class="pf-note" style="margin-bottom: 16px;">Ask a question <a class="pf-link" href="{% url 'ask' %}">here</a>. Want to play contests? Head over <a class="pf-link" href="{% url 'quiz_home' %}">here</a>.</p>
 
-	</center>
-	
-	<div id="block">
-	{% for questions in q_list %}
-		<div id = "question">
-			<form id="ans" method="post">
-			{% csrf_token %}
-			<div id = "content">
-				{% if not questions.author %}
-					<p class = "q-content" style = "font-size: 14px;"> {{questions.question|safe}} <h5 class = "q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> <a style = "font-size: 12px;" href="{{question.title}}"> {{questions.title}} </a>
-					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
-						<i class = "fas fa-arrow-up"></i>
-						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
-					</button></p>
-				{% else %}
-					<p class = "q-content" style = "font-size: 14px;"> {{questions.question|safe}} <h5 class = "q-time"> posted on {{questions.time}} by <a href = "{% url 'show_user'%}?user={{questions.author}}">{{ questions.author }}</a></h5> <a style = "font-size: 12px;" href="{{question.title}}"> {{questions.title}} </a>
-					<button class = "like-button" type = "button" style = "font-size: 12px;" question = "{{questions.question}}"> 
-						<i class = "fas fa-arrow-up"></i>
-						<span class = "like-count"> &nbsp; {{ questions.likes }} </span>
-					</button></p>
-				{% endif %}
+	<div class="pf-grid">
 
-				{% if comments != None %}
-					<div class = "comments" style = "font-size: 12px;">
-					{% if questions.question == ques %}
-						{% for comment in comments %}
-								<p> _______________________________________________ </p>
-								<p id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-								<p style = "font-size: 12px;" id = "comment-content"> {{comment.content}}</p>			
-						{% endfor %}
+		<div>
+			{% for questions in q_list %}
+			<div class="pf-card">
+				<form method="post">
+					{% csrf_token %}
+
+					<p class="pf-question-text">{{ questions.question|safe }}</p>
+					<p class="pf-post-meta">
+						posted {{ questions.time }} by
+						{% if not questions.author %}admin{% else %}<a class="pf-link" href="/users?user={{ questions.author }}">{{ questions.author }}</a>{% endif %}
+						&middot; <a class="pf-link" href="?genre={{ questions.title }}">{{ questions.title }}</a>
+					</p>
+
+					<button type="button" class="pf-btn like-button" question="{{ questions.id }}">&uarr; <span class="like-count">{{ questions.likes }}</span></button>
+
+					<input type="hidden" name="questions" value="{{ questions.question }}">
+
+					{% if comments != None and questions.question == ques %}
+						<div style="margin-top: 12px;">
+							{% for comment in comments %}
+							<p class="pf-note" style="border-top: 1px solid var(--pf-hairline); padding-top: 8px; margin-top: 8px;">
+								<a class="pf-link" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
+								<span class="pf-muted">{{ comment.time }}</span><br>
+								{{ comment.content }}
+							</p>
+							{% endfor %}
+						</div>
 					{% else %}
-					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
-					<span id = "comment-count">({{questions.comments}})</span>
-					<br>
+						<button type="submit" name="act" value="Show comments" class="pf-btn">Show comments ({{ questions.comments }})</button>
 					{% endif %}
+
+					<div class="pf-field" style="margin-top: 10px;">
+						<textarea name="comment" placeholder="Write a comment..."></textarea>
 					</div>
-				{% else %}
-					<input id = "show-comments" class = "btn btn-link" type = "submit" name = "act" value = "Show comments"/>
-					<span style = "font-size: 12px; margin-left: -10px;" id = "comment-count">({{questions.comments}})</span>
-					<br>
+
+					<button type="submit" name="act" value="Submit" class="pf-btn">Submit</button>
+
+					{% if author == questions.author.username %}
+					<button type="submit" name="act" value="Delete" class="pf-btn">Delete</button>
+					<button type="submit" name="act" value="Edit" class="pf-btn">Edit</button>
+					{% endif %}
+
+					{% for k, v in q_times.items %}
+						{% if k == questions.question and v > 96 %}
+						<button type="submit" name="show" value="Show answer" class="pf-btn">Show answer</button>
+						{% endif %}
+					{% endfor %}
+				</form>
+
+				{% if answer != None and questions.answer == answer %}
+				<p class="pf-note" style="margin-top: 10px;"><strong>Answer:</strong> {{ answer }}</p>
 				{% endif %}
-
-				<br>
-				<textarea style = "font-size: 12px;" cols = '30' name = "comment" placeholder = "Write a comment..."></textarea>
-				<br>
-
-				<input type = "hidden" name = "questions" value="{{questions.question}}">		
-			
-				<input style = "font-size: 12px;" class = "comment-button" type = "submit" name = "act" value = "Submit">
-				{% if author == questions.author.username %}
-					<input class = "btn btn-link" id = "delete-button" type = "submit" name = "act" value = "Delete">
-					<input class = "btn btn-link" id = "edit-button" name = "act" type = "submit" value = "Edit">
-				{% endif %}
-				<br>
-				<br>				
 			</div>
-
-				<div id = "show-answer">
-				{% for k, v in q_times.items %}
-						{% if k == questions.question %}
-							{% if v > 96 %}
-								<input style = "font-size: 12px;" class = "btn btn-link" type = "submit" name = "show" value = "Show answer">
-							{% endif %}
-						{% endif %}	
-				{% endfor %}
-			</form>
-			</div>
-			{% if answer != None %}
-				{% if questions.answer == answer %}
-					<p style = "margin-top: 10px; font-size: 12px;" id = "answer"> <strong>Answer:</strong> {{ answer }} </p>
-				{% endif %} 
-			{% endif %}
-			<br>
-			<br>
+			{% empty %}
+			<p class="pf-note pf-muted">No questions in this genre yet.</p>
+			{% endfor %}
 		</div>
-	{% endfor %}
-	</div>
-	<div id="tags">
-	{% for genre in g_list %}
-		{% if genre != None %}
-		<a class="genre" href="?genre={{genre}}">{{genre}}</a>
-		<br>
-		<br>
-		{% endif %}
-	{% endfor %}
+
+		<div>
+			<div class="pf-section-label pf-section-label--first"><span>Top rated</span></div>
+			<div class="pf-card">
+				{% for top_rated_user in top_rated_users %}
+				<p class="pf-note" style="margin: 0 0 6px;"><a class="pf-link" href="users?user={{ top_rated_user.user.username }}">{{ top_rated_user.user.username }}</a> <span class="rating">{{ top_rated_user.rating }}</span></p>
+				{% endfor %}
+			</div>
+
+			<div class="pf-section-label"><span>Genres</span></div>
+			<div class="pf-card">
+				{% for genre in g_list %}
+					{% if genre != None %}<a class="pf-link" href="?genre={{ genre }}" style="display: block; margin-bottom: 6px;">{{ genre }}</a>{% endif %}
+				{% endfor %}
+			</div>
+
+			<div class="pf-section-label"><span>Blogs</span></div>
+			<div class="pf-card">
+				{% for blog in blogs %}
+				<p class="pf-note" style="margin: 0 0 6px;"><a class="pf-link" href="blogposts/show_post?id={{ blog.id }}">{{ blog.title }}</a><br><span class="pf-muted">by {{ blog.author }}</span></p>
+				{% endfor %}
+			</div>
+		</div>
+
 	</div>
 
 	<script type="text/javascript">
-		
-		$('.like-button').click(function()
-		{
-			// When user clicks like then increment it and then hide the like button 
+
+		$('.like-button').click(function() {
 
 			var question = $(this).attr('question');
 			var buttons = $('.like-button');
-			var likes = $('.like-count');  
-			var idx = buttons.index(this); 
+			var likes = $('.like-count');
+			var idx = buttons.index(this);
 
-			$.get('/like_question', {question : question}, function(data)
-			{
-				$(this).hide(); 
-				likes[idx].innerHTML = ' ' + data; 
+			$.get('/like_question', {question_id: question}, function(data) {
+				likes[idx].innerHTML = data;
 			});
+		});
 
-		}); 
+		var ratingList = document.getElementsByClassName("rating");
+
+		for (let i = 0; i < ratingList.length; i++) {
+			let rating = Number(ratingList[i].innerHTML);
+			ratingList[i].innerHTML = rating.toFixed(0);
+		}
 
 	</script>
 
 {% endblock %}
-
-

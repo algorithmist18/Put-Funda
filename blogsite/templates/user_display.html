@@ -1,122 +1,95 @@
-{% extends 'user_display_base.html' %}
-{% load staticfiles %}
+{% extends 'home.html' %}
 {% block content %}
-	<!-- Javascript code --> 
+
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+		google.load("visualization", "1", {packages: ["corechart"]});
+	</script>
 
-    <script type="text/javascript">
-      // Load the Visualization API and the corechart package  
-      google.load("visualization", "1", {packages:["corechart"]});
- 	</script>
+	<div class="pf-grid">
 
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-  	<!-- Navbar content -->
-  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
-	</nav>
+		<div>
+			<div class="pf-section-label pf-section-label--first"><span>Profile</span></div>
+			<div class="pf-card">
+				<h2 style="font-style: italic; font-size: 26px;">{{ user.username }}</h2>
+				<p class="pf-note">{{ user.first_name }} {{ user.last_name }}</p>
+				<p class="pf-muted">{{ user.profile.location }}</p>
+				<p class="pf-note">Rating: <span id="rating">{{ user.profile.rating }}</span></p>
+				<p class="pf-muted">Number of questions: {{ no_of_questions }}</p>
 
-	<!-- Block to display user details -->
-	<div id = "user-profile">
-
-		<div id = "user-details" style = "float: left;">
-
-			<div id = "text-user-details" style = "font-size: 16px; margin-left: 20px;">
-				<p id = "username" > {{user.username}} </p>
-				<p id = "name"> {{user.first_name}} {{user.last_name}} </p>
-				<p id = "loc" style = "font-size: 12px;"> {{user.profile.location}} </p>
-				<p style = "font-size: 13px;"><span id="rating-label">Rating:&nbsp;</span><span id="rating">{{user.profile.rating}}</span></p>
-				<br><br>
-				<p id = "numberOfQuestions" style = "font-size: 12px;"> Number of questions: {{no_of_questions}} </p>
-				<br><br><br>
-			</div>
-
-			<div id = "profile-picture">
-				<center>
-					{% if user.profile.picture %} 
-						<img src = "{{user.profile.picture.url}}" width = "150" height = "150">
-					{% else %}
-						<p> <br> <br> <br> No photo </p>
-					{% endif %}
-				</center>
-			</div>
-
-			<div id = "edit-profile" style = "float: right; margin-top: 90px; margin-right: 25px;">
-					{% if user.username == org_user.username %}
-						<a href = "edit?user={{user.username}}" style = "font-size: 12px; margin-top: 100px;"> Edit profile </a>
-					{% endif %}
-			</div>
-
-		</div>
-
-		<!-- Block to display user contributions -->
-
-		<div id = "chart-div">
-			<br>
-			{{ chart.as_html }}
-		</div>
-
-	</div>
-
-	<!--Block to display user questions -->
-
-	<div id = "question-block">
-	{% for questions in q_list %}
-		<div id = "question">
-			<form id="ans" method="post">
-			{% csrf_token %}
-			<div id = "content">
-				{% if not questions.author %}
-					<p class="question-text"> {{questions.question|safe}} <h5 class="q-time"> <strong> posted on {{questions.time}} by admin </strong> </h5> 
-						<a style = "font-size: 12px;" href="genre={{questions.title}}"> {{questions.title}} </a></p>
-				{% else %}
-					<p style = "font-size: 14px; margin-right: 10px;" class = "question-text"> {{questions.question|safe}} <h5 class="q-time"> <strong> posted on {{questions.time}} by {{ questions.author }} </strong> </h5> <a style = "font-size: 12px;" href="view?genre={{questions.title}}"> {{questions.title}} </a></p>
+				{% if user.profile.picture %}
+				<img src="{{ user.profile.picture.url }}" class="pf-question-image" style="max-width: 150px; margin-top: 10px;">
 				{% endif %}
-				</p>
-				<input type = "hidden" name = "questions" value = "{{questions.question}}">
-				<input style = "font-size: 12px; margin-left: -13px;" type = "submit" class = "btn btn-link" name = "act" value = "Show comments">
-				<span style = "font-size: 12px; margin-left: -7px;" id = "comment-count">({{questions.comments}})</span>
-				<br>
-				<input style = "font-size: 12px;" name = "comment" type = "text">
-				<input style = "font-size: 12px;" type = "submit" name = "act" value = "Submit">
-			</div> 
-			<div id = "show-answer">
-			{% for k, v in q_times.items %}
-					{% if k == questions.question %}
-						{% if v > 96 %}
-							<br>
-							<input style = "font-size: 12px;" type = "submit" name = "show" value = "Show answer">
+
+				{% if user.username == org_user.username %}
+				<p style="margin-top: 12px;"><a class="pf-link" href="edit?user={{ user.username }}">Edit profile</a></p>
+				{% endif %}
+			</div>
+
+			<div class="pf-section-label"><span>Genre breakdown</span></div>
+			<div class="pf-card" id="chart-div">{{ chart.as_html }}</div>
+		</div>
+
+		<div>
+			<div class="pf-section-label pf-section-label--first"><span>Questions asked</span></div>
+
+			{% for questions in q_list %}
+			<div class="pf-card">
+				<form method="post">
+					{% csrf_token %}
+
+					<p class="pf-question-text">{{ questions.question|safe }}</p>
+					<p class="pf-post-meta">
+						posted {{ questions.time }} by
+						{% if not questions.author %}admin{% else %}{{ questions.author }}{% endif %}
+						&middot; <a class="pf-link" href="genre={{ questions.title }}">{{ questions.title }}</a>
+					</p>
+
+					<input type="hidden" name="questions" value="{{ questions.question }}">
+					<button type="submit" name="act" value="Show comments" class="pf-btn">Show comments ({{ questions.comments }})</button>
+
+					<div class="pf-field" style="margin-top: 10px;">
+						<input type="text" name="comment">
+					</div>
+
+					<button type="submit" name="act" value="Submit" class="pf-btn">Submit</button>
+
+					{% for k, v in q_times.items %}
+						{% if k == questions.question and v > 96 %}
+						<button type="submit" name="show" value="Show answer" class="pf-btn">Show answer</button>
 						{% endif %}
-					{% endif %}	
-			{% endfor %}
-			</div>
-			</form>
-			{% if answer != None %}
-				{% if questions.answer == answer %}
-					<p style="margin-top: 10px; font-size: 12px;" id = "answer"> <strong> Answer: </strong> {{ answer }} </p>
-				{% endif %}
-			{% endif %}
-			<br>
-			<br>
-			{% if comments != None %}
-				<div id = "comments" style = "font-size: 12px;">
-				{% if questions.question == ques %}
-					{% for comment in comments %}
-							<p> _______________________________________________ </p>
-							<p style = "font-size: 12px;" id = "comment-author"> <a href = "/users?user={{comment.author}}" class = "author">{{comment.author}}</a> <span id = "comment-time"> {{comment.time}} </span> </p>
-							<p style = "font-size: 12px;" id = "comment-content"> {{comment.content}}</p>			
 					{% endfor %}
+				</form>
+
+				{% if answer != None and questions.answer == answer %}
+				<p class="pf-note" style="margin-top: 10px;"><strong>Answer:</strong> {{ answer }}</p>
 				{% endif %}
+
+				{% if comments != None and questions.question == ques %}
+				<div style="margin-top: 12px;">
+					{% for comment in comments %}
+					<p class="pf-note" style="border-top: 1px solid var(--pf-hairline); padding-top: 8px; margin-top: 8px;">
+						<a class="pf-link" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
+						<span class="pf-muted">{{ comment.time }}</span><br>
+						{{ comment.content }}
+					</p>
+					{% endfor %}
 				</div>
-			{% endif %}
+				{% endif %}
+			</div>
+			{% empty %}
+			<p class="pf-note pf-muted">No questions asked yet.</p>
+			{% endfor %}
 		</div>
-	{% endfor %}
+
 	</div>
 
 	<script type="text/javascript">
-			
-		var ratingElem = document.getElementById("rating"); 
+
+		var ratingElem = document.getElementById("rating");
 		let rating = Number(ratingElem.innerHTML);
-		ratingElem.innerHTML = rating.toFixed(0); 
+		ratingElem.innerHTML = rating.toFixed(0);
 
 	</script>
+
 {% endblock %}

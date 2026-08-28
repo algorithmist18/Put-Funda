@@ -1,39 +1,23 @@
-{% extends 'question_delete_base.html' %}
-
+{% extends 'home.html' %}
 {% block content %}
-	
-	<center>
 
-		<h5 id = "delete-disclaimer"> Are you sure you want to delete this question? </h5>
+	<div class="pf-section-label pf-section-label--first"><span>Delete question</span></div>
+	<p class="pf-note" style="margin-bottom: 16px;">Are you sure you want to delete this question?</p>
 
-	</center>
-	
-	<div id = "question">
-
-		<form method = "post" action = "{% url 'delete_q' %}?question_id={{question.id}}&user={{user.username}}">
-
+	<div class="pf-card">
+		<form method="post" action="{% url 'delete_q' %}?question_id={{ question.id }}&user={{ user.username }}">
 			{% csrf_token %}
 
-			<div id = "question-content">
+			<p class="pf-question-text">{{ question.question|safe }}</p>
+			<p class="pf-post-meta">
+				posted {{ question.time }} by
+				{% if not question.author %}admin{% else %}{{ question.author }}{% endif %}
+			</p>
 
-				{% if not question.author %}
-					<p class="question-text"> {{question.question | safe}} <h5 class="q-time"> <strong> posted on {{question.time}} by admin</strong></h5> <a href="{{question.title}}"> {{ques.title}} </a></p>
-				{% else %}
-					<p class= "question-text"> {{question.question | safe}} <h5 class="q-time"><strong> posted on {{question.time}} by {{ question.author }} </strong> </h5> <a href="{{question.title}}"> {{question.title}} </a></p>
-				{% endif %}
-
-				<!-- Including delete button -->
-
-				<input type = "hidden" name = "questions" value = "{{question.question}}">
-				<input style = "font-size: 12px;" type = "submit" name = "action" value = "Cancel">
-				<input style = "font-size: 12px;" type = "submit" name = "action" value = "Delete">
-
-				<br><br><br>
-
-			</div>
-
+			<input type="hidden" name="questions" value="{{ question.question }}">
+			<button type="submit" name="action" value="Cancel" class="pf-btn">Cancel</button>
+			<button type="submit" name="action" value="Delete" class="pf-btn pf-btn--accent">Delete</button>
 		</form>
-
-	</div> 
+	</div>
 
 {% endblock %}

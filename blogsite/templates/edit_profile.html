@@ -1,188 +1,113 @@
-{% extends 'edit_profile_base.html' %}
+{% extends 'home.html' %}
 {% block content %}
-	
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      // Load the Visualization API and the corechart package  
-      google.load("visualization", "1", {packages:["corechart"]});
- 	</script>
 
-	<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
+	<div class="pf-section-label pf-section-label--first"><span>Edit profile</span></div>
 
-  	<!-- Navbar content -->
+	<div class="pf-card">
+		<form action="{% url 'edit' %}?user={{ user.username }}" enctype="multipart/form-data" method="POST">
+			{% csrf_token %}
 
-  		<a style="color: white; font-size: 12px;" href = "{% url 'home' %}" class = "navbar-brand" id = "home"> Home </span>
-  		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}"> Logout </a>
-	
-	</nav>
-
-	<style type="text/css">
-
-	</style>
-
-	<!-- Block to display user details -->
-
-		<center>
-		<div id = "user-details">
-
-			<div id = "edit-form">
-					
-				<form action="{% url 'edit' %}?user={{user.username}}" enctype="multipart/form-data" method = "POST">
-
-					{% csrf_token %}
-					
-					<div id = "text-inputs">
-
-
-							First name: &nbsp;<input type = "text" name = "first_name" value = "{{user.first_name}}"> <br> <br> 
-
-							Last name:	&nbsp;<input type = "text" name = "last_name" value = "{{user.last_name}}"> <br><br> 
-
-							DOB: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-
-							<input type = "text" name = "displayDOB" value = "{{user.profile.birth_date}}"><br><br>
-
-							New DOB: &nbsp;
-
-							<input type = "date" name = "dateOfBirth" value = "{{user.profile.birth_date}}"/> <br><br> 
-
-							Location:&nbsp; &nbsp; &nbsp; 
-
-							<input type = "text" id = "user-location" name = "location" value = "{{user.profile.location}}"/> <br><br>
-
-							Email:&nbsp; &nbsp; &nbsp; 
-
-							<input type = "email" id = "email" name = "email" value = "{{user.email}}"/> <br><br>
-							<span id = "confirm-email" style = "font-size: 12px;" class="form-text text-muted">
-		      	 	{{email_error_message}} 
-		      	 </span></p>	  
-						
-							<input type = "submit" value = "Save edits" style = "margin-left: 20px" /> <br><br>	
-
-					</div>
-
-					<div id = "profile-picture">
-
-						<div id = "avatar-holder">
-
-							<center>
-
-								{% if user.profile.picture %} 
-
-									<img id = "img-preview" alt = "Your avatar" src = "{{user.profile.picture.url}}" width = "150" height = "150">
-								
-								{% endif %}
-									
-								<!--<img id = "img-preview" width = "150" height = "150" src = "#" alt = "Your image" />-->
-
-							</center>
-
-						</div>
-
-						<input id = "image-input" type = "file" name = "avatar" />
-
-						<br><br>
-
-						<span id = "image-confirm" style = "margin-top: 30px; margin-left: 10px; font-size: 12px;"></span>
-
-						 <br>
-					
-					</div>
-
-				</form>
-				
+			<div class="pf-field">
+				<label for="first_name">First name</label>
+				<input type="text" name="first_name" value="{{ user.first_name }}">
 			</div>
 
-		</div>
+			<div class="pf-field">
+				<label for="last_name">Last name</label>
+				<input type="text" name="last_name" value="{{ user.last_name }}">
+			</div>
 
-	</center>
+			<div class="pf-field">
+				<label>Current date of birth</label>
+				<input type="text" name="displayDOB" value="{{ user.profile.birth_date }}">
+			</div>
 
-		<script type="text/javascript">
+			<div class="pf-field">
+				<label for="dateOfBirth">New date of birth</label>
+				<input type="date" name="dateOfBirth" value="{{ user.profile.birth_date }}">
+			</div>
 
-			// Function to preview an image on upload 
+			<div class="pf-field">
+				<label for="user-location">Location</label>
+				<input type="text" id="user-location" name="location" value="{{ user.profile.location }}">
+			</div>
 
-			function previewImage(input)
-			{
-				if(input.files && input.files[0])
-				{
-					var fileReader = new FileReader(); 
+			<div class="pf-field">
+				<label for="email">Email</label>
+				<input type="email" id="email" name="email" value="{{ user.email }}">
+				<div class="pf-field-hint" id="confirm-email">{{ email_error_message }}</div>
+			</div>
 
-					fileReader.onload = function (e)
-					{
-						$('#img-preview').attr('src', e.target.result); 
-					}
+			<div class="pf-field">
+				<label>Photo</label>
+				{% if user.profile.picture %}
+				<img id="img-preview" alt="Your avatar" src="{{ user.profile.picture.url }}" class="pf-question-image" style="max-width: 150px; margin-bottom: 10px;">
+				{% endif %}
+				<input id="image-input" type="file" name="avatar">
+				<div class="pf-field-hint" id="image-confirm"></div>
+			</div>
 
-					fileReader.readAsDataURL(input.files[0]); 
+			<button type="submit" class="pf-btn pf-btn--accent">Save edits</button>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+
+		function previewImage(input) {
+
+			if (input.files && input.files[0]) {
+
+				var fileReader = new FileReader();
+
+				fileReader.onload = function (e) {
+					$('#img-preview').attr('src', e.target.result);
 				}
+
+				fileReader.readAsDataURL(input.files[0]);
 			}
-			
-			// Create AJAX calls to validate location 
+		}
 
-			// Create AJAX call to validate image 
+		function validateImage(e) {
 
-			function validateImage(e)
-			{
-				var imageFile = $('#image-input').val(); 
-				var fileConfirm = $('#image-confirm'); 
+			var imageFile = $('#image-input').val();
+			var fileConfirm = $('#image-confirm');
 
-				$.get("{% url 'image_check' %}", {imageFile : imageFile},
+			$.get("{% url 'image_check' %}", {imageFile: imageFile},
 
-					function(data)
-					{
-						if(data['valid'] == 'YES')
-						{
-							fileConfirm.html(data['message']);  
+				function (data) {
 
-							// Show image in the field
-							previewImage(e); 
-						}
-						else
-						{	
-							fileConfirm.html(data['message']); 
-						}
+					fileConfirm.html(data['message']);
+
+					if (data['valid'] == 'YES') {
+						previewImage(e);
 					}
-				);
+				}
+			);
+		}
 
-			}
+		function validateEmail() {
 
-			// AJAX call to validate email 
-			function validateEmail()
-			{
-				// Make AJAX call here 
-				var email = $('#email').val(); 
-				var emailConfirm = $('#confirm-email'); 
+			var email = $('#email').val();
+			var emailConfirm = $('#confirm-email');
 
-				console.log("Email: " + email);
-				email = email.trim(); 
+			email = email.trim();
 
-				$.get("{% url 'email_check' %}", {email : email},
+			$.get("{% url 'email_check' %}", {email: email},
 
-					function (data)
-					{
-						if(data['valid'] == 'YES')
-						{
-							// Unique email address 
-							emailConfirm.html(data['message']);
-						}
-						else
-						{
-							// Email ID already taken 
-							emailConfirm.html(data['message']); 
-						}
-					}
-				);
-			} 
+				function (data) {
+					emailConfirm.html(data['message']);
+				}
+			);
+		}
 
-			function onChange()
-			{
-				// List of inputs to validate 
-				$('#image-input').change(function() { validateImage(this) }); 
-				$('#email').change(function() {validateEmail()});  
+		function onChange() {
 
-			}
+			$('#image-input').change(function () { validateImage(this) });
+			$('#email').change(function () { validateEmail() });
+		}
 
-			$(document).ready(onChange); 
+		$(document).ready(onChange);
 
-		</script>	
+	</script>
 
 {% endblock %}

@@ -492,9 +492,8 @@ def delete_question(request):
 		args = {'user' : user, 'question' : question}  
 		return render(request, 'question_delete.html', args) 
 
-# Method to find all distinct genres from list 
-@login_required
-def find_all_genres(genre_list): 
+# Method to find all distinct genres from list
+def find_all_genres(genre_list):
 
 	genre_set = [] 
 
