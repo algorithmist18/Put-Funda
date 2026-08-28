@@ -36,7 +36,17 @@ class Post(models.Model):
 
 	preview = property(trim) 
 
-class PostComment(models.Model): 
+class PostLike(models.Model):
+
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	post = models.ForeignKey(Post, on_delete = models.CASCADE)
+	time = models.DateTimeField(auto_now_add = True)
+
+	class Meta:
+
+		unique_together = ('user', 'post')
+
+class PostComment(models.Model):
 
 	content = models.TextField()
 	author = models.ForeignKey(User, on_delete = models.CASCADE) 

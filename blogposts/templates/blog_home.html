@@ -15,16 +15,57 @@
 		</div>
 		<div class="pf-post-body">{{ post.preview|safe }}&hellip;</div>
 
-		{% if user == post.author %}
 		<div class="pf-post-footer">
+			<button type="button" class="pf-like-btn{% if post.user_has_liked %} is-liked{% endif %}" data-post-id="{{ post.id }}">
+				<span class="pf-like-icon">{% if post.user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
+				<span class="pf-like-count">{{ post.like_count }}</span>
+			</button>
+
+			<a class="pf-comment-link" href="show_post?id={{ post.id }}">&#128172; {{ post.comments }}</a>
+
+			{% if user == post.author %}
 			<a class="pf-link" href="edit_post?id={{ post.id }}">Edit</a>
-			&middot;
 			<a class="pf-link" href="delete_post?id={{ post.id }}">Delete</a>
+			{% endif %}
 		</div>
-		{% endif %}
 	</div>
 	{% empty %}
 	<p class="pf-note pf-muted">No posts yet.</p>
 	{% endfor %}
+
+	<script type="text/javascript">
+
+		function getCsrfToken() {
+			var name = "csrftoken=";
+			var cookies = document.cookie.split(";");
+			for (var i = 0; i < cookies.length; i++) {
+				var c = cookies[i].trim();
+				if (c.indexOf(name) === 0) {
+					return decodeURIComponent(c.substring(name.length));
+				}
+			}
+			return null;
+		}
+
+		document.querySelectorAll('.pf-like-btn').forEach(function (btn) {
+
+			btn.addEventListener('click', function () {
+
+				var postId = btn.getAttribute('data-post-id');
+
+				fetch("{% url 'like_post' %}?post_id=" + encodeURIComponent(postId), {
+					headers: {"X-CSRFToken": getCsrfToken()}
+				})
+				.then(function (r) { return r.json(); })
+				.then(function (data) {
+
+					btn.classList.toggle('is-liked', data.liked);
+					btn.querySelector('.pf-like-icon').innerHTML = data.liked ? '&#9829;' : '&#9825;';
+					btn.querySelector('.pf-like-count').textContent = data.count;
+				});
+			});
+		});
+
+	</script>
 
 {% endblock %}

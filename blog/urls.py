@@ -59,6 +59,7 @@ urlpatterns = [
     path('blogposts/show_post', post_views.show_post, name = 'show_post'),
     path('blogposts/edit_post', post_views.edit_post, name = 'edit_post'),
     path('blogposts/delete_post', post_views.delete_post, name = 'delete_post'),
+    path('blogposts/like_post', post_views.like_post, name = 'like_post'),
     path('quiz/', quiz_views.homepage, name = 'quiz_home'),
     path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
     path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),

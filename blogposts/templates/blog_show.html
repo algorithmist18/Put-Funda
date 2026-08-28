@@ -11,33 +11,74 @@
 			{% if post.anon %}anonymous{% else %}<a class="pf-link" href="/users?user={{ post.author.username }}">{{ post.author }}</a>{% endif %}
 			&middot; {{ post.time }}
 		</p>
+
+		<div class="pf-post-footer">
+			<button type="button" class="pf-like-btn{% if user_has_liked %} is-liked{% endif %}" id="like-button" data-post-id="{{ post.id }}">
+				<span class="pf-like-icon">{% if user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
+				<span class="pf-like-count">{{ like_count }}</span>
+			</button>
+			<span class="pf-comment-link">&#128172; {{ commentCount }}</span>
+		</div>
 	</div>
 
-	<div class="pf-section-label"><span>Comments</span></div>
+	<div class="pf-section-label"><span>Comments ({{ commentCount }})</span></div>
 
 	<div class="pf-card">
-		<form method="POST" action="{% url 'show_post' %}?user={{ post.author }}&id={{ post.id }}">
+
+		<div class="pf-comment-list">
+			{% for comment in blog_comments %}
+			<div class="pf-comment">
+				<div class="pf-comment-head">
+					<a class="pf-link pf-comment-author" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
+					<span class="pf-comment-time">{{ comment.time }}</span>
+				</div>
+				<div class="pf-comment-body">{{ comment.content }}</div>
+			</div>
+			{% empty %}
+			<p class="pf-note pf-muted">No comments yet. Be the first to say something.</p>
+			{% endfor %}
+		</div>
+
+		<form method="POST" action="{% url 'show_post' %}?user={{ post.author }}&id={{ post.id }}" class="pf-comment-form">
 			{% csrf_token %}
 			<input type="hidden" name="blogid" value="{{ post.id }}">
-
-			{% if blog_comments != None %}
-				{% for comment in blog_comments %}
-				<p class="pf-note" style="border-top: 1px solid var(--pf-hairline); padding-top: 8px; margin-top: 8px;">
-					<a class="pf-link" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
-					<span class="pf-muted">{{ comment.time }}</span><br>
-					{{ comment.content }}
-				</p>
-				{% endfor %}
-			{% else %}
-				<button type="submit" name="act" value="Show comments" class="pf-btn">Show comments ({{ commentCount }})</button>
-			{% endif %}
-
-			<div class="pf-field" style="margin-top: 12px;">
-				<textarea name="comment" placeholder="Write a comment..."></textarea>
-			</div>
-
+			<textarea name="comment" placeholder="Write a comment..." required></textarea>
 			<button type="submit" name="act" value="Submit" class="pf-btn pf-btn--accent">Submit</button>
 		</form>
 	</div>
+
+	<script type="text/javascript">
+
+		function getCsrfToken() {
+			var name = "csrftoken=";
+			var cookies = document.cookie.split(";");
+			for (var i = 0; i < cookies.length; i++) {
+				var c = cookies[i].trim();
+				if (c.indexOf(name) === 0) {
+					return decodeURIComponent(c.substring(name.length));
+				}
+			}
+			return null;
+		}
+
+		var likeButton = document.getElementById('like-button');
+
+		likeButton.addEventListener('click', function () {
+
+			var postId = likeButton.getAttribute('data-post-id');
+
+			fetch("{% url 'like_post' %}?post_id=" + encodeURIComponent(postId), {
+				headers: {"X-CSRFToken": getCsrfToken()}
+			})
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+
+				likeButton.classList.toggle('is-liked', data.liked);
+				likeButton.querySelector('.pf-like-icon').innerHTML = data.liked ? '&#9829;' : '&#9825;';
+				likeButton.querySelector('.pf-like-count').textContent = data.count;
+			});
+		});
+
+	</script>
 
 {% endblock %}
