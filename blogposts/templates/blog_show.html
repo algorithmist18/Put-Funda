@@ -19,32 +19,31 @@
 			</button>
 			<span class="pf-comment-link">&#128172; {{ commentCount }}</span>
 		</div>
-	</div>
 
-	<div class="pf-section-label"><span>Comments ({{ commentCount }})</span></div>
+		<div class="pf-comments">
+			<div class="pf-comments-label">{{ commentCount }} comment{{ commentCount|pluralize }}</div>
 
-	<div class="pf-card">
-
-		<div class="pf-comment-list">
-			{% for comment in blog_comments %}
-			<div class="pf-comment">
-				<div class="pf-comment-head">
-					<a class="pf-link pf-comment-author" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
-					<span class="pf-comment-time">{{ comment.time }}</span>
+			<div class="pf-comment-list">
+				{% for comment in blog_comments %}
+				<div class="pf-comment">
+					<div class="pf-comment-head">
+						<a class="pf-comment-author" href="/users?user={{ comment.author }}">{{ comment.author }}</a>
+						<span class="pf-comment-time">{{ comment.time }}</span>
+					</div>
+					<div class="pf-comment-body">{{ comment.content }}</div>
 				</div>
-				<div class="pf-comment-body">{{ comment.content }}</div>
+				{% empty %}
+				<p class="pf-note pf-muted" style="font-size: 13px;">No comments yet. Be the first to say something.</p>
+				{% endfor %}
 			</div>
-			{% empty %}
-			<p class="pf-note pf-muted">No comments yet. Be the first to say something.</p>
-			{% endfor %}
-		</div>
 
-		<form method="POST" action="{% url 'show_post' %}?user={{ post.author }}&id={{ post.id }}" class="pf-comment-form">
-			{% csrf_token %}
-			<input type="hidden" name="blogid" value="{{ post.id }}">
-			<textarea name="comment" placeholder="Write a comment..." required></textarea>
-			<button type="submit" name="act" value="Submit" class="pf-btn pf-btn--accent">Submit</button>
-		</form>
+			<form method="POST" action="{% url 'show_post' %}?user={{ post.author }}&id={{ post.id }}" class="pf-comment-form">
+				{% csrf_token %}
+				<input type="hidden" name="blogid" value="{{ post.id }}">
+				<textarea name="comment" placeholder="Write a comment..." required></textarea>
+				<button type="submit" name="act" value="Submit" class="pf-btn">Submit</button>
+			</form>
+		</div>
 	</div>
 
 	<script type="text/javascript">

@@ -674,12 +674,27 @@
 
 /* ---------- Comments ---------- */
 
+.pf-comments {
+	margin-top: 10px;
+	padding-top: 14px;
+	border-top: 1px solid var(--pf-hairline);
+}
+
+.pf-comments-label {
+	font-family: 'Nunito Sans', sans-serif;
+	font-weight: 600;
+	font-size: 12px;
+	letter-spacing: 0.02em;
+	color: var(--pf-text-muted);
+	margin-bottom: 8px;
+}
+
 .pf-comment-list {
-	margin-top: 6px;
+	margin-top: 2px;
 }
 
 .pf-comment {
-	padding: 12px 0;
+	padding: 9px 0;
 	border-bottom: 1px solid var(--pf-hairline);
 }
 
@@ -690,38 +705,51 @@
 .pf-comment-head {
 	display: flex;
 	align-items: baseline;
-	gap: 8px;
+	gap: 7px;
 }
 
 .pf-comment-author {
 	font-family: 'Nunito Sans', sans-serif;
-	font-weight: 700;
-	font-size: 14px;
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--pf-text);
+	text-decoration: none;
+}
+
+.pf-comment-author:hover {
+	color: var(--pf-teal-light);
 }
 
 .pf-comment-time {
-	font-size: 12px;
+	font-size: 11px;
 	color: var(--pf-text-muted);
 }
 
 .pf-comment-body {
-	margin-top: 4px;
+	margin-top: 2px;
 	font-family: 'Nunito Sans', sans-serif;
-	font-size: 14px;
+	font-size: 13px;
 	line-height: 1.5;
+	color: var(--pf-text-muted);
 }
 
 .pf-comment-form {
 	display: flex;
-	gap: 10px;
+	gap: 8px;
 	align-items: flex-start;
-	margin-top: 16px;
+	margin-top: 12px;
 }
 
 .pf-comment-form textarea {
 	flex: 1;
-	min-height: 44px;
+	min-height: 34px;
+	font-size: 13px;
 	resize: vertical;
+}
+
+.pf-comment-form .pf-btn {
+	padding: 8px 16px;
+	font-size: 13px;
 }
 
 /* ---------- Utility ---------- */
