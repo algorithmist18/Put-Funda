@@ -2,7 +2,7 @@
    A self-contained, scoped design system (everything lives under .pf-theme
    so it never bleeds into pages that haven't been rebuilt yet). */
 
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 .pf-theme {
 	--pf-navy: #f7f2e6;
@@ -37,7 +37,7 @@
 
 	background: var(--pf-navy);
 	color: var(--pf-text);
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 }
@@ -47,7 +47,7 @@
 }
 
 .pf-theme h1, .pf-theme h2, .pf-theme h3, .pf-theme h4 {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	margin: 0;
 }
@@ -69,7 +69,7 @@
 .pf-wordmark {
 	position: relative;
 	display: inline-block;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-style: normal;
 	font-weight: 700;
 	font-size: 34px;
@@ -81,7 +81,7 @@
 .pf-tagline {
 	position: relative;
 	margin-top: 6px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-style: italic;
 	font-size: 14px;
 	color: rgba(255, 255, 255, 0.6);
@@ -94,7 +94,7 @@
 	gap: 6px;
 	padding: 6px 12px;
 	border: 1px solid rgba(255, 255, 255, 0.25);
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -112,7 +112,7 @@
 	flex-wrap: wrap;
 	gap: 10px;
 	padding: 13px 28px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.02em;
@@ -156,7 +156,7 @@
 	align-items: center;
 	gap: 12px;
 	margin: 30px 0 14px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.02em;
@@ -191,7 +191,7 @@
 .pf-card--blue { border-top-color: var(--pf-blue-border); }
 
 .pf-card-label {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -200,7 +200,7 @@
 }
 
 .pf-card-title {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 19px;
@@ -212,7 +212,7 @@
 }
 
 .pf-card-body {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 14px;
 	line-height: 1.55;
 	color: var(--pf-text);
@@ -237,7 +237,7 @@
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
 	color: var(--pf-ink);
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	font-size: 20px;
 }
@@ -261,7 +261,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 16px;
 	letter-spacing: 0.01em;
@@ -315,7 +315,7 @@
 }
 
 .pf-stat-value {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	font-size: 24px;
 	line-height: 1;
@@ -323,7 +323,7 @@
 
 .pf-stat-label {
 	margin-top: 4px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 12px;
 	letter-spacing: 0.02em;
@@ -343,7 +343,7 @@
 	flex: 1;
 	text-align: center;
 	padding: 10px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.01em;
@@ -369,7 +369,7 @@
 /* ---------- Body copy ---------- */
 
 .pf-note {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-style: italic;
 	font-size: 14px;
 	line-height: 1.6;
@@ -389,7 +389,7 @@
 .pf-field label {
 	display: block;
 	margin-bottom: 6px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -406,7 +406,7 @@
 	border: 1px solid var(--pf-hairline);
 	border-radius: 3px;
 	color: var(--pf-text);
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 15px;
 	padding: 11px 12px;
 }
@@ -422,14 +422,14 @@
 
 .pf-field-hint {
 	margin-top: 6px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 12px;
 	color: var(--pf-text-muted);
 }
 
 .pf-field-error {
 	margin-top: 6px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 12px;
 	color: #a8452c;
 }
@@ -440,7 +440,7 @@
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 14px;
 	background: var(--pf-surface);
 }
@@ -462,7 +462,7 @@
 	gap: 12px;
 	margin: 20px 0;
 	color: var(--pf-text-muted);
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -481,13 +481,13 @@
 	width: 100%;
 	border: none;
 	border-collapse: collapse;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 14px;
 }
 
 .pf-table th {
 	text-align: left;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -508,7 +508,7 @@
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	font-size: 22px;
 	line-height: 1.4;
@@ -535,7 +535,7 @@
 	color: var(--pf-ink);
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	font-size: 20px;
 	padding: 10px 14px;
@@ -555,7 +555,7 @@
 	padding: 0 10px;
 	border: 2px solid var(--pf-hairline);
 	border-radius: 3px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 700;
 	font-size: 19px;
 	color: var(--pf-text);
@@ -586,7 +586,7 @@
 }
 
 .pf-post-title {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 22px;
@@ -595,7 +595,7 @@
 }
 
 .pf-post-meta {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 500;
 	font-size: 14px;
 	letter-spacing: 0.01em;
@@ -604,7 +604,7 @@
 }
 
 .pf-post-body {
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 15px;
 	line-height: 1.6;
 }
@@ -614,7 +614,7 @@
 	align-items: center;
 	gap: 6px;
 	margin-top: 10px;
-	font-family: 'Jost', sans-serif;
+	font-family: 'Nunito Sans', sans-serif;
 	font-size: 13px;
 	color: var(--pf-text-muted);
 }
