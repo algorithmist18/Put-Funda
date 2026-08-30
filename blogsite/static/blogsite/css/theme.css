@@ -2,7 +2,13 @@
    A self-contained, scoped design system (everything lives under .pf-theme
    so it never bleeds into pages that haven't been rebuilt yet). */
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@font-face {
+	font-family: 'Adobe Caslon Pro';
+	src: url('../fonts/AdobeCaslonPro-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
 
 .pf-theme {
 	--pf-navy: #f7f2e6;
@@ -37,7 +43,7 @@
 
 	background: var(--pf-navy);
 	color: var(--pf-text);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 }
@@ -47,7 +53,7 @@
 }
 
 .pf-theme h1, .pf-theme h2, .pf-theme h3, .pf-theme h4 {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	margin: 0;
 }
@@ -69,7 +75,7 @@
 .pf-wordmark {
 	position: relative;
 	display: inline-block;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: normal;
 	font-weight: 700;
 	font-size: 34px;
@@ -81,7 +87,7 @@
 .pf-tagline {
 	position: relative;
 	margin-top: 6px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-size: 14px;
 	color: rgba(255, 255, 255, 0.6);
@@ -94,7 +100,7 @@
 	gap: 6px;
 	padding: 6px 12px;
 	border: 1px solid rgba(255, 255, 255, 0.25);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -111,7 +117,7 @@
 	align-items: center;
 	gap: 10px 20px;
 	padding: 13px 28px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.02em;
@@ -206,7 +212,7 @@
 	align-items: center;
 	gap: 12px;
 	margin: 30px 0 14px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.02em;
@@ -242,7 +248,7 @@
 .pf-card--blue { border-top-color: var(--pf-blue-border); }
 
 .pf-card-label {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -251,7 +257,7 @@
 }
 
 .pf-card-title {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 19px;
@@ -263,7 +269,7 @@
 }
 
 .pf-card-body {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 14px;
 	line-height: 1.55;
 	color: var(--pf-text);
@@ -288,7 +294,7 @@
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
 	color: var(--pf-ink);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 20px;
 }
@@ -312,7 +318,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 16px;
 	letter-spacing: 0.01em;
@@ -366,7 +372,7 @@
 }
 
 .pf-stat-value {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 24px;
 	line-height: 1;
@@ -374,7 +380,7 @@
 
 .pf-stat-label {
 	margin-top: 4px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 12px;
 	letter-spacing: 0.02em;
@@ -394,7 +400,7 @@
 	flex: 1;
 	text-align: center;
 	padding: 10px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.01em;
@@ -426,7 +432,7 @@
 /* ---------- Body copy ---------- */
 
 .pf-note {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-size: 14px;
 	line-height: 1.6;
@@ -446,7 +452,7 @@
 .pf-field label {
 	display: block;
 	margin-bottom: 6px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -463,7 +469,7 @@
 	border: 1px solid var(--pf-hairline);
 	border-radius: 3px;
 	color: var(--pf-text);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 15px;
 	padding: 11px 12px;
 }
@@ -479,14 +485,14 @@
 
 .pf-field-hint {
 	margin-top: 6px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
 	color: var(--pf-text-muted);
 }
 
 .pf-field-error {
 	margin-top: 6px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
 	color: #a8452c;
 }
@@ -497,7 +503,7 @@
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 14px;
 	background: var(--pf-surface);
 }
@@ -519,7 +525,7 @@
 	gap: 12px;
 	margin: 20px 0;
 	color: var(--pf-text-muted);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -538,13 +544,13 @@
 	width: 100%;
 	border: none;
 	border-collapse: collapse;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 14px;
 }
 
 .pf-table th {
 	text-align: left;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	letter-spacing: 0.02em;
@@ -585,7 +591,7 @@
 .pf-qlist-num {
 	flex: none;
 	width: 24px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 13px;
 	color: var(--pf-text-muted);
@@ -598,7 +604,7 @@
 }
 
 .pf-qlist-question {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 16px;
 	line-height: 1.5;
@@ -623,7 +629,7 @@
 	border-radius: 999px;
 	padding: 4px 12px;
 	color: var(--pf-text-muted);
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
 	margin-bottom: 10px;
 }
@@ -649,7 +655,7 @@
 	padding: 5px 13px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 12px;
 	transition: border-color 0.15s ease, color 0.15s ease;
@@ -668,7 +674,7 @@
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 22px;
 	line-height: 1.4;
@@ -695,7 +701,7 @@
 	color: var(--pf-ink);
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 20px;
 	padding: 10px 14px;
@@ -715,7 +721,7 @@
 	padding: 0 10px;
 	border: 2px solid var(--pf-hairline);
 	border-radius: 3px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 19px;
 	color: var(--pf-text);
@@ -754,7 +760,7 @@
 }
 
 .pf-post-title {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 22px;
@@ -763,7 +769,7 @@
 }
 
 .pf-post-meta {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 500;
 	font-size: 14px;
 	letter-spacing: 0.01em;
@@ -772,7 +778,7 @@
 }
 
 .pf-post-body {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 15px;
 	line-height: 1.6;
 }
@@ -784,7 +790,7 @@
 	flex-wrap: wrap;
 	gap: 10px;
 	margin-top: 12px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 13px;
 	color: var(--pf-text-muted);
 }
@@ -814,7 +820,7 @@
 	color: var(--pf-text-muted);
 	border-radius: 999px;
 	padding: 5px 13px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	cursor: pointer;
@@ -850,7 +856,7 @@
 	padding: 5px 13px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	transition: border-color 0.15s ease, color 0.15s ease;
@@ -870,7 +876,7 @@
 }
 
 .pf-comments-label {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 12px;
 	letter-spacing: 0.02em;
@@ -898,7 +904,7 @@
 }
 
 .pf-comment-author {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 13px;
 	color: var(--pf-text);
@@ -916,7 +922,7 @@
 
 .pf-comment-body {
 	margin-top: 2px;
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 13px;
 	line-height: 1.5;
 	color: var(--pf-text-muted);
