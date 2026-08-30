@@ -2,7 +2,7 @@
 
 {% block content %}
 
-	<div class="pf-section-label pf-section-label--first"><span>Correct answers for {{ question.answer }}</span></div>
+	<div class="pf-section-label pf-section-label--first"><span>Correct answers for {{ question.answer|safe }}</span></div>
 
 	<div class="pf-card">
 		<table class="pf-table" id="table-leaderboard">
@@ -18,7 +18,7 @@
 				{% for submission in submissions %}
 				<tr>
 					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ submission.user.username }}">{{ submission.user.username }}</a></td>
-					<td>{{ submission.question.answer }}</td>
+					<td>{{ submission.question.answer|safe }}</td>
 					<td>{{ submission.answer }}</td>
 					<td class="time-taken">{{ submission.time_taken }}</td>
 				</tr>

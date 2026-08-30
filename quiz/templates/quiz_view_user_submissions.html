@@ -17,8 +17,8 @@
 			<tbody>
 				{% for submission in submissions %}
 				<tr>
-					<td>{{ submission.question.question }}</td>
-					<td>{{ submission.question.answer }}</td>
+					<td>{{ submission.question.question|safe }}</td>
+					<td>{{ submission.question.answer|safe }}</td>
 					<td>{{ submission.answer }}</td>
 					<td class="time-taken">{{ submission.time_taken }}</td>
 				</tr>

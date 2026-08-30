@@ -73,9 +73,9 @@
 					<tbody>
 						{% for sub in submission %}
 						<tr>
-							<td id="question-row">{{ sub.0 }}</td>
+							<td id="question-row">{{ sub.0|safe }}</td>
 							<td>{{ sub.1 }}</td>
-							<td>{{ sub.2 }}</td>
+							<td>{{ sub.2|safe }}</td>
 							<td>{{ sub.3 }}</td>
 							<td class="accuracy">{{ sub.4 }} / {{ sub.5 }}</td>
 						</tr>

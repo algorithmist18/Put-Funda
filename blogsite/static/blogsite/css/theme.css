@@ -568,10 +568,20 @@
 	border-bottom: none;
 }
 
+@media (max-width: 640px) {
+
+	.pf-table {
+		display: block;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
 /* ---------- Contest question list ---------- */
 
 .pf-qlist-item {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 14px;
 	padding: 16px 0 16px 14px;
 	margin-left: -14px;
@@ -645,6 +655,14 @@
 	gap: 8px;
 	align-items: flex-start;
 	padding-top: 2px;
+}
+
+@media (max-width: 640px) {
+
+	.pf-qlist-actions {
+		flex-basis: 100%;
+		margin-left: 38px;
+	}
 }
 
 .pf-qlist-btn {
