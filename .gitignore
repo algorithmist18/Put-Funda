@@ -3,3 +3,4 @@ db.sqlite3
 manage.py
 media
 .env
+staticfiles

@@ -973,3 +973,33 @@
 
 .pf-mt-0 { margin-top: 0; }
 .pf-mb-0 { margin-bottom: 0; }
+
+/* ---------- Error pages ---------- */
+
+.pf-error-shell {
+	max-width: 480px;
+	text-align: center;
+	padding-top: 80px;
+}
+
+.pf-error-code {
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-style: italic;
+	font-weight: 700;
+	font-size: 64px;
+	line-height: 1;
+	color: var(--pf-teal-light);
+	margin-bottom: 12px;
+}
+
+.pf-error-title {
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-weight: 700;
+	font-size: 26px;
+	color: var(--pf-text);
+	margin: 0 0 10px;
+}
+
+.pf-error-shell .pf-note {
+	margin-bottom: 26px;
+}

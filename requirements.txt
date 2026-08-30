@@ -42,3 +42,8 @@ Pillow>=8.0,<10.0
 # (blogsite/google_auth_views.py)
 google-auth>=1.35,<3
 requests>=2.25,<3
+
+# Serves static files (CSS, fonts) directly from Django when DEBUG=False -
+# without this, /static/... 404s in production and every page (including
+# the error pages) renders unstyled
+whitenoise>=5.3,<7.0
