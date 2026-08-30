@@ -13,11 +13,13 @@
 		</p>
 
 		<div class="pf-post-footer">
-			<button type="button" class="pf-like-btn{% if user_has_liked %} is-liked{% endif %}" id="like-button" data-post-id="{{ post.id }}">
-				<span class="pf-like-icon">{% if user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
-				<span class="pf-like-count">{{ like_count }}</span>
-			</button>
-			<span class="pf-comment-link">&#128172; {{ commentCount }}</span>
+			<div class="pf-post-stats">
+				<button type="button" class="pf-like-btn{% if user_has_liked %} is-liked{% endif %}" id="like-button" data-post-id="{{ post.id }}">
+					<span class="pf-like-icon">{% if user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
+					<span class="pf-like-count">{{ like_count }} like{{ like_count|pluralize }}</span>
+				</button>
+				<span class="pf-comment-link">&#128172; {{ commentCount }} comment{{ commentCount|pluralize }}</span>
+			</div>
 		</div>
 
 		<div class="pf-comments">
@@ -74,7 +76,7 @@
 
 				likeButton.classList.toggle('is-liked', data.liked);
 				likeButton.querySelector('.pf-like-icon').innerHTML = data.liked ? '&#9829;' : '&#9825;';
-				likeButton.querySelector('.pf-like-count').textContent = data.count;
+				likeButton.querySelector('.pf-like-count').textContent = data.count + (data.count === 1 ? ' like' : ' likes');
 			});
 		});
 

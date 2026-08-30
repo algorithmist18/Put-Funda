@@ -17,7 +17,7 @@
 
 		<div class="pf-metabar">
 			<span class="pf-metabar-links">
-				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+				{% include 'nav_links.html' %}
 			</span>
 			<span>
 				{% if user.is_authenticated %}

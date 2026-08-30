@@ -121,6 +121,7 @@
 
 .pf-metabar a {
 	color: var(--pf-cream-ink);
+	transition: color 0.15s ease;
 }
 
 .pf-metabar a:hover {
@@ -128,13 +129,30 @@
 }
 
 .pf-metabar-links a {
-	margin-right: 18px;
+	position: relative;
+	margin-right: 22px;
 	white-space: nowrap;
 	text-decoration: none;
+	padding-bottom: 2px;
 }
 
 .pf-metabar-links a:last-child {
 	margin-right: 0;
+}
+
+.pf-metabar-links a.is-current {
+	color: var(--pf-teal-light);
+}
+
+.pf-metabar-links a.is-current::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -3px;
+	height: 2px;
+	background: var(--pf-teal-light);
+	border-radius: 2px;
 }
 
 /* ---------- Shell / layout ---------- */
@@ -179,10 +197,11 @@
 	position: relative;
 	border: 1px solid var(--pf-hairline);
 	border-top: 2px solid var(--pf-teal-light);
-	border-radius: 3px;
+	border-radius: 4px;
 	padding: 18px 20px;
 	margin-bottom: 14px;
 	background: var(--pf-surface);
+	box-shadow: 0 1px 2px rgba(20, 15, 10, 0.03), 0 2px 8px rgba(20, 15, 10, 0.04);
 }
 
 .pf-card--pink { border-top-color: var(--pf-pink-border); }
@@ -364,6 +383,12 @@
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
+	text-decoration-color: rgba(184, 85, 47, 0.45);
+	transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
+}
+
+.pf-link:hover {
+	text-decoration-color: var(--pf-teal-light);
 }
 
 /* ---------- Body copy ---------- */
@@ -578,11 +603,19 @@
 
 .pf-post {
 	margin-bottom: 20px;
-	padding: 0 0 20px;
+	padding: 0 0 20px 14px;
+	margin-left: -14px;
 	background: none;
 	border: none;
+	border-left: 2px solid transparent;
 	border-bottom: 1px solid var(--pf-hairline);
 	border-radius: 0;
+	box-shadow: none;
+	transition: border-left-color 0.15s ease;
+}
+
+.pf-post:hover {
+	border-left-color: var(--pf-teal-light);
 }
 
 .pf-post-title {
@@ -612,11 +645,27 @@
 .pf-post-footer {
 	display: flex;
 	align-items: center;
-	gap: 14px;
-	margin-top: 10px;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 12px;
 	font-family: 'Nunito Sans', sans-serif;
 	font-size: 13px;
 	color: var(--pf-text-muted);
+}
+
+.pf-post-stats {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.pf-post-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 12px;
+	opacity: 0.75;
 }
 
 /* ---------- Like button ---------- */
@@ -661,15 +710,20 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
+	border: 1.5px solid var(--pf-hairline);
+	border-radius: 999px;
+	padding: 5px 13px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
 	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 13px;
+	transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .pf-comment-link:hover {
 	color: var(--pf-teal-light);
+	border-color: var(--pf-teal-light);
 }
 
 /* ---------- Comments ---------- */

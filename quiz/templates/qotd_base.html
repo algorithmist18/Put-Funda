@@ -17,8 +17,7 @@
 
 		<div class="pf-metabar">
 			<span class="pf-metabar-links">
-				<a class="pf-link" href="{% url 'home' %}">Home</a>
-				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
+				{% include 'nav_links.html' %}
 				{% if can_release %}
 				<a class="pf-link" href="{% url 'qotd_release' %}">Release</a>
 				{% endif %}

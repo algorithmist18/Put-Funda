@@ -23,10 +23,7 @@
 		<div class="pf-metabar">
 			{% if user.is_authenticated %}
 			<span class="pf-metabar-links">
-				<a class="pf-link" href="{% url 'home' %}">Home</a>
-				<a class="pf-link" href="{% url 'qotd_home' %}">Question of the day</a>
-				<a class="pf-link" href="{% url 'quiz_home' %}">Contests</a>
-				<a class="pf-link" href="{% url 'blog_home' %}">Blogposts</a>
+				{% include 'nav_links.html' %}
 			</span>
 			<span>
 				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>

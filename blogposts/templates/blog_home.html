@@ -16,16 +16,20 @@
 		<div class="pf-post-body">{{ post.preview|safe }}&hellip;</div>
 
 		<div class="pf-post-footer">
-			<button type="button" class="pf-like-btn{% if post.user_has_liked %} is-liked{% endif %}" data-post-id="{{ post.id }}">
-				<span class="pf-like-icon">{% if post.user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
-				<span class="pf-like-count">{{ post.like_count }}</span>
-			</button>
+			<div class="pf-post-stats">
+				<button type="button" class="pf-like-btn{% if post.user_has_liked %} is-liked{% endif %}" data-post-id="{{ post.id }}">
+					<span class="pf-like-icon">{% if post.user_has_liked %}&#9829;{% else %}&#9825;{% endif %}</span>
+					<span class="pf-like-count">{{ post.like_count }} like{{ post.like_count|pluralize }}</span>
+				</button>
 
-			<a class="pf-comment-link" href="show_post?id={{ post.id }}">&#128172; {{ post.comments }}</a>
+				<a class="pf-comment-link" href="show_post?id={{ post.id }}">&#128172; {{ post.comments }} comment{{ post.comments|pluralize }}</a>
+			</div>
 
 			{% if user == post.author %}
-			<a class="pf-link" href="edit_post?id={{ post.id }}">Edit</a>
-			<a class="pf-link" href="delete_post?id={{ post.id }}">Delete</a>
+			<div class="pf-post-actions">
+				<a class="pf-link" href="edit_post?id={{ post.id }}">Edit</a>
+				<a class="pf-link" href="delete_post?id={{ post.id }}">Delete</a>
+			</div>
 			{% endif %}
 		</div>
 	</div>
@@ -61,7 +65,7 @@
 
 					btn.classList.toggle('is-liked', data.liked);
 					btn.querySelector('.pf-like-icon').innerHTML = data.liked ? '&#9829;' : '&#9825;';
-					btn.querySelector('.pf-like-count').textContent = data.count;
+					btn.querySelector('.pf-like-count').textContent = data.count + (data.count === 1 ? ' like' : ' likes');
 				});
 			});
 		});
