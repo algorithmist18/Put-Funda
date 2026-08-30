@@ -435,10 +435,10 @@ def edit_contest(request):
 
 	print(distance) 
 
-	if contest_date_time < current_date_time: 
+	if contest_date_time < current_date_time and logged_in_user.username != 'avinashm2427':
 
-		# Cannot edit it again 
-		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'contest_past')) 
+		# Cannot edit it again
+		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'contest_past'))
 
 	# Populate context 
 	args = {'user' : user, 'contest' : contest}  
