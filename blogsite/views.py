@@ -322,21 +322,15 @@ def register(request):
 		form = RegisterForm(request.POST)
 	
 		if form.is_valid():
-			
-			user = form.save() 
+
+			user = form.save()
 			user.refresh_from_db()
-	
+
 			user.save()
 			raw_password = form.cleaned_data.get('password2')
-			email = form.cleaned_data.get('email_id') 
-			
-			if User.objects.filter(email = email).exists():
 
-				error_message = 'Invalid email, already taken'
-				return render(request, 'register.html', {'form': form, 'email_error_message': error_message, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
-				
 			user.set_password(raw_password)
-			print(user.username, raw_password) 
+			print(user.username, raw_password)
 			user = authenticate(username = user.username, password = raw_password)
 
 			if user is not None: 

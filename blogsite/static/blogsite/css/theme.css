@@ -530,6 +530,77 @@
 	border-bottom: none;
 }
 
+/* ---------- Contest question list ---------- */
+
+.pf-qlist-item {
+	display: flex;
+	gap: 14px;
+	padding: 16px 0 16px 14px;
+	margin-left: -14px;
+	border-left: 2px solid transparent;
+	border-bottom: 1px solid var(--pf-hairline);
+	transition: border-left-color 0.15s ease;
+}
+
+.pf-qlist-item:hover {
+	border-left-color: var(--pf-teal-light);
+}
+
+.pf-qlist-item:last-of-type {
+	border-bottom: none;
+}
+
+.pf-qlist-num {
+	flex: none;
+	width: 24px;
+	font-family: 'Nunito Sans', sans-serif;
+	font-weight: 700;
+	font-size: 13px;
+	color: var(--pf-text-muted);
+	padding-top: 2px;
+}
+
+.pf-qlist-body {
+	flex: 1;
+	min-width: 0;
+}
+
+.pf-qlist-question {
+	font-family: 'Nunito Sans', sans-serif;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 1.5;
+	color: var(--pf-text);
+	margin-bottom: 10px;
+}
+
+.pf-qlist-image {
+	width: 100%;
+	max-width: 160px;
+	border-radius: 3px;
+	border: 1px solid var(--pf-hairline);
+	margin-bottom: 10px;
+	display: block;
+}
+
+.pf-answer-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border: 1.5px solid var(--pf-hairline);
+	border-radius: 999px;
+	padding: 4px 12px;
+	color: var(--pf-text-muted);
+	font-family: 'Nunito Sans', sans-serif;
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.pf-answer-pill strong {
+	color: var(--pf-text);
+	font-weight: 600;
+}
+
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {

@@ -62,7 +62,11 @@ def google_login(request):
 		return JsonResponse({'error': 'Google account email is not verified.'}, status = 400)
 
 	email = payload['email']
-	user = User.objects.filter(email = email).first()
+
+	# Only link to an existing account if its email has actually been
+	# confirmed - otherwise someone could squat a victim's email address
+	# with an unverified local account and hijack their Google sign-in.
+	user = User.objects.filter(email = email, profile__email_confirmed = True).first()
 
 	if user is None:
 

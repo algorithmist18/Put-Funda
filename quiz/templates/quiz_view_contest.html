@@ -20,28 +20,34 @@
 			&middot; View response details <a class="pf-link" href="{% url 'question_analytics' %}?contest_id={{ contest.id }}">here</a>
 		</p>
 
-		<div id="quiz-contest">
+		<div id="quiz-contest" class="pf-card">
 
 			{% for question in questions %}
-			<div class="pf-card">
+			<div class="pf-qlist-item">
+				<div class="pf-qlist-num">{{ forloop.counter }}</div>
+				<div class="pf-qlist-body">
 
-				{% if question.image %}
-				<img class="pf-question-image" style="max-width: 120px; float: right;" src="{{ question.image.url }}">
-				{% elif question.image_url %}
-				<img class="pf-question-image" style="max-width: 120px; float: right;" src="{{ question.image_url }}">
-				{% endif %}
+					{% if question.image %}
+					<img class="pf-qlist-image" src="{{ question.image.url }}">
+					{% elif question.image_url %}
+					<img class="pf-qlist-image" src="{{ question.image_url }}">
+					{% endif %}
 
-				<p class="pf-question-text">{{ question.question }}</p>
-				<p class="pf-note"><strong>Answer:</strong> {{ question.answer }}</p>
+					<p class="pf-qlist-question">{{ question.question }}</p>
+					<div class="pf-answer-pill">Answer &middot; <strong>{{ question.answer }}</strong></div>
 
-				<a class="pf-link" href="{% url 'edit_question' %}?question_id={{ question.id }}">Edit</a>
-				&nbsp;&middot;&nbsp;
-				<a class="pf-link" href="{% url 'delete_question' %}?question_id={{ question.id }}">Delete</a>
+					<div class="pf-post-actions">
+						<a class="pf-link" href="{% url 'edit_question' %}?question_id={{ question.id }}">Edit</a>
+						<a class="pf-link" href="{% url 'delete_question' %}?question_id={{ question.id }}">Delete</a>
+					</div>
+				</div>
 			</div>
+			{% empty %}
+			<p class="pf-note pf-muted">No questions yet.</p>
 			{% endfor %}
-
-			<a class="pf-btn pf-btn--accent" href="contest?contest_id={{ contest.id }}">Add question</a>
 		</div>
+
+		<a class="pf-btn pf-btn--accent" href="contest?contest_id={{ contest.id }}">Add question</a>
 
 	{% else %}
 
