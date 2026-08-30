@@ -601,6 +601,38 @@
 	font-weight: 600;
 }
 
+.pf-qlist-actions {
+	flex: none;
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	padding-top: 2px;
+}
+
+.pf-qlist-btn {
+	display: inline-flex;
+	align-items: center;
+	border: 1.5px solid var(--pf-hairline);
+	border-radius: 999px;
+	padding: 5px 13px;
+	color: var(--pf-text-muted);
+	text-decoration: none;
+	font-family: 'Nunito Sans', sans-serif;
+	font-weight: 600;
+	font-size: 12px;
+	transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.pf-qlist-btn:hover {
+	border-color: var(--pf-teal-light);
+	color: var(--pf-teal-light);
+}
+
+.pf-qlist-btn--danger:hover {
+	border-color: #a8452c;
+	color: #a8452c;
+}
+
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {

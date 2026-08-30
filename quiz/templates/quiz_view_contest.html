@@ -33,13 +33,12 @@
 					<img class="pf-qlist-image" src="{{ question.image_url }}">
 					{% endif %}
 
-					<p class="pf-qlist-question">{{ question.question }}</p>
+					<p class="pf-qlist-question">{{ question.question|safe }}</p>
 					<div class="pf-answer-pill">Answer &middot; <strong>{{ question.answer }}</strong></div>
-
-					<div class="pf-post-actions">
-						<a class="pf-link" href="{% url 'edit_question' %}?question_id={{ question.id }}">Edit</a>
-						<a class="pf-link" href="{% url 'delete_question' %}?question_id={{ question.id }}">Delete</a>
-					</div>
+				</div>
+				<div class="pf-qlist-actions">
+					<a class="pf-qlist-btn" href="{% url 'edit_question' %}?question_id={{ question.id }}">Edit</a>
+					<a class="pf-qlist-btn pf-qlist-btn--danger" href="{% url 'delete_question' %}?question_id={{ question.id }}">Delete</a>
 				</div>
 			</div>
 			{% empty %}
