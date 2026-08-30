@@ -19,7 +19,7 @@
 			<span class="pf-metabar-links">
 				{% include 'nav_links.html' %}
 			</span>
-			<span>
+			<span class="pf-metabar-account">
 				{% if user.is_authenticated %}
 				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
 				&nbsp;&middot;&nbsp;

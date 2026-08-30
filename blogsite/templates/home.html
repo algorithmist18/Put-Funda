@@ -25,7 +25,7 @@
 			<span class="pf-metabar-links">
 				{% include 'nav_links.html' %}
 			</span>
-			<span>
+			<span class="pf-metabar-account">
 				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
 				&nbsp;&middot;&nbsp;
 				<a class="pf-link" href="{% url 'logout' %}">Log out</a>

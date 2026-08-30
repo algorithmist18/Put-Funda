@@ -106,17 +106,23 @@
 .pf-metabar {
 	background: var(--pf-cream);
 	color: var(--pf-text-muted);
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 10px;
+	gap: 10px 20px;
 	padding: 13px 28px;
 	font-family: 'Nunito Sans', sans-serif;
 	font-weight: 600;
 	font-size: 15px;
 	letter-spacing: 0.02em;
 	border-bottom: 1px solid var(--pf-hairline);
+}
+
+@media (max-width: 640px) {
+	.pf-metabar {
+		grid-template-columns: 1fr;
+		justify-items: center;
+	}
 }
 
 .pf-metabar a {
@@ -126,6 +132,14 @@
 
 .pf-metabar a:hover {
 	color: var(--pf-teal-light);
+}
+
+.pf-metabar-links {
+	grid-column: 2;
+	justify-self: center;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 
 .pf-metabar-links a {
@@ -138,6 +152,24 @@
 
 .pf-metabar-links a:last-child {
 	margin-right: 0;
+}
+
+.pf-metabar-account {
+	grid-column: 3;
+	justify-self: end;
+	white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+
+	.pf-metabar-links {
+		grid-column: 1;
+	}
+
+	.pf-metabar-account {
+		grid-column: 1;
+		justify-self: center;
+	}
 }
 
 .pf-metabar-links a.is-current {
