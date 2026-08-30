@@ -25,19 +25,19 @@
 	--pf-text-muted: #837a6c;
 	--pf-hairline: rgba(20, 15, 10, 0.14);
 
-	--pf-pink-bg: var(--pf-surface);
+	--pf-pink-bg: #fbeee8;
 	--pf-pink-border: #b8552f;
 	--pf-pink-ink: var(--pf-text);
 
-	--pf-peach-bg: var(--pf-surface);
+	--pf-peach-bg: #faf1de;
 	--pf-peach-border: #a3792a;
 	--pf-peach-ink: var(--pf-text);
 
-	--pf-yellow-bg: var(--pf-surface);
+	--pf-yellow-bg: #f9e9de;
 	--pf-yellow-border: #97584f;
 	--pf-yellow-ink: var(--pf-text);
 
-	--pf-blue-bg: var(--pf-surface);
+	--pf-blue-bg: #ecedf6;
 	--pf-blue-border: #5f6690;
 	--pf-blue-ink: var(--pf-text);
 
@@ -68,8 +68,8 @@
 	gap: 16px;
 	flex-wrap: wrap;
 	background: var(--pf-navy-deep);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-	padding: 30px 28px 22px;
+	border-bottom: 3px solid var(--pf-teal-light);
+	padding: 32px 28px 24px;
 }
 
 .pf-wordmark {
@@ -78,7 +78,7 @@
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: normal;
 	font-weight: 700;
-	font-size: 34px;
+	font-size: 40px;
 	letter-spacing: 0.01em;
 	color: #ffffff;
 	text-decoration: none;
@@ -89,8 +89,8 @@
 	margin-top: 6px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
-	font-size: 14px;
-	color: rgba(255, 255, 255, 0.6);
+	font-size: 16px;
+	color: rgba(255, 255, 255, 0.65);
 }
 
 .pf-masthead-badge {
@@ -98,13 +98,15 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	padding: 6px 12px;
-	border: 1px solid rgba(255, 255, 255, 0.25);
+	padding: 7px 14px;
+	border: 1.5px solid var(--pf-teal-light);
+	border-radius: 999px;
+	background: rgba(184, 85, 47, 0.16);
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 13px;
+	font-size: 14px;
 	letter-spacing: 0.02em;
-	color: rgba(255, 255, 255, 0.7);
+	color: #f0a480;
 }
 
 /* ---------- Meta bar ---------- */
@@ -116,10 +118,10 @@
 	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
 	gap: 10px 20px;
-	padding: 13px 28px;
+	padding: 15px 28px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 16px;
 	letter-spacing: 0.02em;
 	border-bottom: 1px solid var(--pf-hairline);
 }
@@ -214,7 +216,7 @@
 	margin: 30px 0 14px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 17px;
 	letter-spacing: 0.02em;
 	color: var(--pf-text-muted);
 }
@@ -234,23 +236,29 @@
 .pf-card {
 	position: relative;
 	border: 1px solid var(--pf-hairline);
-	border-top: 2px solid var(--pf-teal-light);
+	border-top: 3px solid var(--pf-teal-light);
 	border-radius: 4px;
-	padding: 18px 20px;
+	padding: 20px 22px;
 	margin-bottom: 14px;
 	background: var(--pf-surface);
 	box-shadow: 0 1px 2px rgba(20, 15, 10, 0.03), 0 2px 8px rgba(20, 15, 10, 0.04);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.pf-card--pink { border-top-color: var(--pf-pink-border); }
-.pf-card--peach { border-top-color: var(--pf-peach-border); }
-.pf-card--yellow { border-top-color: var(--pf-yellow-border); }
-.pf-card--blue { border-top-color: var(--pf-blue-border); }
+.pf-card--pink { border-top-color: var(--pf-pink-border); background: var(--pf-pink-bg); }
+.pf-card--peach { border-top-color: var(--pf-peach-border); background: var(--pf-peach-bg); }
+.pf-card--yellow { border-top-color: var(--pf-yellow-border); background: var(--pf-yellow-bg); }
+.pf-card--blue { border-top-color: var(--pf-blue-border); background: var(--pf-blue-bg); }
+
+.pf-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.07), 0 8px 20px rgba(20, 15, 10, 0.06);
+}
 
 .pf-card-label {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 13px;
+	font-size: 14px;
 	letter-spacing: 0.02em;
 	color: var(--pf-text-muted);
 	margin-bottom: 4px;
@@ -260,7 +268,7 @@
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 19px;
+	font-size: 21px;
 	color: var(--pf-teal-light);
 	border-bottom: 1px solid rgba(184, 85, 47, 0.35);
 	display: inline-block;
@@ -270,7 +278,7 @@
 
 .pf-card-body {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 14px;
+	font-size: 16px;
 	line-height: 1.55;
 	color: var(--pf-text);
 }
@@ -287,22 +295,22 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 46px;
-	height: 46px;
+	min-width: 50px;
+	height: 50px;
 	padding: 0 6px;
 	background: var(--pf-paper);
 	border: 2px solid var(--pf-teal-light);
-	border-radius: 3px;
+	border-radius: 4px;
 	color: var(--pf-ink);
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 20px;
+	font-size: 22px;
 }
 
 .pf-tile--correct {
-	background: #e6ecda;
-	border-color: #56694a;
-	color: #24301c;
+	background: #dcecc8;
+	border-color: #4f7a3a;
+	color: #1f3b16;
 }
 
 .pf-tile--muted {
@@ -320,20 +328,27 @@
 	gap: 8px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 17px;
 	letter-spacing: 0.01em;
 	text-decoration: none;
 	cursor: pointer;
-	border-radius: 3px;
+	border-radius: 4px;
 	border: 1.5px solid var(--pf-text-muted);
 	background: transparent;
 	color: var(--pf-text);
-	padding: 11px 22px;
-	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+	padding: 12px 24px;
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .pf-btn:hover {
 	border-color: var(--pf-text);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.1);
+}
+
+.pf-btn:active {
+	transform: translateY(0);
+	box-shadow: none;
 }
 
 .pf-btn--accent {
@@ -344,6 +359,7 @@
 .pf-btn--accent:hover {
 	background: var(--pf-teal-light);
 	color: #ffffff;
+	box-shadow: 0 4px 12px rgba(184, 85, 47, 0.3);
 }
 
 .pf-btn--block {
@@ -374,15 +390,16 @@
 .pf-stat-value {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 24px;
+	font-size: 30px;
 	line-height: 1;
+	color: var(--pf-teal-light);
 }
 
 .pf-stat-label {
 	margin-top: 4px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 13px;
 	letter-spacing: 0.02em;
 	color: var(--pf-text-muted);
 }
@@ -399,14 +416,15 @@
 .pf-tab {
 	flex: 1;
 	text-align: center;
-	padding: 10px;
+	padding: 11px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 15px;
+	font-size: 16px;
 	letter-spacing: 0.01em;
 	text-decoration: none;
 	color: var(--pf-text-muted);
 	background: var(--pf-navy);
+	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .pf-tab.is-active {
@@ -434,7 +452,7 @@
 .pf-note {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
-	font-size: 14px;
+	font-size: 16px;
 	line-height: 1.6;
 	color: var(--pf-text);
 }
@@ -470,8 +488,9 @@
 	border-radius: 3px;
 	color: var(--pf-text);
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 15px;
-	padding: 11px 12px;
+	font-size: 16px;
+	padding: 12px 13px;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .pf-theme input[type="text"]:focus,
@@ -545,18 +564,18 @@
 	border: none;
 	border-collapse: collapse;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .pf-table th {
 	text-align: left;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 13px;
+	font-size: 14px;
 	letter-spacing: 0.02em;
 	color: var(--pf-text-muted);
-	padding: 8px 10px;
-	border-bottom: 1px solid var(--pf-teal-light);
+	padding: 9px 10px;
+	border-bottom: 2px solid var(--pf-teal-light);
 }
 
 .pf-table td {
@@ -616,7 +635,7 @@
 .pf-qlist-question {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 1.5;
 	color: var(--pf-text);
 	margin-bottom: 10px;
@@ -637,10 +656,10 @@
 	gap: 6px;
 	border: 1.5px solid var(--pf-hairline);
 	border-radius: 999px;
-	padding: 4px 12px;
+	padding: 5px 13px;
 	color: var(--pf-text-muted);
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 12px;
+	font-size: 13px;
 	margin-bottom: 10px;
 }
 
@@ -670,18 +689,19 @@
 	align-items: center;
 	border: 1.5px solid var(--pf-hairline);
 	border-radius: 999px;
-	padding: 5px 13px;
+	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 12px;
-	transition: border-color 0.15s ease, color 0.15s ease;
+	font-size: 13px;
+	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .pf-qlist-btn:hover {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
+	transform: translateY(-1px);
 }
 
 .pf-qlist-btn--danger:hover {
@@ -694,7 +714,7 @@
 .pf-question-text {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 22px;
+	font-size: 26px;
 	line-height: 1.4;
 }
 
@@ -718,11 +738,11 @@
 	background: var(--pf-paper);
 	color: var(--pf-ink);
 	border: 2px solid var(--pf-teal-light);
-	border-radius: 3px;
+	border-radius: 4px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 20px;
-	padding: 10px 14px;
+	font-size: 22px;
+	padding: 11px 15px;
 }
 
 .pf-theme input.pf-answer-input:focus {
@@ -734,15 +754,15 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 46px;
-	height: 46px;
+	min-width: 50px;
+	height: 50px;
 	padding: 0 10px;
-	border: 2px solid var(--pf-hairline);
-	border-radius: 3px;
+	border: 2px solid var(--pf-teal-light);
+	border-radius: 4px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 19px;
-	color: var(--pf-text);
+	font-size: 21px;
+	color: var(--pf-teal-light);
 }
 
 /* ---------- Two-column layout ---------- */
@@ -781,7 +801,7 @@
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 22px;
+	font-size: 25px;
 	color: var(--pf-teal-light);
 	margin-bottom: 4px;
 }
@@ -789,7 +809,7 @@
 .pf-post-meta {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 15px;
 	letter-spacing: 0.01em;
 	color: var(--pf-text-muted);
 	margin-bottom: 10px;
@@ -797,7 +817,7 @@
 
 .pf-post-body {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 15px;
+	font-size: 17px;
 	line-height: 1.6;
 }
 
@@ -837,10 +857,10 @@
 	background: transparent;
 	color: var(--pf-text-muted);
 	border-radius: 999px;
-	padding: 5px 13px;
+	padding: 6px 14px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 13px;
+	font-size: 14px;
 	cursor: pointer;
 	transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
@@ -848,6 +868,7 @@
 .pf-like-btn:hover {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
+	transform: translateY(-1px);
 }
 
 .pf-like-btn:active {
@@ -855,14 +876,14 @@
 }
 
 .pf-like-icon {
-	font-size: 15px;
+	font-size: 16px;
 	line-height: 1;
 }
 
 .pf-like-btn.is-liked {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
-	background: rgba(184, 85, 47, 0.09);
+	background: rgba(184, 85, 47, 0.14);
 }
 
 .pf-comment-link {
@@ -871,18 +892,19 @@
 	gap: 6px;
 	border: 1.5px solid var(--pf-hairline);
 	border-radius: 999px;
-	padding: 5px 13px;
+	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 13px;
-	transition: border-color 0.15s ease, color 0.15s ease;
+	font-size: 14px;
+	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .pf-comment-link:hover {
 	color: var(--pf-teal-light);
 	border-color: var(--pf-teal-light);
+	transform: translateY(-1px);
 }
 
 /* ---------- Comments ---------- */
@@ -986,7 +1008,7 @@
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 700;
-	font-size: 64px;
+	font-size: 76px;
 	line-height: 1;
 	color: var(--pf-teal-light);
 	margin-bottom: 12px;
@@ -995,7 +1017,7 @@
 .pf-error-title {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 26px;
+	font-size: 30px;
 	color: var(--pf-text);
 	margin: 0 0 10px;
 }
