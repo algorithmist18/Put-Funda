@@ -713,7 +713,7 @@
 
 .pf-question-text {
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
+	font-weight: 600;
 	font-size: 26px;
 	line-height: 1.4;
 }
@@ -740,8 +740,8 @@
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 4px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
-	font-size: 22px;
+	font-weight: 400;
+	font-size: 20px;
 	padding: 11px 15px;
 }
 
@@ -760,7 +760,7 @@
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 4px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
+	font-weight: 400;
 	font-size: 21px;
 	color: var(--pf-teal-light);
 }

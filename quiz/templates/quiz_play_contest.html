@@ -10,7 +10,7 @@
 			{% if question.image %}
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
-						<p class="pf-question-text">{{ question.question }}</p>
+						<p class="pf-question-text">{{ question.question|safe }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -20,7 +20,7 @@
 			{% elif question.image_url %}
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
-						<p class="pf-question-text">{{ question.question }}</p>
+						<p class="pf-question-text">{{ question.question|safe }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -30,7 +30,7 @@
 			{% else %}
 				<div id="question-image-holder">
 					<div id="question-holder-full">
-						<p class="pf-question-text">{{ question.question }}</p>
+						<p class="pf-question-text">{{ question.question|safe }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 				</div>
@@ -38,7 +38,7 @@
 
 			<div id="bottom-div" class="pf-answer-row">
 				<span id="timer" class="pf-timer">0</span>
-				<input class="pf-answer-input" type="text" id="option" name="answer" autocomplete="off" placeholder="Your answer" />
+				<input class="pf-answer-input" type="text" id="option" name="answer" autocomplete="off" placeholder="Your answer" autofocus />
 				<button class="pf-btn pf-btn--accent" id="submit-button" type="submit" name="action" value="Submit">Submit</button>
 			</div>
 		</form>
@@ -121,7 +121,10 @@
 		});
 
 		// Entry point
-		$(document).ready(countdownBegin);
+		$(document).ready(function () {
+			countdownBegin();
+			$('#option').trigger('focus');
+		});
 
 		// Load time on load
 
