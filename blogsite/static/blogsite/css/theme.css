@@ -10,6 +10,14 @@
 	font-display: swap;
 }
 
+/* Without this, an element's own padding/border get added on top of a
+   percentage width instead of being carved out of it - e.g. a
+   width: 100% input inside a padded card ends up wider than the card
+   and pokes out past its edge. */
+.pf-theme, .pf-theme *, .pf-theme *::before, .pf-theme *::after {
+	box-sizing: border-box;
+}
+
 .pf-theme {
 	--pf-navy: #f7f2e6;
 	--pf-navy-deep: #0e0c0a;
@@ -477,11 +485,9 @@
 	color: var(--pf-text-muted);
 }
 
-.pf-theme input[type="text"],
-.pf-theme input[type="email"],
-.pf-theme input[type="password"],
-.pf-theme input[type="file"],
-.pf-theme textarea {
+.pf-theme input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]),
+.pf-theme textarea,
+.pf-theme select {
 	width: 100%;
 	background: var(--pf-surface);
 	border: 1px solid var(--pf-hairline);
@@ -493,10 +499,9 @@
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.pf-theme input[type="text"]:focus,
-.pf-theme input[type="email"]:focus,
-.pf-theme input[type="password"]:focus,
-.pf-theme textarea:focus {
+.pf-theme input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="range"]):focus,
+.pf-theme textarea:focus,
+.pf-theme select:focus {
 	outline: none;
 	border-color: var(--pf-teal-light);
 	box-shadow: 0 0 0 3px rgba(184, 85, 47, 0.18);
@@ -514,6 +519,15 @@
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
 	color: #a8452c;
+}
+
+/* Google's reCAPTCHA widget has a fixed ~304px width we can't restyle
+   (it renders in its own iframe) - on narrow screens it can be wider
+   than the card it sits in, so let it scroll locally instead of
+   forcing the whole page to scroll horizontally. */
+.pf-recaptcha-wrap {
+	max-width: 100%;
+	overflow-x: auto;
 }
 
 .pf-alert {
