@@ -210,26 +210,32 @@ def schedule_quiz(request):
 
 	if request.method == 'POST': 
 
-		# Redirect to adding questions page 
-		date = request.POST.get('date') 
-		time = request.POST.get('time') 
-		genre = request.POST.get('genre') 
-		valid_for = request.POST.get('valid-for') 
-		time_per_question = request.POST.get('seconds-per-question') 
-		tsv_file = request.FILES.get('tsv-question-file') 
+		# Redirect to adding questions page
+		date = request.POST.get('date')
+		time = request.POST.get('time')
+		genre = request.POST.get('genre')
+		name = request.POST.get('name')
+		description = request.POST.get('description')
+		valid_for = request.POST.get('valid-for')
+		time_per_question = request.POST.get('seconds-per-question')
+		tsv_file = request.FILES.get('tsv-question-file')
 
 		contestTime = date + ' ' + time + ':00'
 
 		# Check whether date and time is valid
-		validDate, message = time_diff(contestTime, contest_id = 0) 
+		validDate, message = time_diff(contestTime, contest_id = 0)
 
-		if validDate == 'NO': 
+		if validDate == 'NO':
 
-			print(validDate, message) 
-			return HttpResponseRedirect('schedule?message={}'.format(message)) 
+			print(validDate, message)
+			return HttpResponseRedirect('schedule?message={}'.format(message))
 
-		# Save contest 
-		contest = Contest(host = user, genre = genre, time = date + ' ' + time, valid_for = int(valid_for), time_per_question = int(time_per_question)) 
+		if not name:
+
+			return HttpResponseRedirect('schedule?message={}'.format('Every contest needs a name.'))
+
+		# Save contest
+		contest = Contest(host = user, genre = genre, name = name, description = description, time = date + ' ' + time, valid_for = int(valid_for), time_per_question = int(time_per_question))
 
 		# Persist to database
 		contest.save() 
@@ -446,20 +452,24 @@ def edit_contest(request):
 	# Proceed to handle request 
 	if request.method == 'POST': 
 
-		# Fetch form data 
-		genre = request.POST.get('genre') 
-		time = request.POST.get('time') 
-		date = request.POST.get('date') 
-		valid_for = request.POST.get('valid-for') 
+		# Fetch form data
+		genre = request.POST.get('genre')
+		name = request.POST.get('name')
+		description = request.POST.get('description')
+		time = request.POST.get('time')
+		date = request.POST.get('date')
+		valid_for = request.POST.get('valid-for')
 		time_per_question = request.POST.get('seconds-per-question')
-		csv_file = request.FILES.get('tsv-question-file') 
+		csv_file = request.FILES.get('tsv-question-file')
 
 		# TODO: Check if timings clash
 
-		# Edit operation 
+		# Edit operation
 		contest.genre = genre
-		contest.time = date + ' ' +  time 
-		contest.valid_for = int(valid_for) 
+		contest.name = name
+		contest.description = description
+		contest.time = date + ' ' +  time
+		contest.valid_for = int(valid_for)
 		contest.time_per_question = request.POST.get('seconds-per-question')
 
 		# Save edits 

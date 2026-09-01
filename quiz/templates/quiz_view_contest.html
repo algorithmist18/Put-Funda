@@ -2,7 +2,11 @@
 
 {% block content %}
 
-	<div class="pf-section-label pf-section-label--first"><span>{{ contest.genre }}</span></div>
+	<div class="pf-section-label pf-section-label--first"><span>{{ contest.name|default:contest.genre }}</span></div>
+
+	{% if contest.description %}
+	<p class="pf-note pf-muted" style="margin-top: -10px; margin-bottom: 16px;">{{ contest.description }}</p>
+	{% endif %}
 
 	{% if request.user.username == 'Avinash' %}
 	<p class="pf-note" style="margin-bottom: 12px;">

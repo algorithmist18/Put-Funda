@@ -8,14 +8,16 @@ from django import forms
 
 # Create your models here.
 
-class Contest(models.Model): 
+class Contest(models.Model):
 
-	host = models.ForeignKey(User, on_delete = models.CASCADE) 
-	time = models.DateTimeField() 
+	host = models.ForeignKey(User, on_delete = models.CASCADE)
+	time = models.DateTimeField()
 	genre = models.CharField(max_length = 20, default = 'General')
-	has_rating_updated = models.BooleanField(default = False, blank = True, null = True) 
-	time_per_question = models.IntegerField(default = 30, blank = True, null = True) 
-	valid_for = models.IntegerField(default = 20, blank = True, null = True) 
+	name = models.CharField(max_length = 100, blank = True, default = '')
+	description = models.CharField(max_length = 300, blank = True, default = '')
+	has_rating_updated = models.BooleanField(default = False, blank = True, null = True)
+	time_per_question = models.IntegerField(default = 30, blank = True, null = True)
+	valid_for = models.IntegerField(default = 20, blank = True, null = True)
 
 class QuizQuestion(models.Model): 
 

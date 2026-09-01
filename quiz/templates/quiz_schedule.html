@@ -10,6 +10,16 @@
 			{% csrf_token %}
 
 			<div class="pf-field">
+				<label>Name</label>
+				<input type="text" name="name" placeholder="Name your contest" required>
+			</div>
+
+			<div class="pf-field">
+				<label>Description</label>
+				<textarea name="description" rows="2" placeholder="A short description for players"></textarea>
+			</div>
+
+			<div class="pf-field">
 				<label>Genre</label>
 				<input type="text" name="genre" placeholder="Genre">
 			</div>
@@ -79,7 +89,7 @@
 		var message = params.get('message');
 
 		if (message && message.length > 0) {
-			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> Your contest does not have a valid time or it might be clashing with a different contest.</div>").insertBefore("#schedule-message");
+			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> </div>").append($("<span></span>").text(message)).insertBefore("#schedule-message");
 		}
 
 	</script>
