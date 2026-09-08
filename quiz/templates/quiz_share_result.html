@@ -1,0 +1,55 @@
+{% extends 'quiz_homepage_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>{{ player.username }}'s result</span></div>
+
+	<div class="pf-card">
+
+		<p class="pf-card-title">{{ contest.name|default:contest.genre }}</p>
+
+		{% if contest.description %}
+		<p class="pf-note" style="margin-bottom: 16px;">{{ contest.description }}</p>
+		{% endif %}
+
+		<div class="pf-stats" style="margin-bottom: 16px;">
+			<div class="pf-stat">
+				<div class="pf-stat-value">{{ correct_answers }}/{{ total_questions }}</div>
+				<div class="pf-stat-label">Correct</div>
+			</div>
+			<div class="pf-stat">
+				<div class="pf-stat-value">{{ time_taken }}</div>
+				<div class="pf-stat-label">Seconds taken</div>
+			</div>
+		</div>
+
+		<p class="pf-post-meta pf-mb-0">
+			Played by <a class="pf-link" href="{% url 'show_user' %}?user={{ player.username }}">{{ player.username }}</a>
+		</p>
+	</div>
+
+	<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;">
+		<button type="button" class="pf-btn" id="copy-link-button">Copy link to share</button>
+		<a class="pf-btn pf-btn--accent" href="{% url 'share_contest' %}?contest_id={{ contest.id }}">View the contest</a>
+	</div>
+
+	<script type="text/javascript">
+
+		document.getElementById('copy-link-button').addEventListener('click', function () {
+
+			var button = this;
+
+			navigator.clipboard.writeText(window.location.href).then(function () {
+
+				var original = button.textContent;
+				button.textContent = 'Link copied!';
+
+				setTimeout(function () {
+					button.textContent = original;
+				}, 2000);
+			});
+		});
+
+	</script>
+
+{% endblock %}

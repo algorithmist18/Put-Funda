@@ -4,6 +4,10 @@
 
 	<div class="pf-section-label pf-section-label--first"><span>Leaderboard &middot; {{ contest.name|default:contest.genre }}</span></div>
 
+	<p class="pf-note" style="margin-bottom: 14px;">
+		<a class="pf-link" href="{% url 'share_contest' %}?contest_id={{ contest.id }}">Share this contest</a>
+	</p>
+
 	{% if request.user.username == 'Avinash' %}
 	<p class="pf-note" style="margin-bottom: 14px;">
 		<a class="pf-link" href="{% url 'update_rating' %}?contest_id={{ contest.id }}" id="update-rating-button">Update ratings</a>

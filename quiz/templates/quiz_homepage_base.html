@@ -24,6 +24,8 @@
 				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
 				&nbsp;&middot;&nbsp;
 				<a class="pf-link" href="{% url 'logout' %}">Log out</a>
+				{% else %}
+				<a class="pf-link" href="{% url 'login' %}">Log in</a>
 				{% endif %}
 			</span>
 		</div>

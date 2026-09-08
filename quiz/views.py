@@ -2,7 +2,7 @@
 
 import difflib
 from django.shortcuts import render
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,7 +15,7 @@ from blogsite.models import Profile
 from .models import User 
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 import datetime, collections
 from graphos.sources.simple import SimpleDataSource
@@ -855,6 +855,94 @@ def display_leaderboard(request):
 	args = {} 
 	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active})
 	return render(request, 'quiz_display_leaderboard.html', args) 
+
+# Method to work out whether a contest hasn't started, is currently
+# running, or has finished - used by the public share pages below
+def contest_status(contest):
+
+	current_time = datetime.datetime.now(pytz.timezone('UTC'))
+	minutes_since_start = (current_time - contest.time).total_seconds() / 60
+
+	if minutes_since_start < 0:
+		return 'upcoming'
+
+	if minutes_since_start <= contest.valid_for:
+		return 'active'
+
+	return 'past'
+
+# Publicly shareable, read-only contest overview - no login required.
+# Never exposes questions/answers, only the host's own contest page does
+# that. Once the contest has ended, also shows the leaderboard.
+def share_contest(request):
+
+	contest_id = request.GET.get('contest_id')
+	contest = get_object_or_404(Contest, id = contest_id)
+	status = contest_status(contest)
+
+	args = {'contest' : contest, 'status' : status}
+
+	if status == 'past':
+
+		contest_users = []
+
+		for user in users_in_contest(contest):
+
+			submissions = Submission.objects.filter(question__contest = contest, user = user)
+			correct_answers = 0
+			time_taken = 0
+
+			for submission in submissions:
+
+				if is_correct(submission, submission.question):
+
+					correct_answers += 1
+					time_taken += submission.time_taken
+
+			contest_users.append({'username' : user.username, 'correct_answers' : correct_answers, 'time_taken' : round(time_taken, 3)})
+
+		contest_users = sorted(sorted(contest_users, key = lambda x: x['time_taken']), key = lambda x: x['correct_answers'], reverse = True)
+
+		args['leaderboard'] = contest_users
+
+	return render(request, 'quiz_share_contest.html', args)
+
+# Publicly shareable, read-only summary of one player's result for a
+# contest - lets a player share "I scored X/Y" without the viewer needing
+# an account of their own.
+def share_result(request):
+
+	contest_id = request.GET.get('contest_id')
+	username = request.GET.get('username')
+
+	contest = get_object_or_404(Contest, id = contest_id)
+	player = get_object_or_404(User, username = username)
+
+	submissions = Submission.objects.filter(question__contest = contest, user = player)
+
+	if not submissions.exists():
+		raise Http404('This player has not played this contest yet.')
+
+	total_questions = QuizQuestion.objects.filter(contest = contest).count()
+	correct_answers = 0
+	time_taken = 0
+
+	for submission in submissions:
+
+		if is_correct(submission, submission.question):
+
+			correct_answers += 1
+			time_taken += submission.time_taken
+
+	args = {
+		'contest' : contest,
+		'player' : player,
+		'correct_answers' : correct_answers,
+		'total_questions' : total_questions,
+		'time_taken' : round(time_taken, 3),
+	}
+
+	return render(request, 'quiz_share_result.html', args)
 
 # Method to fetch number of contests user has played from certan contest
 def fetch_no_of_contests_played(start_contest_id, username):

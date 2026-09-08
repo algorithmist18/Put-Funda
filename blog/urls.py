@@ -75,6 +75,8 @@ urlpatterns = [
     path('quiz/analytics', quiz_views.view_question_analytics, name='question_analytics'),
     path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
     path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
+    path('quiz/share_contest', quiz_views.share_contest, name = 'share_contest'),
+    path('quiz/share_result', quiz_views.share_result, name = 'share_result'),
     path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
     path('qotd/release', qotd_views.release_qotd, name = 'qotd_release')
 ]

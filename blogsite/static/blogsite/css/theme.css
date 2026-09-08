@@ -1039,3 +1039,35 @@
 .pf-error-shell .pf-note {
 	margin-bottom: 26px;
 }
+
+/* ---------- Badges (contest status, etc.) ---------- */
+
+.pf-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	border: 1.5px solid var(--pf-hairline);
+	border-radius: 999px;
+	padding: 5px 13px;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--pf-text-muted);
+}
+
+.pf-badge--accent {
+	border-color: var(--pf-teal-light);
+	color: var(--pf-teal-light);
+	background: rgba(184, 85, 47, 0.09);
+}
+
+/* ---------- Share page ---------- */
+
+.pf-share-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+}

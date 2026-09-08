@@ -5,8 +5,12 @@
 	<div class="pf-section-label pf-section-label--first"><span>{{ contest.name|default:contest.genre }}</span></div>
 
 	{% if contest.description %}
-	<p class="pf-note pf-muted" style="margin-top: -10px; margin-bottom: 16px;">{{ contest.description }}</p>
+	<p class="pf-note pf-muted" style="margin-top: -10px; margin-bottom: 10px;">{{ contest.description }}</p>
 	{% endif %}
+
+	<p class="pf-note" style="margin-bottom: 16px;">
+		<a class="pf-link" href="{% url 'share_contest' %}?contest_id={{ contest.id }}">Share this contest</a>
+	</p>
 
 	{% if request.user.username == 'Avinash' %}
 	<p class="pf-note" style="margin-bottom: 12px;">
@@ -61,6 +65,7 @@
 			<p class="pf-note" style="margin-bottom: 16px;">
 				View leaderboard <a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">here</a>
 				&middot; View response details <a class="pf-link" href="{% url 'question_analytics' %}?contest_id={{ contest.id }}">here</a>
+				&middot; <a class="pf-link" href="{% url 'share_result' %}?contest_id={{ contest.id }}&username={{ user.username }}">Share your result</a>
 			</p>
 
 			<div class="pf-card">
