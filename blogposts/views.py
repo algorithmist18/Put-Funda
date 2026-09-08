@@ -1,12 +1,12 @@
 # Importing libraries 
 
 from django.shortcuts import render
-from .models import Post, PostComment, User 
-from .forms import PostForm 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse 
+from .models import Post, PostComment, PostLike, User
+from .forms import PostForm
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-import datetime 
+import datetime
 
 # Create your views here.
 
@@ -76,88 +76,91 @@ def display(request):
 	previews = {} 
 	authors = {} 
 
-	post_objects = Post.objects.all().order_by('-time') 
+	post_objects = Post.objects.all().order_by('-time')
 
 	for post in post_objects:
 
-		posts.append(post) 
-		previews.update({post.title : preview(post.content)})
-		authors.update({post.content : post.author}) 
+		post.like_count = PostLike.objects.filter(post = post).count()
+		post.user_has_liked = PostLike.objects.filter(post = post, user = logged_in_user).exists()
 
-	# Updating context 
+		posts.append(post)
+		previews.update({post.title : preview(post.content)})
+		authors.update({post.content : post.author})
+
+	# Updating context
 
 	context.update({'posts' : posts, 'user' : logged_in_user})
 
 	return render(request, 'blog_home.html', context)
 
 @login_required
+def like_post(request):
+
+	if request.method != 'GET':
+		return JsonResponse({'error': 'Invalid request method.'}, status = 405)
+
+	post_id = request.GET.get('post_id')
+	post = Post.objects.get(id = post_id)
+
+	existing_like = PostLike.objects.filter(user = request.user, post = post).first()
+
+	if existing_like:
+		existing_like.delete()
+		liked = False
+	else:
+		PostLike.objects.create(user = request.user, post = post)
+		liked = True
+
+	count = PostLike.objects.filter(post = post).count()
+
+	return JsonResponse({'liked': liked, 'count': count})
+
+@login_required
 def show_post(request):
 
-	# Display single post 
-	
-	user = request.user 
-	
-	args = {} 
-	args['user'] = user 
+	# Display single post
 
-	if request.method == 'POST': 
+	user = request.user
 
-		blogId = request.POST.get('blogid') 
-		blogPost = Post.objects.get(id = blogId) 
-		action = request.POST.get('act') 
+	if request.method == 'POST':
 
-		if action == 'Show comments': 
+		blogId = request.POST.get('blogid')
+		blogPost = Post.objects.get(id = blogId)
+		action = request.POST.get('act')
 
-			# Show all the comments
+		if action != 'Show comments':
 
-			blogComments = PostComment.objects.all().filter(post = blogPost) 
-			noOfComments = len(blogComments) 
+			# Post a comment on the blog
 
-			# Update context 
+			comment = request.POST.get('comment')
+			comment = comment.strip()
 
-			args['post'] = blogPost
-			args['author'] = blogPost.author
-			args['blog_comments'] = blogComments 
-			args['commentCount'] = noOfComments 
+			if comment:
 
-			return render(request, 'blog_show.html', args)
+				BlogComment = PostComment(content = comment, time = datetime.datetime.now(), author = user, post = blogPost)
+				BlogComment.save()
 
-		else: 
-
-			# Post a comment on the blog  
-
-			comment = request.POST.get('comment') 
-			comment = comment.strip() 
-
-			BlogComment = PostComment(content = comment, time = datetime.datetime.now(), author = user, post = blogPost) 
-
-			BlogComment.save() 
-			
-			if blogPost.comments == 0: 
-
-				blogPost.comments = PostComment.objects.filter(post = blogPost).count() 
-
-			else: 
-
-				blogPost.comments = blogPost.comments + 1 
-
-			blogPost.save() 
-
-			args['post'] = blogPost 
-			args['author'] = blogPost.author
-			args['commentCount'] = blogPost.comments 
-
-			return render(request, 'blog_show.html', args) 
+				blogPost.comments = PostComment.objects.filter(post = blogPost).count()
+				blogPost.save()
 
 	else:
 
 		blog_id = request.GET.get('id')
-		noOfComments = 0 
-		blog_post = Post.objects.all().get(id = blog_id) 
-		author = blog_post.author 
+		blogPost = Post.objects.all().get(id = blog_id)
 
-		noOfComments = PostComment.objects.all().filter(post = blog_post).count() 
-		return render(request, 'blog_show.html', {'post' : blog_post, 'user': user, 'author' : author, 'commentCount' : noOfComments})
+	blog_comments = PostComment.objects.filter(post = blogPost).order_by('time')
+
+	args = {
+		'user': user,
+		'post': blogPost,
+		'author': blogPost.author,
+		'blog_comments': blog_comments,
+		'commentCount': blog_comments.count(),
+		'like_count': PostLike.objects.filter(post = blogPost).count(),
+		'user_has_liked': PostLike.objects.filter(post = blogPost, user = user).exists(),
+	}
+
+	return render(request, 'blog_show.html', args)
 
 @login_required
 def edit_post(request): 

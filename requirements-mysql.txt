@@ -1,0 +1,11 @@
+# Only needed when DB_ENGINE=mysql (production).
+#
+# Building this from source requires MySQL's client dev headers to be
+# installed on the system first (the `mysql_config` binary must be on PATH):
+#   macOS:          brew install mysql-client && \
+#                    export PATH="$(brew --prefix mysql-client)/bin:$PATH"
+#   Debian/Ubuntu:  sudo apt-get install default-libmysqlclient-dev pkg-config
+#
+# Install with: pip install -r requirements.txt -r requirements-mysql.txt
+
+mysqlclient>=1.4,<2.2

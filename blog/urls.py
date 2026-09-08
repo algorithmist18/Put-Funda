@@ -19,8 +19,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from blogsite import views
+from blogsite import google_auth_views
 from blogposts import views as post_views
 from quiz import views as quiz_views
+from quiz import qotd_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -39,6 +41,7 @@ urlpatterns = [
     path('forgot', views.forgot_password, name = 'forgot'),
     path('register', views.register, name = 'register'),
     path('login', views.login_view, name = 'login'),
+    path('google-login', google_auth_views.google_login, name = 'google_login'),
     path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),
@@ -56,6 +59,7 @@ urlpatterns = [
     path('blogposts/show_post', post_views.show_post, name = 'show_post'),
     path('blogposts/edit_post', post_views.edit_post, name = 'edit_post'),
     path('blogposts/delete_post', post_views.delete_post, name = 'delete_post'),
+    path('blogposts/like_post', post_views.like_post, name = 'like_post'),
     path('quiz/', quiz_views.homepage, name = 'quiz_home'),
     path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
     path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),
@@ -70,7 +74,9 @@ urlpatterns = [
     path('quiz/restorerating', quiz_views.restore_ratings, name='restore_rating'),
     path('quiz/analytics', quiz_views.view_question_analytics, name='question_analytics'),
     path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
-    path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct') 
+    path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
+    path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
+    path('qotd/release', qotd_views.release_qotd, name = 'qotd_release')
 ]
 
 if settings.DEBUG:

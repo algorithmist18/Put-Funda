@@ -1,0 +1,6 @@
+{% with url_name=request.resolver_match.url_name|default:'' %}
+<a class="pf-link{% if url_name == 'home' %} is-current{% endif %}" href="{% url 'home' %}">Home</a>
+<a class="pf-link{% if 'blog' in url_name or 'post' in url_name %} is-current{% endif %}" href="{% url 'blog_home' %}">Blogposts</a>
+<a class="pf-link{% if 'quiz' in url_name or 'contest' in url_name or 'question' in url_name or 'leaderboard' in url_name %} is-current{% endif %}" href="{% url 'quiz_home' %}">Contests</a>
+<a class="pf-link{% if 'qotd' in url_name %} is-current{% endif %}" href="{% url 'qotd_home' %}">Question of the day</a>
+{% endwith %}

@@ -1,148 +1,114 @@
 {% extends 'home.html' %}
 {% block content %}
-<nav id = "nav" class="navbar navbar-light" style="background-color: #34495E;">
-	<a style="color: white; font-size: 12px;" href = "/users?user={{user.username}}" class = "navbar-brand" id = "user-display"> {{user.username}} </span>
-		<a style="color: white; font-size: 12px;" class = "navbar-brand" id="logout-button" href="{% url 'logout' %}">Logout</a>
-</nav>
+
 	{% if user.is_authenticated %}
-	<div id="navbar-container">
-		<div id="navbar-links">
-			<p id="links"><span><a href="">Home</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/quiz">Contests</a></span>&nbsp; &nbsp; &nbsp;<span><a href="/blogposts">Blogposts</a></span></p>
+
+		{% if not user.profile.email_confirmed %}
+		<div class="pf-alert pf-alert--danger pf-center">
+			Please confirm your email <a class="pf-link" href="#" onclick="sendActivationMail()">here</a>.
 		</div>
-	</div>
+		{% endif %}
 
-	{% if not user.profile.email_confirmed %}
-		<center>
-			<p>Please confirm your email <a href="#" onclick="sendActivationMail()">here</a>!</p>
-		</center>
-	{% endif %}
+		<div class="pf-grid">
 
-	<div id="bottom-section" class="clearfix">
-		<div id="container" class="clearfix">
-			<div id="parent-blog-posts">
+			<div>
+				<div class="pf-section-label pf-section-label--first"><span>Latest posts</span></div>
+
 				{% for post in blog_posts %}
-				<div id="blog-post">
-
-					<br><h3 align="left" style="margin-left: 10px;"> {{post.title}} </h3>
-					<p style = "margin-left: 10px; font-size: 13px;"> 
-
-						by 
-
+				<div class="pf-card pf-post">
+					<div class="pf-post-title">{{ post.title }}</div>
+					<div class="pf-post-meta">
+						by
 						{% if post.anon %}
-						<strong>anonymous</strong>
+							anonymous
 						{% else %}
-						<a href="/users?user={{post.author.username}}"> {{post.author}} </a>
+							<a class="pf-link" href="{% url 'show_user' %}?user={{ post.author.username }}">{{ post.author }}</a>
 						{% endif %}
-
-						at {{post.time}} 
-					</p>
-					<br>
-					<div id="content">
-						<p>{{post.content | safe}}</p>
+						&middot; {{ post.time }}
 					</div>
-					<div id="like-comments">	
-						<div id="like">
-							<p id="like-txt">{{post.likes}}</p>
-						</div>
-						<div id="comments">
-						</div>
-					</div>
-					<br>
+					<div class="pf-post-body">{{ post.content|safe }}</div>
+					<div class="pf-post-footer">&hearts; {{ post.likes }}</div>
 				</div>
+				{% empty %}
+				<p class="pf-note pf-muted">No posts yet.</p>
 				{% endfor %}
-			</div> <!-- Blog posts -->
-			<div id="leaderboard">
-				{% if active_contests is not None > 0 %}
-				<div class="contests">
-					<p><h4 style="margin-top: 5px; margin-left: 10px">Active Contests</h4></p>
-					<table class="table table-bordered table-striped" style="font-size: 13px;">
-						<thead>
-							<tr>	
-								<th scope="col">#</th>
-								<th scope="col">Host</th>
-								<th scope="col">Time</th>
-							</tr>
-						</thead>
+			</div>
+
+			<div>
+				{% if active_contests %}
+				<div class="pf-section-label pf-section-label--first"><span>Active contests</span></div>
+				<div class="pf-card">
+					<table class="pf-table">
+						<thead><tr><th>#</th><th>Host</th><th>Time</th></tr></thead>
 						<tbody>
 							{% for contest in active_contests %}
 							<tr>
-								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-								<td><a class="username" href="">{{contest.host.username}}</a></td>
-								<td>{{contest.time}}</td>
+								<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.id }}</a></td>
+								<td>{{ contest.host.username }}</td>
+								<td>{{ contest.time }}</td>
 							</tr>
 							{% endfor %}
 						</tbody>
 					</table>
 				</div>
-				<br>
 				{% endif %}
-				{% if new_contests is not None %}
-				<div class="contests">
-					<p><h4 style="margin-top: 5px; margin-left: 10px">Upcoming Contests</h4></p>
-					<table class="table table-bordered table-striped" style="font-size: 13px;">
-						<thead>
-							<tr>	
-								<th scope="col">#</th>
-								<th scope="col">Host</th>
-								<th scope="col">Time</th>
-							</tr>
-						</thead>
+
+				{% if new_contests %}
+				<div class="pf-section-label"><span>Upcoming contests</span></div>
+				<div class="pf-card">
+					<table class="pf-table">
+						<thead><tr><th>#</th><th>Host</th><th>Time</th></tr></thead>
 						<tbody>
 							{% for contest in new_contests %}
 							<tr>
-								<td><a href="{% url 'view_contest' %}?contest_id={{contest.id}}">{{contest.id}}</a></td>
-								<td><a class="username" href="">{{contest.host.username}}</a></td>
-								<td>{{contest.time}}</td>
+								<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.id }}</a></td>
+								<td>{{ contest.host.username }}</td>
+								<td>{{ contest.time }}</td>
 							</tr>
 							{% endfor %}
 						</tbody>
 					</table>
 				</div>
-				<br>
 				{% endif %}
-				<p><h4 style="margin-top: 5px; margin-left: 10px">Leaderboard</h4></p>
-				<table class="table table-bordered table-striped" style="font-size: 13px;">
-					<thead>
-						<tr>
-							<th scope="col">Player</th>
-							<th scope="col">Rating</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for user in users %}
-						<tr>
-							<td>{{user.user.username}}</td>
-							<td class="rating">{{user.rating}}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+
+				<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
+				<div class="pf-card">
+					<table class="pf-table">
+						<thead><tr><th>Player</th><th>Rating</th></tr></thead>
+						<tbody>
+							{% for u in users %}
+							<tr>
+								<td>{{ u.user.username }}</td>
+								<td class="rating">{{ u.rating }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div> <!-- Container -->
-	</div> <!-- Bottom section -->
-<!--<span style="margin-right: 10px; font-size: 12px;"><a style="font-size: 12px" href="{% url 'blog_home' %}">Blogs</a></span>
-|
-<span style="margin-right: 10px; font-size: 12px;"><a style="font-size: 12px" href="{% url 'view' %}">Feed</a></span>-->
-{% else %}
-<p> You are not logged in. </p>
-{% endif %}
+
+		</div>
+
+	{% else %}
+		<p class="pf-note">You are not logged in.</p>
+	{% endif %}
 
 <script type="text/javascript">
 
 	// Round off rating values
-	var ratings = document.getElementsByClassName("rating"); 
+	var ratings = document.getElementsByClassName("rating");
 
-	for(let i=0; i<ratings.length; i++) {
+	for (let i = 0; i < ratings.length; i++) {
 
-		let rating = Number(ratings[i].innerHTML); 
-		ratings[i].innerHTML = rating.toFixed(0); 
+		let rating = Number(ratings[i].innerHTML);
+		ratings[i].innerHTML = rating.toFixed(0);
 	}
 
 	function sendActivationMail() {
 
-		$.get("{% url 'mail_activate' %}", {} , 
+		$.get("{% url 'mail_activate' %}", {},
 
-			function(data){
+			function (data) {
 
 				console.log(data['message']);
 			}

@@ -1,23 +1,25 @@
-{% extends 'search_results_base.html' %}
+{% extends 'home.html' %}
 {% block content %}
-	
-	<div id = "users">
 
-	<p> List of users on searching for <i>{{query}}</i>...</p>
-	
-	{% for users in user_list %}
-	
-	<p>
+	<div class="pf-section-label pf-section-label--first"><span>User search</span></div>
+	<p class="pf-note" style="margin-bottom: 16px;">Results for <em>{{ query }}</em></p>
 
-		 <a href = "{% url 'show_user' %}?user={{users.username}}"> {{users.first_name}} {{users.last_name}} </a> 
-
-		 <span>({{users.username}})</span><br>
-
-		 <span style = "font-size: 12px;">{{users.profile.location}}</span>
-	</p>
-
-	{% endfor %}
-
+	<div class="pf-card">
+		<table class="pf-table">
+			<tbody>
+				{% for users in user_list %}
+				<tr>
+					<td>
+						<a class="pf-link" href="{% url 'show_user' %}?user={{ users.username }}">{{ users.first_name }} {{ users.last_name }}</a>
+						<span class="pf-muted">({{ users.username }})</span>
+					</td>
+					<td class="pf-muted">{{ users.profile.location }}</td>
+				</tr>
+				{% empty %}
+				<tr><td class="pf-muted">No users found.</td></tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 
 {% endblock %}

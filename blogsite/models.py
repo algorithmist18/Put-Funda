@@ -41,6 +41,11 @@ class Profile(models.Model):
 	no_of_contests_played = models.IntegerField(default = 0, null = True, blank = True)
 	email_confirmed = models.BooleanField(default = False, null = True, blank = True)
 
+	# Question of the Day streak tracking
+	current_streak = models.IntegerField(default = 0, null = True, blank = True)
+	longest_streak = models.IntegerField(default = 0, null = True, blank = True)
+	last_qotd_date = models.DateField(null = True, blank = True)
+
 	# Add image field
 	picture = models.ImageField(upload_to = 'images/', max_length = 200, blank = True)
 

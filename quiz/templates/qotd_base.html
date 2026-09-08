@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Put Funda | Question of the day</title>
+		<link rel="stylesheet" href="{% static 'blogsite/css/theme.css' %}">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	</head>
+	<body class="pf-theme">
+
+		<header class="pf-masthead">
+			<a class="pf-wordmark" href="{% url 'index' %}">Put Funda</a>
+			<p class="pf-tagline">One question a day.</p>
+		</header>
+
+		<div class="pf-metabar">
+			<span class="pf-metabar-links">
+				{% include 'nav_links.html' %}
+				{% if can_release %}
+				<a class="pf-link" href="{% url 'qotd_release' %}">Release</a>
+				{% endif %}
+			</span>
+			<span class="pf-metabar-account">
+				{% if user.is_authenticated %}
+				<a class="pf-link" href="{% url 'show_user' %}?user={{ user.username }}">{{ user.username }}</a>
+				&nbsp;&middot;&nbsp;
+				<a class="pf-link" href="{% url 'logout' %}">Log out</a>
+				{% endif %}
+			</span>
+		</div>
+
+		<div class="pf-shell">
+			{% block content %}
+			{% endblock %}
+		</div>
+
+	</body>
+</html>

@@ -44,8 +44,7 @@ def index(request):
 	users = Profile.objects.all().order_by("-rating")[0:10] 
 
 	# Fetch leaderboard of previous contest 
-	previous_contest = Contest.objects.all().filter(time__lt = current_time, has_rating_updated = True).order_by('-time')[:1] 
-	print(previous_contest[0].id)
+	previous_contest = Contest.objects.all().filter(time__lt = current_time, has_rating_updated = True).order_by('-time')[:1]
 	players = list(Leaderboard.objects.all().filter(contest = previous_contest, rank__lt = 11))[:10]
 
 	# Fetch upcoming contests 
@@ -323,21 +322,15 @@ def register(request):
 		form = RegisterForm(request.POST)
 	
 		if form.is_valid():
-			
-			user = form.save() 
+
+			user = form.save()
 			user.refresh_from_db()
-	
+
 			user.save()
 			raw_password = form.cleaned_data.get('password2')
-			email = form.cleaned_data.get('email_id') 
-			
-			if User.objects.filter(email = email).exists():
 
-				error_message = 'Invalid email, already taken'
-				return render(request, 'register.html', {'form': form, 'email_error_message': error_message})
-				
 			user.set_password(raw_password)
-			print(user.username, raw_password) 
+			print(user.username, raw_password)
 			user = authenticate(username = user.username, password = raw_password)
 
 			if user is not None: 
@@ -349,19 +342,19 @@ def register(request):
 			else:
 				
 				print('User is not authenticated') 
-				return render(request, 'register.html', {'form' : form})
+				return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 			return homepage(request) 
 		
 		else:
 
-			return render(request, 'register.html', {'form' : form})
+			return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 			
 	else:
 
 		form = RegisterForm()
 
-	return render(request, 'register.html', {'form' : form})
+	return render(request, 'register.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 # Function for logging in
 def login_view(request):
@@ -395,12 +388,12 @@ def login_view(request):
 			except:
 
 				# Authentication error - redirect to login page with message 
-				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect'})
+				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect', 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 		else:
 			print(form.errors)
 	else:
 		form = AuthenticationForm()
-	return render(request, 'login.html', {'form' : form})
+	return render(request, 'login.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
 # Function for logging a person out
 def logout_view(request):
@@ -493,9 +486,8 @@ def delete_question(request):
 		args = {'user' : user, 'question' : question}  
 		return render(request, 'question_delete.html', args) 
 
-# Method to find all distinct genres from list 
-@login_required
-def find_all_genres(genre_list): 
+# Method to find all distinct genres from list
+def find_all_genres(genre_list):
 
 	genre_set = [] 
 

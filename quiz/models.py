@@ -8,14 +8,16 @@ from django import forms
 
 # Create your models here.
 
-class Contest(models.Model): 
+class Contest(models.Model):
 
-	host = models.ForeignKey(User, on_delete = models.CASCADE) 
-	time = models.DateTimeField() 
+	host = models.ForeignKey(User, on_delete = models.CASCADE)
+	time = models.DateTimeField()
 	genre = models.CharField(max_length = 20, default = 'General')
-	has_rating_updated = models.BooleanField(default = False, blank = True, null = True) 
-	time_per_question = models.IntegerField(default = 30, blank = True, null = True) 
-	valid_for = models.IntegerField(default = 20, blank = True, null = True) 
+	name = models.CharField(max_length = 100, blank = True, default = '')
+	description = models.CharField(max_length = 300, blank = True, default = '')
+	has_rating_updated = models.BooleanField(default = False, blank = True, null = True)
+	time_per_question = models.IntegerField(default = 30, blank = True, null = True)
+	valid_for = models.IntegerField(default = 20, blank = True, null = True)
 
 class QuizQuestion(models.Model): 
 
@@ -42,10 +44,34 @@ class RatingHistory(models.Model):
 	rating_before_contest = models.FloatField(default=1500, blank=True, null=True)
 	rating = models.FloatField(default=1500, blank=True, null=True) 
 
-class Leaderboard(models.Model): 
+class Leaderboard(models.Model):
 
-	rank = models.IntegerField(default=0, blank=True, null=True) 
-	user = models.ForeignKey(User, on_delete = models.CASCADE) 
-	contest = models.ForeignKey(Contest, on_delete = models.CASCADE) 
-	correct_answers = models.IntegerField(default=0, blank=True, null=True) 
-	time_taken = models.FloatField(default=0.00, blank=True, null=True) 
+	rank = models.IntegerField(default=0, blank=True, null=True)
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	contest = models.ForeignKey(Contest, on_delete = models.CASCADE)
+	correct_answers = models.IntegerField(default=0, blank=True, null=True)
+	time_taken = models.FloatField(default=0.00, blank=True, null=True)
+
+class QuestionOfTheDay(models.Model):
+
+	question = models.TextField()
+	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
+	image_url = models.URLField(blank = True)
+	answer = models.TextField()
+	second_answer = models.TextField(blank = True)
+	third_answer = models.TextField(blank = True)
+	date = models.DateField(unique = True)
+	created_by = models.ForeignKey(User, on_delete = models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add = True)
+
+class QOTDSubmission(models.Model):
+
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	qotd = models.ForeignKey(QuestionOfTheDay, on_delete = models.CASCADE)
+	answer = models.TextField()
+	is_correct = models.BooleanField(default = False)
+	time = models.DateTimeField(auto_now_add = True)
+
+	class Meta:
+
+		unique_together = ('user', 'qotd')

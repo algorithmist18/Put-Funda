@@ -17,15 +17,14 @@ class RegisterForm(UserCreationForm):
 		model = User 
 		fields = ('username', 'first_name', 'email', 'last_name', 'password1', 'password2')
 
-		def clean(self): 
+	def clean_email(self):
 
-			cleaned_data = super().clean()
-			email = cleaned_data.get('email') 
+		email = self.cleaned_data.get('email')
 
-			if User.objects.filter(email = email).exists():
+		if User.objects.filter(email = email).exists():
+			raise forms.ValidationError('Invalid email, already taken')
 
-				error_message = 'Invalid email, already taken'
-				self.add_error('email', error_message) 
+		return email
 
 class ForgotPasswordForm(): 
 
