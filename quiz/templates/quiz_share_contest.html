@@ -77,12 +77,27 @@
 		var shareButton = document.getElementById('share-button');
 		var shareTitle = "{{ contest.name|default:contest.genre|escapejs }} on Put Funda";
 
+		var statusLine = "{% if status == 'upcoming' %}Upcoming{% elif status == 'active' %}Live now{% else %}Finished{% endif %}"
+			+ " · hosted by {{ contest.host.username|escapejs }}"
+			+ " · {{ contest.time|date:'M j, Y, g:i a'|escapejs }}";
+
+		var shareLines = ["{{ contest.name|default:contest.genre|escapejs }} — Put Funda"];
+
+		{% if contest.description %}
+		shareLines.push("{{ contest.description|escapejs }}");
+		{% endif %}
+
+		shareLines.push(statusLine);
+
+		var shareText = shareLines.join("\n");
+		var clipboardText = shareText + "\n\n" + window.location.href;
+
 		function fallbackCopy() {
 
-			navigator.clipboard.writeText(window.location.href).then(function () {
+			navigator.clipboard.writeText(clipboardText).then(function () {
 
 				var original = shareButton.textContent;
-				shareButton.textContent = 'Link copied!';
+				shareButton.textContent = 'Copied to clipboard!';
 
 				setTimeout(function () {
 					shareButton.textContent = original;
@@ -94,7 +109,7 @@
 
 			if (navigator.share) {
 
-				navigator.share({title: shareTitle, url: window.location.href}).catch(function () {
+				navigator.share({title: shareTitle, text: shareText, url: window.location.href}).catch(function () {
 					// User cancelled the share sheet - nothing to do.
 				});
 
