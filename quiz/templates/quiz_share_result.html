@@ -1,10 +1,19 @@
 {% extends 'quiz_homepage_base.html' %}
 
+{% block extra_head %}
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="{{ player.username }} scored {{ correct_answers }}/{{ total_questions }} on {{ contest.name|default:contest.genre }}">
+	<meta property="og:description" content="{{ emoji_grid }} — playable on Put Funda.">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="{{ player.username }} scored {{ correct_answers }}/{{ total_questions }} on {{ contest.name|default:contest.genre }}">
+	<meta name="twitter:description" content="{{ emoji_grid }}">
+{% endblock %}
+
 {% block content %}
 
 	<div class="pf-section-label pf-section-label--first"><span>{{ player.username }}'s result</span></div>
 
-	<div class="pf-card">
+	<div class="pf-card pf-center">
 
 		<p class="pf-card-title">{{ contest.name|default:contest.genre }}</p>
 
@@ -12,7 +21,7 @@
 		<p class="pf-note" style="margin-bottom: 16px;">{{ contest.description }}</p>
 		{% endif %}
 
-		<div class="pf-stats" style="margin-bottom: 16px;">
+		<div class="pf-stats pf-center" style="margin-bottom: 20px; justify-content: center;">
 			<div class="pf-stat">
 				<div class="pf-stat-value">{{ correct_answers }}/{{ total_questions }}</div>
 				<div class="pf-stat-label">Correct</div>
@@ -23,31 +32,52 @@
 			</div>
 		</div>
 
-		<p class="pf-post-meta pf-mb-0">
+		<div class="pf-share-grid" id="share-grid">{{ emoji_grid }}</div>
+
+		<p class="pf-post-meta pf-mb-0" style="margin-top: 20px;">
 			Played by <a class="pf-link" href="{% url 'show_user' %}?user={{ player.username }}">{{ player.username }}</a>
 		</p>
 	</div>
 
-	<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px;">
-		<button type="button" class="pf-btn" id="copy-link-button">Copy link to share</button>
-		<a class="pf-btn pf-btn--accent" href="{% url 'share_contest' %}?contest_id={{ contest.id }}">View the contest</a>
+	<div class="pf-center" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px;">
+		<button type="button" class="pf-btn pf-btn--accent" id="share-button">Share result</button>
+		<a class="pf-btn" href="{% url 'share_contest' %}?contest_id={{ contest.id }}">View the contest</a>
 	</div>
 
 	<script type="text/javascript">
 
-		document.getElementById('copy-link-button').addEventListener('click', function () {
+		var shareText = "Put Funda — {{ contest.name|default:contest.genre|escapejs }}\n" +
+			"{{ correct_answers }}/{{ total_questions }} correct\n\n" +
+			"{{ emoji_grid }}\n\n" +
+			window.location.href;
 
-			var button = this;
+		var shareButton = document.getElementById('share-button');
 
-			navigator.clipboard.writeText(window.location.href).then(function () {
+		function fallbackCopy() {
 
-				var original = button.textContent;
-				button.textContent = 'Link copied!';
+			navigator.clipboard.writeText(shareText).then(function () {
+
+				var original = shareButton.textContent;
+				shareButton.textContent = 'Copied to clipboard!';
 
 				setTimeout(function () {
-					button.textContent = original;
+					shareButton.textContent = original;
 				}, 2000);
 			});
+		}
+
+		shareButton.addEventListener('click', function () {
+
+			if (navigator.share) {
+
+				navigator.share({text: shareText, url: window.location.href}).catch(function () {
+					// User cancelled the share sheet - nothing to do.
+				});
+
+			} else {
+
+				fallbackCopy();
+			}
 		});
 
 	</script>

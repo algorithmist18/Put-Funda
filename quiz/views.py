@@ -918,21 +918,41 @@ def share_result(request):
 	contest = get_object_or_404(Contest, id = contest_id)
 	player = get_object_or_404(User, username = username)
 
-	submissions = Submission.objects.filter(question__contest = contest, user = player)
+	questions = QuizQuestion.objects.filter(contest = contest).order_by('id')
+	submissions_by_question = {
+		submission.question_id : submission
+		for submission in Submission.objects.filter(question__contest = contest, user = player)
+	}
 
-	if not submissions.exists():
+	if not submissions_by_question:
 		raise Http404('This player has not played this contest yet.')
 
-	total_questions = QuizQuestion.objects.filter(contest = contest).count()
+	# Build a Wordle-style emoji grid, one square per question in order -
+	# green for correct, red for wrong, white for skipped/unanswered.
+	total_questions = questions.count()
 	correct_answers = 0
 	time_taken = 0
+	squares = []
 
-	for submission in submissions:
+	for question in questions:
 
-		if is_correct(submission, submission.question):
+		submission = submissions_by_question.get(question.id)
+
+		if submission is None:
+
+			squares.append('⬜')
+			continue
+
+		time_taken += submission.time_taken
+
+		if is_correct(submission, question):
 
 			correct_answers += 1
-			time_taken += submission.time_taken
+			squares.append('🟩')
+
+		else:
+
+			squares.append('🟥')
 
 	args = {
 		'contest' : contest,
@@ -940,6 +960,7 @@ def share_result(request):
 		'correct_answers' : correct_answers,
 		'total_questions' : total_questions,
 		'time_taken' : round(time_taken, 3),
+		'emoji_grid' : ''.join(squares),
 	}
 
 	return render(request, 'quiz_share_result.html', args)

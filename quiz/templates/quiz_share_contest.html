@@ -1,5 +1,14 @@
 {% extends 'quiz_homepage_base.html' %}
 
+{% block extra_head %}
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="{{ contest.name|default:contest.genre }} · Put Funda">
+	<meta property="og:description" content="{% if contest.description %}{{ contest.description }}{% else %}Hosted by {{ contest.host.username }} on Put Funda.{% endif %}">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="{{ contest.name|default:contest.genre }} · Put Funda">
+	<meta name="twitter:description" content="{% if contest.description %}{{ contest.description }}{% else %}Hosted by {{ contest.host.username }} on Put Funda.{% endif %}">
+{% endblock %}
+
 {% block content %}
 
 	<div class="pf-share-header">
@@ -26,7 +35,7 @@
 		</p>
 	</div>
 
-	<button type="button" class="pf-btn" id="copy-link-button" style="margin-bottom: 20px;">Copy link to share</button>
+	<button type="button" class="pf-btn" id="share-button" style="margin-bottom: 20px;">Share this contest</button>
 
 	{% if status == 'past' %}
 
@@ -65,19 +74,34 @@
 
 	<script type="text/javascript">
 
-		document.getElementById('copy-link-button').addEventListener('click', function () {
+		var shareButton = document.getElementById('share-button');
+		var shareTitle = "{{ contest.name|default:contest.genre|escapejs }} on Put Funda";
 
-			var button = this;
+		function fallbackCopy() {
 
 			navigator.clipboard.writeText(window.location.href).then(function () {
 
-				var original = button.textContent;
-				button.textContent = 'Link copied!';
+				var original = shareButton.textContent;
+				shareButton.textContent = 'Link copied!';
 
 				setTimeout(function () {
-					button.textContent = original;
+					shareButton.textContent = original;
 				}, 2000);
 			});
+		}
+
+		shareButton.addEventListener('click', function () {
+
+			if (navigator.share) {
+
+				navigator.share({title: shareTitle, url: window.location.href}).catch(function () {
+					// User cancelled the share sheet - nothing to do.
+				});
+
+			} else {
+
+				fallbackCopy();
+			}
 		});
 
 	</script>

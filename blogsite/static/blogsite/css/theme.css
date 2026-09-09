@@ -1071,3 +1071,9 @@
 	gap: 12px;
 	margin-bottom: 16px;
 }
+
+.pf-share-grid {
+	font-size: 28px;
+	letter-spacing: 4px;
+	line-height: 1.6;
+}
