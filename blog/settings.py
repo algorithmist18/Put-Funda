@@ -62,7 +62,15 @@ INSTALLED_APPS = [
     'blogposts',
     'captcha',
     'quiz',
-    'ckeditor'
+    'ckeditor',
+    'axes',
+]
+
+# django-axes needs its own backend consulted first so it can block a
+# login attempt once an account/IP has been locked out
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +82,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Must be last - this is what actually enforces the lockout
+    'axes.middleware.AxesMiddleware',
 ]
+
+# Lock out after 5 failed login attempts from the same username+IP for an
+# hour, instead of allowing unlimited password-guessing attempts
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_TEMPLATE = '403.html'
 
 ROOT_URLCONF = 'blog.urls'
 

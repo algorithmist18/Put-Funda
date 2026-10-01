@@ -47,3 +47,11 @@ requests>=2.25,<3
 # without this, /static/... 404s in production and every page (including
 # the error pages) renders unstyled
 whitenoise>=5.3,<7.0
+
+# Brute-force login protection (locks out after repeated failed attempts).
+# Pinned to the 5.0.x line - later django-axes releases require Django 3.2+,
+# and django-ipware is pinned below it for the same reason (newer releases
+# pull in a Django requirement that conflicts with this project's Django 2.x pin).
+django-axes>=5.0,<5.1
+django-ipware<3.0
+

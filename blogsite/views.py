@@ -294,7 +294,7 @@ def reset_password(request):
 			raw_password = form.cleaned_data.get('password2')
 			
 			user.set_password(raw_password)
-			authenticate(username = user.username, password = raw_password)
+			authenticate(request, username = user.username, password = raw_password)
 			user.save() 
 
 			if user is not None: 
@@ -330,8 +330,7 @@ def register(request):
 			raw_password = form.cleaned_data.get('password2')
 
 			user.set_password(raw_password)
-			print(user.username, raw_password)
-			user = authenticate(username = user.username, password = raw_password)
+			user = authenticate(request, username = user.username, password = raw_password)
 
 			if user is not None: 
 				
@@ -359,38 +358,22 @@ def register(request):
 # Function for logging in
 def login_view(request):
 
-	# Redirecting to homepage if user already authenticated 
+	# Redirecting to homepage if user already authenticated
 	if request.user.is_authenticated:
 		return homepage(request)
 
-	# If not authenticated, authenticate using Django authentication system 
+	# If not authenticated, authenticate using Django authentication system
 	if request.method == 'POST':
 
-		form = AuthenticationForm(request.POST)
+		form = AuthenticationForm(request, data = request.POST)
 
-		# Retrieve username and password
-		username = request.POST.get('username')
-		passwd = request.POST.get('password')
+		if form.is_valid():
 
-		if form.is_valid:
+			login(request, form.get_user())
+			return redirect('home')
 
-			# Authenticate the user 
-			print('Form is valid') 
+		return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect', 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
 
-			try:
-
-				user = authenticate(username = username, password = passwd)
-				login(request, user)
-				next_page_url = 'home?username=' + username
-				print(next_page_url) 
-				return redirect('home')
-
-			except:
-
-				# Authentication error - redirect to login page with message 
-				return render(request, 'login.html', {'form' : form, 'error' : 'Username/Password incorrect', 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
-		else:
-			print(form.errors)
 	else:
 		form = AuthenticationForm()
 	return render(request, 'login.html', {'form' : form, 'google_client_id': settings.GOOGLE_OAUTH_CLIENT_ID})
