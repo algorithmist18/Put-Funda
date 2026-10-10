@@ -18,6 +18,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from blogsite import views
 from blogsite import google_auth_views
 from blogposts import views as post_views
@@ -30,7 +31,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    # Both names point at the same view/path - 'index' is kept only
+    # because every base template still links the wordmark via
+    # {% url 'index' %}; the real landing page now lives at '/' (it used
+    # to be a separate, mostly-duplicate view at /home).
+    path('', views.homepage, name='index'),
+    path('', views.homepage, name='home'),
+    path('home', RedirectView.as_view(url='/', permanent=False)),
     path('questions', views.questions, name='questions'),
     path('ask', views.ask, name='ask'),
     path('view', views.list_questions, name = 'view'),
@@ -42,7 +49,6 @@ urlpatterns = [
     path('register', views.register, name = 'register'),
     path('login', views.login_view, name = 'login'),
     path('google-login', google_auth_views.google_login, name = 'google_login'),
-    path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),
     path('edit', views.edit_profile, name = 'edit'),
@@ -76,6 +82,7 @@ urlpatterns = [
     path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
     path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
     path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
+    path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
     path('qotd/release', qotd_views.release_qotd, name = 'qotd_release')
 ]
 

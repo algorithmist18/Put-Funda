@@ -77,7 +77,27 @@
 			</div>
 			{% endif %}
 
-			<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
+			{% if past_contests %}
+			<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Past contests</span></div>
+			<div class="pf-card">
+				<table class="pf-table">
+					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th><th></th></tr></thead>
+					<tbody>
+						{% for contest in past_contests %}
+						<tr>
+							<td>{{ contest.id }}</td>
+							<td>{{ contest.name|default:contest.genre }}</td>
+							<td>{{ contest.genre }}</td>
+							<td>{{ contest.host.username }}</td>
+							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">Leaderboard</a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+
+			<div class="pf-section-label{% if not active_contests and not new_contests and not past_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
 			<div class="pf-card">
 				<table class="pf-table">
 					<thead><tr><th>Player</th><th>Rating</th></tr></thead>
@@ -104,6 +124,12 @@
 				{% else %}
 				<p class="pf-note" style="margin-bottom: 12px;">A new question is up for grabs today. No account needed to give it a shot.</p>
 				<a class="pf-btn pf-btn--accent" href="{% url 'qotd_home' %}">Play today's question</a>
+				{% endif %}
+
+				{% if past_qotd_exists %}
+				<p class="pf-note pf-mb-0" style="margin-top: 10px;">
+					<a class="pf-link" href="{% url 'qotd_archive' %}">See past questions</a>
+				</p>
 				{% endif %}
 			</div>
 		</div>

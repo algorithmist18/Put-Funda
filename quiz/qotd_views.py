@@ -103,6 +103,28 @@ def qotd_home(request):
 	return render(request, 'qotd_home.html', context)
 
 
+def qotd_archive(request):
+
+	today = datetime.date.today()
+	past_qotds = QuestionOfTheDay.objects.filter(date__lt = today).order_by('-date')[:30]
+
+	my_submissions = {}
+
+	if request.user.is_authenticated:
+
+		submissions = QOTDSubmission.objects.filter(user = request.user, qotd__in = past_qotds)
+		my_submissions = {submission.qotd_id: submission for submission in submissions}
+
+	archive = [
+		{'qotd': qotd, 'my_submission': my_submissions.get(qotd.id)}
+		for qotd in past_qotds
+	]
+
+	context = {'archive': archive}
+
+	return render(request, 'qotd_archive.html', context)
+
+
 @login_required
 def release_qotd(request):
 
