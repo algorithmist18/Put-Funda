@@ -15,7 +15,7 @@ MAX_PDF_PAGES = 12
 
 PAGE_RENDER_ZOOM = 2.0
 
-EXTRACTION_MODEL = 'gemini-2.5-flash'
+EXTRACTION_MODEL = 'gemini-3.1-flash-lite'
 
 EXTRACTION_PROMPT = (
 	"You are helping turn a page from a quiz/trivia document into simple "
