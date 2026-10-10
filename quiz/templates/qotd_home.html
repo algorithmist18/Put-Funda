@@ -4,6 +4,10 @@
 
 	<div class="pf-section-label pf-section-label--first"><span>Question of the day</span></div>
 
+	<p class="pf-note" style="margin-bottom: 16px;">
+		<a class="pf-link" href="{% url 'qotd_archive' %}">See past questions</a>
+	</p>
+
 	{% if not qotd %}
 
 		<div class="pf-card">

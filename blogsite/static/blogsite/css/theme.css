@@ -788,6 +788,14 @@
 	align-items: start;
 }
 
+/* Grid items default to min-width: auto, meaning they won't shrink
+   below their content's intrinsic width - a wide table inside a column
+   can blow out past the column (and the page) even with its own
+   overflow-x: auto. This overrides that per-item floor. */
+.pf-grid > * {
+	min-width: 0;
+}
+
 @media (max-width: 760px) {
 	.pf-grid {
 		grid-template-columns: 1fr;

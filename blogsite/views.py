@@ -18,7 +18,7 @@ from datetime import timezone
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
-from quiz.models import Contest, QuizQuestion, Leaderboard
+from quiz.models import Contest, QuizQuestion, Leaderboard, QuestionOfTheDay, QOTDSubmission
 import pytz
 from .tokens import account_activation_token, password_reset_token
 from django.core.mail import send_mail
@@ -79,50 +79,72 @@ def index(request):
 
 	return render(request, 'index.html', response)
 
-@login_required
 def homepage(request):
 
 	username = request.GET.get('user')
 	user = request.user
-	response = {} 
-	current_time = datetime.datetime.now(pytz.timezone('UTC')) 
-	new_contests = [] 
-	active_contests = [] 
+	response = {}
+	current_time = datetime.datetime.now(pytz.timezone('UTC'))
+	new_contests = []
+	active_contests = []
+	past_contests = []
 
-	# Fetch blogs 
+	# Fetch blogs
 	blog_posts = Post.objects.all().order_by("-time")[0:10]
 
 	# Fetch leaderboard
-	users = Profile.objects.all().order_by("-rating")[0:10] 
+	users = Profile.objects.all().order_by("-rating")[0:10]
 
-	# Fetch upcoming contests 
+	# Fetch upcoming contests
 	for contest in Contest.objects.all().order_by('-time'):
 
-		question_count = QuizQuestion.objects.filter(contest = contest).count() 
+		question_count = QuizQuestion.objects.filter(contest = contest).count()
 
-		# Append to active contests 
-		time_difference = (contest.time - current_time).total_seconds() 
-		time_difference /= 60 
+		if question_count < 10:
+			continue
+
+		# Append to active contests
+		time_difference = (contest.time - current_time).total_seconds()
+		time_difference /= 60
 		time_difference *= -1
 
-		if time_difference >= 0 and time_difference <= contest.valid_for and question_count >= 10: 
-			active_contests.append(contest) 
+		if time_difference >= 0 and time_difference <= contest.valid_for:
+
+			first_question = QuizQuestion.objects.filter(contest = contest).order_by('id').first()
+			contest.first_question_id = first_question.id if first_question else None
+			active_contests.append(contest)
+
+		elif time_difference > contest.valid_for and len(past_contests) < 10:
+
+			past_contests.append(contest)
 
 
-	for contest in Contest.objects.all().filter(time__gt = current_time).order_by('time'): 
+	for contest in Contest.objects.all().filter(time__gt = current_time).order_by('time'):
 
-		question_count = QuizQuestion.objects.filter(contest = contest).count() 
-		
-		if question_count >= 10: 
+		question_count = QuizQuestion.objects.filter(contest = contest).count()
+
+		if question_count >= 10:
 			new_contests.append(contest)
 
+	# Today's Question of the Day, shown as a prompt under the leaderboard
+	today_qotd = QuestionOfTheDay.objects.filter(date = datetime.date.today()).first()
+	qotd_already_answered = False
 
-	# Fetch latest two past contests 
+	if today_qotd and user.is_authenticated:
+		qotd_already_answered = QOTDSubmission.objects.filter(user = user, qotd = today_qotd).exists()
+
+	# Past Questions of the Day, for the "See past questions" archive link
+	past_qotd_exists = QuestionOfTheDay.objects.filter(date__lt = datetime.date.today()).exists()
+
 	response['blog_posts'] = blog_posts
-	response['users'] = users 
+	response['users'] = users
 	response['new_contests'] = new_contests
 	response['active_contests'] = active_contests
+	response['past_contests'] = past_contests
 	response['user'] = user
+	response['today_qotd'] = today_qotd
+	response['qotd_already_answered'] = qotd_already_answered
+	response['past_qotd_exists'] = past_qotd_exists
 
 	return render(request, 'homepage.html', response)
 		

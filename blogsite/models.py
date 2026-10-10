@@ -46,6 +46,12 @@ class Profile(models.Model):
 	longest_streak = models.IntegerField(default = 0, null = True, blank = True)
 	last_qotd_date = models.DateField(null = True, blank = True)
 
+	# Auto-created so an unregistered visitor can play a contest/QOTD
+	# without signing up - see blogsite/guest_auth.py. Flagged so these
+	# throwaway accounts can be told apart from real ones and cleaned up
+	# later (see the cleanup_guests management command).
+	is_guest = models.BooleanField(default = False)
+
 	# Add image field
 	picture = models.ImageField(upload_to = 'images/', max_length = 200, blank = True)
 

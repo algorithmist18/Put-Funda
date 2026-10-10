@@ -1,0 +1,28 @@
+{% extends 'qotd_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>Past questions</span></div>
+
+	<p class="pf-note" style="margin-bottom: 16px;">
+		<a class="pf-link" href="{% url 'qotd_home' %}">Back to today's question</a>
+	</p>
+
+	{% for entry in archive %}
+	<div class="pf-card">
+		<p class="pf-card-label">{{ entry.qotd.date }}</p>
+		<p class="pf-question-text" style="font-size: 18px; margin-bottom: 10px;">{{ entry.qotd.question }}</p>
+		<div class="pf-answer-pill">Answer &middot; <strong>{{ entry.qotd.answer }}</strong></div>
+
+		{% if entry.my_submission %}
+		<p class="pf-note pf-mb-0" style="margin-top: 10px;">
+			You answered <em>{{ entry.my_submission.answer }}</em> -
+			{% if entry.my_submission.is_correct %}correct.{% else %}not quite.{% endif %}
+		</p>
+		{% endif %}
+	</div>
+	{% empty %}
+	<p class="pf-note pf-muted">No past questions yet.</p>
+	{% endfor %}
+
+{% endblock %}
