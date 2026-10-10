@@ -10,6 +10,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from blogposts.models import Post
+from blogsite.guest_auth import ensure_guest_login
 from quiz.analysis_views import similarity_quotient
 from quiz.models import QuestionOfTheDay, QOTDSubmission
 
@@ -66,27 +67,31 @@ def announce_qotd(qotd, releaser):
 	)
 
 
-@login_required
 def qotd_home(request):
 
 	today = datetime.date.today()
 	qotd = QuestionOfTheDay.objects.filter(date = today).first()
-	profile = request.user.profile
 	submission = None
 
-	if qotd:
+	if qotd and request.user.is_authenticated:
 		submission = QOTDSubmission.objects.filter(user = request.user, qotd = qotd).first()
 
 	if request.method == 'POST' and qotd and submission is None:
+
+		# Only create a guest account once someone actually commits to
+		# playing - not just for browsing the page
+		user = ensure_guest_login(request)
 
 		answer = request.POST.get('answer', '').strip()
 		answered_correctly = is_qotd_answer_correct(answer, qotd)
 
 		submission = QOTDSubmission.objects.create(
-			user = request.user, qotd = qotd, answer = answer, is_correct = answered_correctly
+			user = user, qotd = qotd, answer = answer, is_correct = answered_correctly
 		)
 
-		update_streak(profile, today, answered_correctly)
+		update_streak(user.profile, today, answered_correctly)
+
+	profile = request.user.profile if request.user.is_authenticated else None
 
 	context = {
 		'qotd': qotd,

@@ -1,97 +1,114 @@
 {% extends 'home.html' %}
 {% block content %}
 
-	{% if user.is_authenticated %}
-
-		{% if not user.profile.email_confirmed %}
-		<div class="pf-alert pf-alert--danger pf-center">
-			Please confirm your email <a class="pf-link" href="#" onclick="sendActivationMail()">here</a>.
-		</div>
-		{% endif %}
-
-		<div class="pf-grid">
-
-			<div>
-				<div class="pf-section-label pf-section-label--first"><span>Latest posts</span></div>
-
-				{% for post in blog_posts %}
-				<div class="pf-card pf-post">
-					<div class="pf-post-title">{{ post.title }}</div>
-					<div class="pf-post-meta">
-						by
-						{% if post.anon %}
-							anonymous
-						{% else %}
-							<a class="pf-link" href="{% url 'show_user' %}?user={{ post.author.username }}">{{ post.author }}</a>
-						{% endif %}
-						&middot; {{ post.time }}
-					</div>
-					<div class="pf-post-body">{{ post.content|safe }}</div>
-					<div class="pf-post-footer">&hearts; {{ post.likes }}</div>
-				</div>
-				{% empty %}
-				<p class="pf-note pf-muted">No posts yet.</p>
-				{% endfor %}
-			</div>
-
-			<div>
-				{% if active_contests %}
-				<div class="pf-section-label pf-section-label--first"><span>Active contests</span></div>
-				<div class="pf-card">
-					<table class="pf-table">
-						<thead><tr><th>#</th><th>Host</th><th>Time</th></tr></thead>
-						<tbody>
-							{% for contest in active_contests %}
-							<tr>
-								<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.id }}</a></td>
-								<td>{{ contest.host.username }}</td>
-								<td>{{ contest.time }}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-				{% endif %}
-
-				{% if new_contests %}
-				<div class="pf-section-label"><span>Upcoming contests</span></div>
-				<div class="pf-card">
-					<table class="pf-table">
-						<thead><tr><th>#</th><th>Host</th><th>Time</th></tr></thead>
-						<tbody>
-							{% for contest in new_contests %}
-							<tr>
-								<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.id }}</a></td>
-								<td>{{ contest.host.username }}</td>
-								<td>{{ contest.time }}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-				{% endif %}
-
-				<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
-				<div class="pf-card">
-					<table class="pf-table">
-						<thead><tr><th>Player</th><th>Rating</th></tr></thead>
-						<tbody>
-							{% for u in users %}
-							<tr>
-								<td>{{ u.user.username }}</td>
-								<td class="rating">{{ u.rating }}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-		</div>
-
-	{% else %}
-		<p class="pf-note">You are not logged in.</p>
+	{% if user.is_authenticated and not user.profile.is_guest and not user.profile.email_confirmed %}
+	<div class="pf-alert pf-alert--danger pf-center">
+		Please confirm your email <a class="pf-link" href="#" onclick="sendActivationMail()">here</a>.
+	</div>
 	{% endif %}
+
+	<div class="pf-grid">
+
+		<div>
+			<div class="pf-section-label pf-section-label--first"><span>Latest posts</span></div>
+
+			{% for post in blog_posts %}
+			<div class="pf-card pf-post">
+				<div class="pf-post-title">{{ post.title }}</div>
+				<div class="pf-post-meta">
+					by
+					{% if post.anon %}
+						anonymous
+					{% else %}
+						<a class="pf-link" href="{% url 'show_user' %}?user={{ post.author.username }}">{{ post.author }}</a>
+					{% endif %}
+					&middot; {{ post.time }}
+				</div>
+				<div class="pf-post-body">{{ post.content|safe }}</div>
+				<div class="pf-post-footer">&hearts; {{ post.likes }}</div>
+			</div>
+			{% empty %}
+			<p class="pf-note pf-muted">No posts yet.</p>
+			{% endfor %}
+		</div>
+
+		<div>
+			{% if active_contests %}
+			<div class="pf-section-label pf-section-label--first"><span>Active contests</span></div>
+			<div class="pf-card">
+				<table class="pf-table">
+					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th><th></th></tr></thead>
+					<tbody>
+						{% for contest in active_contests %}
+						<tr>
+							<td>{{ contest.id }}</td>
+							<td>{{ contest.name|default:contest.genre }}</td>
+							<td>{{ contest.genre }}</td>
+							<td>{{ contest.host.username }}</td>
+							<td>
+								{% if contest.first_question_id %}
+								<a class="pf-link" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">Play</a>
+								{% endif %}
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+
+			{% if new_contests %}
+			<div class="pf-section-label{% if not active_contests %} pf-section-label--first{% endif %}"><span>Upcoming contests</span></div>
+			<div class="pf-card">
+				<table class="pf-table">
+					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th><th>Time</th></tr></thead>
+					<tbody>
+						{% for contest in new_contests %}
+						<tr>
+							<td>{{ contest.id }}</td>
+							<td>{{ contest.name|default:contest.genre }}</td>
+							<td>{{ contest.genre }}</td>
+							<td>{{ contest.host.username }}</td>
+							<td>{{ contest.time }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+
+			<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
+			<div class="pf-card">
+				<table class="pf-table">
+					<thead><tr><th>Player</th><th>Rating</th></tr></thead>
+					<tbody>
+						{% for u in users %}
+						<tr>
+							<td>{{ u.user.username }}</td>
+							<td class="rating">{{ u.rating }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+			<div class="pf-section-label"><span>Question of the day</span></div>
+			<div class="pf-card pf-card--peach">
+				{% if not today_qotd %}
+				<p class="pf-note pf-mb-0">There's no question of the day yet. Check back soon.</p>
+				{% elif qotd_already_answered %}
+				<p class="pf-note pf-mb-0">
+					You've already played today's question.
+					<a class="pf-link" href="{% url 'qotd_home' %}">See how you did</a>.
+				</p>
+				{% else %}
+				<p class="pf-note" style="margin-bottom: 12px;">A new question is up for grabs today. No account needed to give it a shot.</p>
+				<a class="pf-btn pf-btn--accent" href="{% url 'qotd_home' %}">Play today's question</a>
+				{% endif %}
+			</div>
+		</div>
+
+	</div>
 
 <script type="text/javascript">
 

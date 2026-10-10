@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from quiz.forms import QuizForm
 from quiz.models import QuizQuestion, Contest, Submission, RatingHistory, Leaderboard
 from blogsite.models import Profile
+from blogsite.guest_auth import ensure_guest_login
 from .models import User 
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
@@ -646,11 +647,11 @@ def similarity_quotient(str1, str2):
 
 	return similarity
 
-@login_required
-def play_contest(request): 
+def play_contest(request):
 
-	# Fetch data from request 
-	user = request.user 
+	# Fetch data from request - bootstraps a throwaway guest account for
+	# an unregistered visitor, since submissions need a real user row
+	user = ensure_guest_login(request)
 	question_id = request.GET.get('question_id')
 	contest_id = request.GET.get('contest_id') 
 	instruction = request.GET.get('instruction') 
