@@ -348,23 +348,28 @@ def create_contest(request):
 
 		return render(request, 'quiz_contest_base.html', args) 
 
-# Method to view a contest 
-@login_required
-def view_contest(request): 
+# Method to view a contest - no login required, so anyone can check a
+# contest's status/leaderboard from a link, same as play_contest
+def view_contest(request):
 
-	user = request.user 
-	contest_id = request.GET.get('contest_id') 
-	contest = Contest.objects.get(id = contest_id) 
+	user = request.user
+	contest_id = request.GET.get('contest_id')
+	contest = Contest.objects.get(id = contest_id)
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions}
 
-	if len(questions) > 0: 
-		args['first_question'] = questions[0] 
+	if len(questions) > 0:
+		args['first_question'] = questions[0]
 	else:
 		args['first_question'] = 'No questions yet.'
 
-	submissions = Submission.objects.filter(user = user)
+	# An anonymous visitor can't have played anything yet - and filtering
+	# Submission by an AnonymousUser raises, since it isn't a real User row
+	if user.is_authenticated:
+		submissions = Submission.objects.filter(user = user)
+	else:
+		submissions = []
 
 	flag = False 
 
@@ -762,9 +767,9 @@ def users_in_contest(contest):
 
 	return users_set 
 
-# Method to return leaderboard for a contest 
-@login_required
-def display_leaderboard(request): 
+# Method to return leaderboard for a contest - no login required, so
+# anyone (including a guest who just played) can check standings
+def display_leaderboard(request):
 
 	# Fetch required data 
 	original_user = request.user 
