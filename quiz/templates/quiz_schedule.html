@@ -49,16 +49,34 @@
 			<div class="pf-field">
 				<label>CSV file</label>
 				<div class="pf-field-hint">Please use this <a class="pf-link" href="https://docs.google.com/spreadsheets/d/1EzRsG0BmTXG0kycBpjaY2H1FbmdjdbKs5NXGpuXAoLs/edit?usp=sharing">sheet format</a> for uploading CSV files.</div>
-				<input id="question-file" type="file" name="tsv-question-file">
+				<input id="question-file" type="file" name="tsv-question-file" accept="text/csv,.csv">
 			</div>
 
-			<button type="submit" name="Schedule" class="pf-btn pf-btn--accent">Schedule</button>
+			<div class="pf-field">
+				<label>Or: PDF of questions</label>
+				<div class="pf-field-hint">Upload a PDF of questions (even convoluted, multi-part ones with photos) and it'll be turned into simple, ready-to-play questions automatically. Use either the CSV file above or a PDF, not both.</div>
+				<input id="pdf-question-file" type="file" name="pdf-question-file" accept="application/pdf,.pdf">
+			</div>
+
+			<button type="submit" name="Schedule" class="pf-btn pf-btn--accent" id="schedule-submit">Schedule</button>
 		</form>
 	</div>
 
 	<p class="pf-note pf-muted" style="margin-top: 12px;">The time will be considered invalid if it is within 15 minutes (before/after) another contest.</p>
 
 	<script type="text/javascript">
+
+		function onSubmit() {
+
+			$('#quiz-schedule form').submit(function () {
+
+				if ($('#pdf-question-file')[0].files.length > 0) {
+					$('#schedule-submit').prop('disabled', true).text('Reading your PDF, this can take a minute...');
+				}
+			});
+		}
+
+		$(document).ready(onSubmit);
 
 		function validateContestTime() {
 

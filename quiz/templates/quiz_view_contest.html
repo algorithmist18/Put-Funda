@@ -204,6 +204,8 @@
 			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> It seems there was an illegal request made.</div>").insertBefore("#quiz-contest");
 		} else if (message == 'contest_past') {
 			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> You cannot edit the contest now.</div>").insertBefore("#quiz-contest");
+		} else if (message == 'pdf_error') {
+			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> The PDF could not be processed into questions. You can add questions manually below.</div>").insertBefore("#quiz-contest");
 		}
 
 	</script>

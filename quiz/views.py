@@ -219,6 +219,7 @@ def schedule_quiz(request):
 		valid_for = request.POST.get('valid-for')
 		time_per_question = request.POST.get('seconds-per-question')
 		tsv_file = request.FILES.get('tsv-question-file')
+		pdf_file = request.FILES.get('pdf-question-file')
 
 		contestTime = date + ' ' + time + ':00'
 
@@ -241,18 +242,31 @@ def schedule_quiz(request):
 		contest.save() 
 		contest_id = contest.id 
 
-		# Parse the questions if file is present
-		if tsv_file is not None: 
+		# Parse the questions if a file is present. A PDF takes priority if
+		# both are somehow uploaded at once - the form only offers one or
+		# the other.
+		if pdf_file is not None:
 
-			# Add questions from tsv file 
-			result, err = parse_csv_file(contest, tsv_file)  
-			
+			result, err = parse_pdf_file(contest, pdf_file)
+
 			if result == True:
-				print('Successfully inserted questions from TSV!') 
-			else: 
-				print("Exception has occurred") 
+				print('Successfully inserted questions from PDF!')
+			else:
+				print('Exception has occurred while parsing PDF file')
+				print(err)
+				return HttpResponseRedirect('view_contest?contest_id={}&msg=pdf_error'.format(contest_id))
 
-		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
+		elif tsv_file is not None:
+
+			# Add questions from tsv file
+			result, err = parse_csv_file(contest, tsv_file)
+
+			if result == True:
+				print('Successfully inserted questions from TSV!')
+			else:
+				print("Exception has occurred")
+
+		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id))
 
 	else:
 
@@ -1308,14 +1322,38 @@ def parse_csv_file(contest, csv_file):
 		print(ex) 
 		return False, ex 
 
-	except KeyError as error: 
+	except KeyError as error:
 
-		print("Key error while parsing csv file") 
-		message = "Key error while parsing csv file" 
-		print(error) 
+		print("Key error while parsing csv file")
+		message = "Key error while parsing csv file"
+		print(error)
 		return False, error
 
-	return True, "" 
+	return True, ""
+
+
+# Method to read a PDF of convoluted/multi-part questions and add
+# simplified questions to a contest, via Gemini (see
+# quiz/pdf_question_extractor.py)
+def parse_pdf_file(contest, pdf_file):
+
+	from quiz.pdf_question_extractor import extract_questions_from_pdf, PdfExtractionError
+
+	try:
+		questions = extract_questions_from_pdf(pdf_file.read())
+	except PdfExtractionError as ex:
+		print('PDF extraction failed')
+		print(ex)
+		return False, ex
+
+	if not questions:
+		return False, 'No questions could be found in that PDF.'
+
+	for item in questions:
+		quiz_question = QuizQuestion(contest = contest, question = item['question'], answer = item['answer'])
+		quiz_question.save()
+
+	return True, ""
 
 
 

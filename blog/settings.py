@@ -205,3 +205,9 @@ RECAPTCHA_PUBLIC_KEY = get_env('RECAPTCHA_PUBLIC_KEY')
 # Google sign-in button simply doesn't render. See .env.example for how
 # to obtain a Client ID.
 GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')
+
+# Gemini API key (free tier, from https://aistudio.google.com/apikey) used
+# to turn an uploaded PDF of quiz questions into simplified questions for
+# a contest (quiz/pdf_question_extractor.py). Optional: left blank, PDF
+# import just shows an error instead of working.
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
