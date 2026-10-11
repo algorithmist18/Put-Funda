@@ -209,7 +209,8 @@
 			$("<div class='pf-alert pf-alert--danger'><strong>Error!</strong> The PDF could not be processed into questions. You can add questions manually below.</div>").insertBefore("#quiz-contest");
 		} else if (message == 'pdf_success') {
 			var secs = parseFloat(params.get('secs'));
-			var text = isNaN(secs) ? 'Your PDF was imported.' : 'Your PDF was imported in ' + secs.toFixed(1) + 's.';
+			var text = (isNaN(secs) ? 'Your PDF was imported.' : 'Your PDF was imported in ' + secs.toFixed(1) + 's.')
+				+ ' This is AI-generated - Gemini can misread a page or get a question or answer wrong. Please review each one below before letting anyone play.';
 			$("<div class='pf-alert pf-alert--success'><strong>Done!</strong> </div>").append(document.createTextNode(text)).insertBefore("#quiz-contest");
 		}
 

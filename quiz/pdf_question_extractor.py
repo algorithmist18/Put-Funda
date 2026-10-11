@@ -23,21 +23,28 @@ EXTRACTION_MODEL = 'gemini-3.1-flash-lite'
 EXTRACTION_PROMPT = (
 	"You are helping turn a page from a quiz/trivia document into a single "
 	"quiz question for an app. Look at the page image.\n\n"
-	"First, decide whether the page actually poses a question at all - as "
-	"opposed to just stating facts, rules, instructions or section headers "
-	"with nothing being asked. A real question typically ends in a "
-	"question mark and has a specific, determinable answer. If the page is "
-	"purely factual/instructional with nothing being asked, return an "
-	"empty list - do not invent a question that isn't there.\n\n"
-	"If the page does contain one or more questions, pick exactly ONE - "
-	"whichever best represents the page's content - even if the page has "
-	"two or three. Never return more than one question for a page.\n\n"
+	"First, decide whether the page actually poses a question AND shows its "
+	"answer, both on this same page - as opposed to just facts, rules, "
+	"instructions, section headers, or a question with no answer given "
+	"anywhere on this page. A real question typically ends in a question "
+	"mark and its answer is explicitly written on the page (for example, "
+	"next to 'Answer:' or similar). If the page is purely "
+	"factual/instructional, or poses a question but doesn't show its "
+	"answer on this same page, return an empty list. It is far better to "
+	"return nothing than to invent a question or guess at an answer that "
+	"isn't actually shown.\n\n"
+	"If the page does contain one or more such questions, pick exactly "
+	"ONE - whichever best represents the page's content - even if the "
+	"page has two or three. Never return more than one question for a "
+	"page.\n\n"
 	"Write that one question as a short passage of 2-4 lines: a couple of "
 	"lines giving the context/background needed to understand it (in "
 	"plain, simple language, stripped of any multi-part/branching "
 	"structure), followed by the question itself. It must be answerable "
-	"from the passage alone, without seeing the original page. Give it "
-	"the single best short answer."
+	"from the passage alone, without seeing the original page.\n\n"
+	"For the answer: copy it exactly as it is written on the page. Do not "
+	"compute, guess, correct or substitute your own answer, even if you "
+	"believe you know better - use only what the page itself states."
 )
 
 RESPONSE_SCHEMA = {
@@ -108,6 +115,9 @@ def extract_questions_from_pdf(pdf_bytes):
 	config = types.GenerateContentConfig(
 		response_mime_type = 'application/json',
 		response_schema = RESPONSE_SCHEMA,
+		# Keep extraction literal/deterministic rather than creative -
+		# this is transcription, not writing
+		temperature = 0,
 	)
 
 	questions = []
