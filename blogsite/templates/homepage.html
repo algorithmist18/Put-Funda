@@ -37,11 +37,10 @@
 			<div class="pf-section-label pf-section-label--first"><span>Active contests</span></div>
 			<div class="pf-card">
 				<table class="pf-table">
-					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
+					<thead><tr><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
 					<tbody>
 						{% for contest in active_contests %}
 						<tr>
-							<td>{{ contest.id }}</td>
 							<td>
 								{% if contest.first_question_id %}
 								<a class="pf-link" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">{{ contest.name|default:contest.genre }} &middot; Play</a>
@@ -62,12 +61,11 @@
 			<div class="pf-section-label{% if not active_contests %} pf-section-label--first{% endif %}"><span>Upcoming contests</span></div>
 			<div class="pf-card">
 				<table class="pf-table">
-					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th><th>Time</th></tr></thead>
+					<thead><tr><th>Name</th><th>Genre</th><th>Host</th><th>Time</th></tr></thead>
 					<tbody>
 						{% for contest in new_contests %}
 						<tr>
-							<td>{{ contest.id }}</td>
-							<td>{{ contest.name|default:contest.genre }}</td>
+							<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }}</a></td>
 							<td>{{ contest.genre }}</td>
 							<td>{{ contest.host.username }}</td>
 							<td>{{ contest.time }}</td>
@@ -82,11 +80,10 @@
 			<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Past contests</span></div>
 			<div class="pf-card">
 				<table class="pf-table">
-					<thead><tr><th>#</th><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
+					<thead><tr><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
 					<tbody>
 						{% for contest in past_contests %}
 						<tr>
-							<td>{{ contest.id }}</td>
 							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }} &middot; Leaderboard</a></td>
 							<td>{{ contest.genre }}</td>
 							<td>{{ contest.host.username }}</td>
