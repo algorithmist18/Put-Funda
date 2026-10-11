@@ -19,7 +19,11 @@ class Command(BaseCommand):
 
 	def add_arguments(self, parser):
 
-		parser.add_argument('--days', type = int, default = 7, help = 'Age in days before a guest account is removed (default: 7).')
+		# Matches SESSION_COOKIE_AGE (blog/settings.py) - a shorter
+		# cutoff here would delete a guest's account while their
+		# browser session cookie (and thus their login) is still valid,
+		# causing them to silently become a fresh guest on their next visit.
+		parser.add_argument('--days', type = int, default = 90, help = 'Age in days before a guest account is removed (default: 90).')
 		parser.add_argument('--dry-run', action = 'store_true', help = 'Report what would be deleted without deleting it.')
 
 	def handle(self, *args, **options):

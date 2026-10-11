@@ -43,7 +43,7 @@
 						<tr>
 							<td>
 								{% if contest.first_question_id %}
-								<a class="pf-link" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">{{ contest.name|default:contest.genre }} &middot; Play</a>
+								<a class="pf-link" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">{{ contest.name|default:contest.genre }}</a>
 								{% else %}
 								{{ contest.name|default:contest.genre }}
 								{% endif %}
@@ -84,7 +84,7 @@
 					<tbody>
 						{% for contest in past_contests %}
 						<tr>
-							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }} &middot; Leaderboard</a></td>
+							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }}</a></td>
 							<td>{{ contest.genre }}</td>
 							<td>{{ contest.host.username }}</td>
 						</tr>

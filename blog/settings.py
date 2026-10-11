@@ -188,8 +188,17 @@ LOGIN_URL = 'login'
 CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }
 
 # Setting for session expiry
-
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+#
+# False (not the Django default of True) so a session - and with it a
+# guest's login (see blogsite/guest_auth.py) - survives closing the
+# browser/tab. Otherwise every guest who plays more than once ends up
+# with a fresh throwaway account each time, since there'd be nothing
+# left tying them back to the one they already have. Stale guest
+# accounts are still cleaned up periodically by the cleanup_guests
+# management command, so this doesn't grow the database unbounded -
+# it just stops a single returning guest being recreated needlessly.
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 90  # 90 days
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = get_env('EMAIL_HOST', 'smtp.gmail.com')

@@ -20,9 +20,9 @@
 
 .pf-theme {
 	--pf-navy: #ffffff;
-	--pf-navy-deep: #6e1019;
-	--pf-teal: #6e1019;
-	--pf-teal-light: #8c2430;
+	--pf-navy-deep: #450a0f;
+	--pf-teal: #450a0f;
+	--pf-teal-light: #6e1019;
 	--pf-cream: #ffffff;
 	--pf-cream-ink: #1c1712;
 	--pf-surface: #ffffff;
@@ -34,7 +34,7 @@
 	--pf-hairline: rgba(20, 15, 10, 0.14);
 
 	--pf-pink-bg: #fbeee8;
-	--pf-pink-border: #8c2430;
+	--pf-pink-border: #6e1019;
 	--pf-pink-ink: var(--pf-text);
 
 	--pf-peach-bg: #fdf3d6;
@@ -278,7 +278,7 @@
 	font-weight: 600;
 	font-size: 21px;
 	color: var(--pf-teal-light);
-	border-bottom: 1px solid rgba(140, 36, 48, 0.35);
+	border-bottom: 1px solid rgba(110, 16, 25, 0.35);
 	display: inline-block;
 	padding-bottom: 2px;
 	margin-bottom: 10px;
@@ -367,7 +367,7 @@
 .pf-btn--accent:hover {
 	background: var(--pf-teal-light);
 	color: #ffffff;
-	box-shadow: 0 4px 12px rgba(140, 36, 48, 0.3);
+	box-shadow: 0 4px 12px rgba(110, 16, 25, 0.3);
 }
 
 .pf-btn--block {
@@ -447,7 +447,7 @@
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
-	text-decoration-color: rgba(140, 36, 48, 0.45);
+	text-decoration-color: rgba(110, 16, 25, 0.45);
 	cursor: pointer;
 	font-weight: 600;
 	transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
@@ -506,7 +506,7 @@
 .pf-theme select:focus {
 	outline: none;
 	border-color: var(--pf-teal-light);
-	box-shadow: 0 0 0 3px rgba(140, 36, 48, 0.18);
+	box-shadow: 0 0 0 3px rgba(110, 16, 25, 0.18);
 }
 
 .pf-field-hint {
@@ -520,7 +520,7 @@
 	margin-top: 6px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
-	color: #8c2430;
+	color: #6e1019;
 }
 
 /* Google's reCAPTCHA widget has a fixed ~304px width we can't restyle
@@ -534,7 +534,7 @@
 
 .pf-alert {
 	border: 1px solid var(--pf-hairline);
-	border-left: 3px solid #8c2430;
+	border-left: 3px solid #6e1019;
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
@@ -732,8 +732,8 @@
 }
 
 .pf-qlist-btn--danger:hover {
-	border-color: #8c2430;
-	color: #8c2430;
+	border-color: #6e1019;
+	color: #6e1019;
 }
 
 /* ---------- Quiz play screen ---------- */
@@ -774,7 +774,7 @@
 
 .pf-theme input.pf-answer-input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(140, 36, 48, 0.25);
+	box-shadow: 0 0 0 3px rgba(110, 16, 25, 0.25);
 }
 
 .pf-timer {
@@ -918,7 +918,7 @@
 .pf-like-btn.is-liked {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
-	background: rgba(140, 36, 48, 0.14);
+	background: rgba(110, 16, 25, 0.14);
 }
 
 .pf-comment-link {
