@@ -623,58 +623,6 @@
 	}
 }
 
-/* ---------- Contest list (homepage/quiz_home cards) ---------- */
-
-.pf-contest-item {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	padding: 14px 4px;
-	border-bottom: 1px solid var(--pf-hairline);
-	text-decoration: none;
-	color: inherit;
-	transition: background-color 0.15s ease, padding-left 0.15s ease;
-}
-
-.pf-contest-item:last-child {
-	border-bottom: none;
-}
-
-a.pf-contest-item:hover {
-	background: var(--pf-surface-hover);
-	padding-left: 10px;
-}
-
-.pf-contest-item-body {
-	min-width: 0;
-}
-
-.pf-contest-item-name {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
-	font-size: 17px;
-	line-height: 1.3;
-	margin-bottom: 3px;
-}
-
-a.pf-contest-item .pf-contest-item-name {
-	color: var(--pf-teal-light);
-}
-
-.pf-contest-item-meta {
-	font-size: 13px;
-	color: var(--pf-text-muted);
-}
-
-.pf-contest-item-chevron {
-	flex: none;
-	font-size: 22px;
-	line-height: 1;
-	color: var(--pf-teal-light);
-	opacity: 0.55;
-}
-
 /* ---------- Contest question list ---------- */
 
 .pf-qlist-item {
