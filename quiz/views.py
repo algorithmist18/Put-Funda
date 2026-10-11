@@ -248,10 +248,11 @@ def schedule_quiz(request):
 		# the other.
 		if pdf_file is not None:
 
-			result, err = parse_pdf_file(contest, pdf_file)
+			result, err, elapsed_seconds = parse_pdf_file(contest, pdf_file)
 
 			if result == True:
 				print('Successfully inserted questions from PDF!')
+				return HttpResponseRedirect('view_contest?contest_id={}&msg=pdf_success&secs={}'.format(contest_id, round(elapsed_seconds, 1)))
 			else:
 				print('Exception has occurred while parsing PDF file')
 				print(err)
@@ -1373,24 +1374,25 @@ def parse_csv_file(contest, csv_file):
 # simplified questions to a contest, via Gemini (see
 # quiz/pdf_question_extractor.py)
 def parse_pdf_file(contest, pdf_file):
+	"""Returns (ok, err, elapsed_seconds). elapsed_seconds is None on failure."""
 
 	from quiz.pdf_question_extractor import extract_questions_from_pdf, PdfExtractionError
 
 	try:
-		questions = extract_questions_from_pdf(pdf_file.read())
+		questions, elapsed_seconds = extract_questions_from_pdf(pdf_file.read())
 	except PdfExtractionError as ex:
 		print('PDF extraction failed')
 		print(ex)
-		return False, ex
+		return False, ex, None
 
 	if not questions:
-		return False, 'No questions could be found in that PDF.'
+		return False, 'No questions could be found in that PDF.', None
 
 	for item in questions:
 		quiz_question = QuizQuestion(contest = contest, question = item['question'], answer = item['answer'])
 		quiz_question.save()
 
-	return True, ""
+	return True, "", elapsed_seconds
 
 
 
