@@ -19,14 +19,14 @@
 }
 
 .pf-theme {
-	--pf-navy: #f7f2e6;
-	--pf-navy-deep: #0e0c0a;
-	--pf-teal: #0e0c0a;
-	--pf-teal-light: #b8552f;
+	--pf-navy: #ffffff;
+	--pf-navy-deep: #6e1019;
+	--pf-teal: #6e1019;
+	--pf-teal-light: #8c2430;
 	--pf-cream: #ffffff;
 	--pf-cream-ink: #1c1712;
-	--pf-surface: #fffdf8;
-	--pf-surface-hover: #f2ece0;
+	--pf-surface: #ffffff;
+	--pf-surface-hover: #faf1f1;
 	--pf-ink: #201512;
 	--pf-paper: #ffffff;
 	--pf-text: #2a2118;
@@ -34,15 +34,15 @@
 	--pf-hairline: rgba(20, 15, 10, 0.14);
 
 	--pf-pink-bg: #fbeee8;
-	--pf-pink-border: #b8552f;
+	--pf-pink-border: #8c2430;
 	--pf-pink-ink: var(--pf-text);
 
-	--pf-peach-bg: #faf1de;
-	--pf-peach-border: #a3792a;
+	--pf-peach-bg: #fdf3d6;
+	--pf-peach-border: #c99a1f;
 	--pf-peach-ink: var(--pf-text);
 
-	--pf-yellow-bg: #f9e9de;
-	--pf-yellow-border: #97584f;
+	--pf-yellow-bg: #fdf6dc;
+	--pf-yellow-border: #d4a017;
 	--pf-yellow-ink: var(--pf-text);
 
 	--pf-blue-bg: #ecedf6;
@@ -107,14 +107,14 @@
 	align-items: center;
 	gap: 6px;
 	padding: 7px 14px;
-	border: 1.5px solid var(--pf-teal-light);
+	border: 1.5px solid #c99a1f;
 	border-radius: 999px;
-	background: rgba(184, 85, 47, 0.16);
+	background: rgba(201, 154, 31, 0.18);
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 14px;
 	letter-spacing: 0.02em;
-	color: #f0a480;
+	color: #f3d58a;
 }
 
 /* ---------- Meta bar ---------- */
@@ -278,7 +278,7 @@
 	font-weight: 600;
 	font-size: 21px;
 	color: var(--pf-teal-light);
-	border-bottom: 1px solid rgba(184, 85, 47, 0.35);
+	border-bottom: 1px solid rgba(140, 36, 48, 0.35);
 	display: inline-block;
 	padding-bottom: 2px;
 	margin-bottom: 10px;
@@ -367,7 +367,7 @@
 .pf-btn--accent:hover {
 	background: var(--pf-teal-light);
 	color: #ffffff;
-	box-shadow: 0 4px 12px rgba(184, 85, 47, 0.3);
+	box-shadow: 0 4px 12px rgba(140, 36, 48, 0.3);
 }
 
 .pf-btn--block {
@@ -447,7 +447,9 @@
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
-	text-decoration-color: rgba(184, 85, 47, 0.45);
+	text-decoration-color: rgba(140, 36, 48, 0.45);
+	cursor: pointer;
+	font-weight: 600;
 	transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
 }
 
@@ -504,7 +506,7 @@
 .pf-theme select:focus {
 	outline: none;
 	border-color: var(--pf-teal-light);
-	box-shadow: 0 0 0 3px rgba(184, 85, 47, 0.18);
+	box-shadow: 0 0 0 3px rgba(140, 36, 48, 0.18);
 }
 
 .pf-field-hint {
@@ -518,7 +520,7 @@
 	margin-top: 6px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
-	color: #a8452c;
+	color: #8c2430;
 }
 
 /* Google's reCAPTCHA widget has a fixed ~304px width we can't restyle
@@ -532,7 +534,7 @@
 
 .pf-alert {
 	border: 1px solid var(--pf-hairline);
-	border-left: 3px solid #a8452c;
+	border-left: 3px solid #8c2430;
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
@@ -619,6 +621,58 @@
 	.pf-table td {
 		padding: 8px 6px;
 	}
+}
+
+/* ---------- Contest list (homepage/quiz_home cards) ---------- */
+
+.pf-contest-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px 4px;
+	border-bottom: 1px solid var(--pf-hairline);
+	text-decoration: none;
+	color: inherit;
+	transition: background-color 0.15s ease, padding-left 0.15s ease;
+}
+
+.pf-contest-item:last-child {
+	border-bottom: none;
+}
+
+a.pf-contest-item:hover {
+	background: var(--pf-surface-hover);
+	padding-left: 10px;
+}
+
+.pf-contest-item-body {
+	min-width: 0;
+}
+
+.pf-contest-item-name {
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-weight: 700;
+	font-size: 17px;
+	line-height: 1.3;
+	margin-bottom: 3px;
+}
+
+a.pf-contest-item .pf-contest-item-name {
+	color: var(--pf-teal-light);
+}
+
+.pf-contest-item-meta {
+	font-size: 13px;
+	color: var(--pf-text-muted);
+}
+
+.pf-contest-item-chevron {
+	flex: none;
+	font-size: 22px;
+	line-height: 1;
+	color: var(--pf-teal-light);
+	opacity: 0.55;
 }
 
 /* ---------- Contest question list ---------- */
@@ -730,8 +784,8 @@
 }
 
 .pf-qlist-btn--danger:hover {
-	border-color: #a8452c;
-	color: #a8452c;
+	border-color: #8c2430;
+	color: #8c2430;
 }
 
 /* ---------- Quiz play screen ---------- */
@@ -772,7 +826,7 @@
 
 .pf-theme input.pf-answer-input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(184, 85, 47, 0.25);
+	box-shadow: 0 0 0 3px rgba(140, 36, 48, 0.25);
 }
 
 .pf-timer {
@@ -916,7 +970,7 @@
 .pf-like-btn.is-liked {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
-	background: rgba(184, 85, 47, 0.14);
+	background: rgba(140, 36, 48, 0.14);
 }
 
 .pf-comment-link {

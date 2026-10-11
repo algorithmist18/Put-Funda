@@ -36,61 +36,54 @@
 			{% if active_contests %}
 			<div class="pf-section-label pf-section-label--first"><span>Active contests</span></div>
 			<div class="pf-card">
-				<table class="pf-table">
-					<thead><tr><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
-					<tbody>
-						{% for contest in active_contests %}
-						<tr>
-							<td>
-								{% if contest.first_question_id %}
-								<a class="pf-link" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">{{ contest.name|default:contest.genre }} &middot; Play</a>
-								{% else %}
-								{{ contest.name|default:contest.genre }}
-								{% endif %}
-							</td>
-							<td>{{ contest.genre }}</td>
-							<td>{{ contest.host.username }}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+				{% for contest in active_contests %}
+				{% if contest.first_question_id %}
+				<a class="pf-contest-item" href="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ contest.first_question_id }}">
+					<div class="pf-contest-item-body">
+						<div class="pf-contest-item-name">{{ contest.name|default:contest.genre }}</div>
+						<div class="pf-contest-item-meta">{{ contest.genre }} &middot; hosted by {{ contest.host.username }}</div>
+					</div>
+					<span class="pf-contest-item-chevron">&rsaquo;</span>
+				</a>
+				{% else %}
+				<div class="pf-contest-item">
+					<div class="pf-contest-item-body">
+						<div class="pf-contest-item-name">{{ contest.name|default:contest.genre }}</div>
+						<div class="pf-contest-item-meta">{{ contest.genre }} &middot; hosted by {{ contest.host.username }}</div>
+					</div>
+				</div>
+				{% endif %}
+				{% endfor %}
 			</div>
 			{% endif %}
 
 			{% if new_contests %}
 			<div class="pf-section-label{% if not active_contests %} pf-section-label--first{% endif %}"><span>Upcoming contests</span></div>
 			<div class="pf-card">
-				<table class="pf-table">
-					<thead><tr><th>Name</th><th>Genre</th><th>Host</th><th>Time</th></tr></thead>
-					<tbody>
-						{% for contest in new_contests %}
-						<tr>
-							<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }}</a></td>
-							<td>{{ contest.genre }}</td>
-							<td>{{ contest.host.username }}</td>
-							<td>{{ contest.time }}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+				{% for contest in new_contests %}
+				<a class="pf-contest-item" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">
+					<div class="pf-contest-item-body">
+						<div class="pf-contest-item-name">{{ contest.name|default:contest.genre }}</div>
+						<div class="pf-contest-item-meta">{{ contest.genre }} &middot; hosted by {{ contest.host.username }} &middot; {{ contest.time }}</div>
+					</div>
+					<span class="pf-contest-item-chevron">&rsaquo;</span>
+				</a>
+				{% endfor %}
 			</div>
 			{% endif %}
 
 			{% if past_contests %}
 			<div class="pf-section-label{% if not active_contests and not new_contests %} pf-section-label--first{% endif %}"><span>Past contests</span></div>
 			<div class="pf-card">
-				<table class="pf-table">
-					<thead><tr><th>Name</th><th>Genre</th><th>Host</th></tr></thead>
-					<tbody>
-						{% for contest in past_contests %}
-						<tr>
-							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }} &middot; Leaderboard</a></td>
-							<td>{{ contest.genre }}</td>
-							<td>{{ contest.host.username }}</td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
+				{% for contest in past_contests %}
+				<a class="pf-contest-item" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">
+					<div class="pf-contest-item-body">
+						<div class="pf-contest-item-name">{{ contest.name|default:contest.genre }}</div>
+						<div class="pf-contest-item-meta">{{ contest.genre }} &middot; hosted by {{ contest.host.username }}</div>
+					</div>
+					<span class="pf-contest-item-chevron">&rsaquo;</span>
+				</a>
+				{% endfor %}
 			</div>
 			{% endif %}
 

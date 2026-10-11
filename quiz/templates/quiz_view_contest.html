@@ -168,7 +168,7 @@
 				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
 				if (distance <= 0) {
-					$("<p>Play contest <a onclick='newWindow()'>here.</a></p>").replaceAll("#contest-show");
+					$("<p>Play contest <a class='pf-link' href='javascript:void(0)' onclick='newWindow()'>here.</a></p>").replaceAll("#contest-show");
 				} else {
 					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's');
 				}
@@ -192,7 +192,7 @@
 		var minutes = Math.floor((distance / 1000) / 60);
 
 		if (minutes > timeTillContestValid) {
-			$("<p>The contest is over. Check leaderboard <a href='{% url 'leaderboard' %}?contest_id={{contest.id}}'>here.</a> View response details <a href='{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></p>")
+			$("<p>The contest is over. Check leaderboard <a class='pf-link' href='{% url 'leaderboard' %}?contest_id={{contest.id}}'>here.</a> View response details <a class='pf-link' href='{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></p>")
 				.replaceAll("#contest-show");
 		}
 

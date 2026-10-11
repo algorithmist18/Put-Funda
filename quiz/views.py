@@ -710,11 +710,17 @@ def play_contest(request):
 	if question_id is None or contest_id is None:
 		return redirect('quiz_home') 
 
-	# Fetch data from database call 
-	contest = Contest.objects.get(id = contest_id) 
-	question = QuizQuestion.objects.get(id = question_id) 
-	submissions = Submission.objects.filter(user = user, question = question) 
-	contest_questions = QuizQuestion.objects.filter(contest = contest) 
+	# Fetch data from database call
+	contest = Contest.objects.get(id = contest_id)
+
+	# A host already knows the answers - send them to the contest's own
+	# page instead of letting them play it
+	if user == contest.host:
+		return redirect('{}?contest_id={}'.format(reverse('view_contest'), contest.id))
+
+	question = QuizQuestion.objects.get(id = question_id)
+	submissions = Submission.objects.filter(user = user, question = question)
+	contest_questions = QuizQuestion.objects.filter(contest = contest)
 
 	# TODO: If it has been ten minutes since contest started - leave 
 	if len(submissions) == len(contest_questions): 
