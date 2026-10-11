@@ -2,10 +2,13 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
-
+	{% if user.is_authenticated %}
 	<div class="pf-section-label pf-section-label--first"><span>Host</span></div>
 	<p class="pf-note" style="margin-bottom: 10px;">Want to run your own contest? <a class="pf-link" href="{% url 'schedule_quiz' %}">Schedule one here.</a></p>
+	{% else %}
+	<div class="pf-section-label pf-section-label--first"><span>Contests</span></div>
+	<p class="pf-note" style="margin-bottom: 10px;">Anyone can play below - <a class="pf-link" href="{% url 'login' %}">log in</a> if you want to host your own.</p>
+	{% endif %}
 
 	<div class="pf-grid">
 
@@ -69,6 +72,7 @@
 			</div>
 		</div>
 
+		{% if user.is_authenticated %}
 		<div>
 			<div class="pf-section-label pf-section-label--first"><span>Your contests</span></div>
 			<div class="pf-card">
@@ -87,11 +91,8 @@
 				</table>
 			</div>
 		</div>
+		{% endif %}
 
 	</div>
-
-{% else %}
-	<p class="pf-note">You are not logged in.</p>
-{% endif %}
 
 {% endblock %}

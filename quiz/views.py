@@ -63,15 +63,14 @@ def compare(x):
 
 	return x.correct_answers, -x.time_taken 
 
-# Method to redirect to homepage 
+# Method to redirect to homepage - no login required, so anyone can
+# browse/play contests from here, not just from the blogsite homepage
+def homepage(request):
 
-@login_required
-def homepage(request): 
-
-	# Fetch all contests 
-	user = request.user 
-	user_contests = Contest.objects.filter(host = user) 
-	all_contests = Contest.objects.all() 
+	# Fetch all contests
+	user = request.user
+	user_contests = Contest.objects.filter(host = user) if user.is_authenticated else []
+	all_contests = Contest.objects.all()
 
 	# Contests 
 	contests = [] 
