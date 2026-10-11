@@ -11,7 +11,7 @@ from django.conf import settings
 from google import genai
 from google.genai import types
 
-MAX_PDF_PAGES = 12
+MAX_PDF_PAGES = 30
 
 PAGE_RENDER_ZOOM = 2.0
 
