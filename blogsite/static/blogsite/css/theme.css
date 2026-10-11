@@ -608,6 +608,17 @@
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
 	}
+
+	/* Claw back some width so a table's content fits the card without
+	   needing that overflow-x scroll in the first place */
+	.pf-card {
+		padding: 16px 14px;
+	}
+
+	.pf-table th,
+	.pf-table td {
+		padding: 8px 6px;
+	}
 }
 
 /* ---------- Contest question list ---------- */
@@ -783,7 +794,7 @@
 
 .pf-grid {
 	display: grid;
-	grid-template-columns: 1fr 320px;
+	grid-template-columns: 1fr 380px;
 	gap: 28px;
 	align-items: start;
 }
