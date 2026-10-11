@@ -592,12 +592,43 @@ def delete_question(request):
 
 		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
 
-	else: 
+	else:
 
-		return render(request, 'quiz_delete_question.html', args) 
+		return render(request, 'quiz_delete_question.html', args)
 
-# Method to fetch next question 
-def fetch_next_question(question, user): 
+# Method to delete a contest (and all its questions/submissions/leaderboard
+# entries - these all cascade off Contest in quiz/models.py)
+@login_required
+def delete_contest(request):
+
+	user = request.user
+	contest_id = request.GET.get('contest_id')
+
+	contest = Contest.objects.get(id = contest_id)
+
+	# Check if user is the host
+	if user != contest.host:
+
+		url = reverse('quiz_home')
+		return HttpResponseRedirect(url)
+
+	args = {'user' : user, 'contest' : contest}
+
+	if request.method == 'POST':
+
+		action = request.POST.get('action')
+
+		if action == 'Confirm delete':
+			contest.delete()
+
+		return HttpResponseRedirect(reverse('quiz_home'))
+
+	else:
+
+		return render(request, 'quiz_delete_contest.html', args)
+
+# Method to fetch next question
+def fetch_next_question(question, user):
 
 	contest = question.contest 
 	questions = QuizQuestion.objects.filter(contest = contest)  

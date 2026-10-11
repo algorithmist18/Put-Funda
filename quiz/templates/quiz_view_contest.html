@@ -22,6 +22,7 @@
 			Edit the contest <a class="pf-link" href="{% url 'edit_contest' %}?contest_id={{ contest.id }}&user={{ user.username }}">here</a>
 			&middot; Check the leaderboard <a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">here</a>
 			&middot; View response details <a class="pf-link" href="{% url 'question_analytics' %}?contest_id={{ contest.id }}">here</a>
+			&middot; <a class="pf-link" href="{% url 'delete_contest' %}?contest_id={{ contest.id }}">Delete contest</a>
 		</p>
 
 		<div id="quiz-contest" class="pf-card">

@@ -1,0 +1,18 @@
+{% extends 'quiz_homepage_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>Delete contest</span></div>
+
+	<div class="pf-card" id="contest-delete">
+		<p class="pf-note" style="margin-bottom: 16px;">This deletes "{{ contest.name|default:contest.genre }}" along with all of its questions, submissions and leaderboard entries. This cannot be undone.</p>
+
+		<form method="post" action="{% url 'delete_contest' %}?contest_id={{ contest.id }}">
+			{% csrf_token %}
+
+			<button type="submit" name="action" value="Confirm delete" class="pf-btn pf-btn--accent">Confirm delete</button>
+			<button type="submit" name="action" value="Back" class="pf-btn">Back</button>
+		</form>
+	</div>
+
+{% endblock %}
