@@ -82,7 +82,12 @@ def extract_questions_from_pdf(pdf_bytes):
 			)
 		)
 
-	client = genai.Client(api_key = api_key)
+	# Force the plain Gemini Developer API (not Vertex AI, which needs
+	# OAuth credentials, not an API key). Without this, the client falls
+	# back to whatever GOOGLE_GENAI_USE_VERTEXAI/_ENTERPRISE happen to be
+	# set to in the environment it runs in, silently switching endpoints
+	# and rejecting a perfectly valid API key with a confusing 401.
+	client = genai.Client(api_key = api_key, vertexai = False)
 	config = types.GenerateContentConfig(
 		response_mime_type = 'application/json',
 		response_schema = RESPONSE_SCHEMA,
