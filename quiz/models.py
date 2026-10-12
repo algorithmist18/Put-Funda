@@ -8,11 +8,29 @@ from django import forms
 
 # Create your models here.
 
+# Picked from a dropdown when scheduling/editing a contest (quiz_schedule.html,
+# quiz_edit_contest.html) instead of free-typed. Contests from before this
+# existed may still hold other genre text - that's fine, Django's `choices`
+# is a form/admin hint, not a database constraint, so old values keep working.
+CONTEST_GENRE_CHOICES = [
+	('General', 'General'),
+	('Entertainment', 'Entertainment'),
+	('Sports', 'Sports'),
+	('Literature', 'Literature'),
+	('India', 'India'),
+	('Pop Culture', 'Pop Culture'),
+	('Sports & Entertainment', 'Sports & Entertainment'),
+	('Arts', 'Arts'),
+	('Music', 'Music'),
+	('Movies', 'Movies'),
+	('Other', 'Other'),
+]
+
 class Contest(models.Model):
 
 	host = models.ForeignKey(User, on_delete = models.CASCADE)
 	time = models.DateTimeField()
-	genre = models.CharField(max_length = 20, default = 'General')
+	genre = models.CharField(max_length = 30, default = 'General', choices = CONTEST_GENRE_CHOICES)
 	name = models.CharField(max_length = 100, blank = True, default = '')
 	description = models.CharField(max_length = 300, blank = True, default = '')
 	has_rating_updated = models.BooleanField(default = False, blank = True, null = True)

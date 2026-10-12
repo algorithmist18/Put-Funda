@@ -10,7 +10,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from quiz.forms import QuizForm
-from quiz.models import QuizQuestion, Contest, Submission, RatingHistory, Leaderboard
+from quiz.models import QuizQuestion, Contest, Submission, RatingHistory, Leaderboard, CONTEST_GENRE_CHOICES
 from blogsite.models import Profile
 from blogsite.guest_auth import ensure_guest_login
 from .models import User 
@@ -271,7 +271,7 @@ def schedule_quiz(request):
 
 	else:
 
-		return render(request, 'quiz_schedule.html') 
+		return render(request, 'quiz_schedule.html', {'genre_choices': CONTEST_GENRE_CHOICES})
 
 # Method to check if a contest is valid or not 
 def is_valid_contest(contest): 
@@ -466,8 +466,8 @@ def edit_contest(request):
 		# Cannot edit it again
 		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'contest_past'))
 
-	# Populate context 
-	args = {'user' : user, 'contest' : contest}  
+	# Populate context
+	args = {'user' : user, 'contest' : contest, 'genre_choices' : CONTEST_GENRE_CHOICES}
 
 	# Proceed to handle request 
 	if request.method == 'POST': 
@@ -922,10 +922,54 @@ def fetch_no_of_contests_played(start_contest_id, username):
 	for submission in submission_list: 
 		list_of_contest_ids.append(submission.question.contest.id) 
 
-	return len(set(list_of_contest_ids)) 
+	return len(set(list_of_contest_ids))
 
-# Method to update rankings for contest user 
-def update_ratings(request): 
+class TopPlayer:
+
+	def __init__(self, username, contests_played, correct, total):
+
+		self.username = username
+		self.contests_played = contests_played
+		self.correct = correct
+		self.total = total
+		self.accuracy = round(100 * correct / total, 1) if total else 0
+
+# Method to rank players by number of distinct contests played, with
+# their overall accuracy - used for the homepage leaderboard while
+# rating (ELO) is set aside (see Profile.rating) to be reintroduced later
+def fetch_top_players(limit = 10):
+
+	stats = {}
+
+	submissions = Submission.objects.select_related('question', 'user', 'user__profile')
+
+	for submission in submissions:
+
+		if submission.user.profile.is_guest:
+			continue
+
+		username = submission.user.username
+
+		if username not in stats:
+			stats[username] = {'contests': set(), 'correct': 0, 'total': 0}
+
+		stats[username]['contests'].add(submission.question.contest_id)
+		stats[username]['total'] += 1
+
+		if is_correct(submission, submission.question):
+			stats[username]['correct'] += 1
+
+	players = [
+		TopPlayer(username, len(data['contests']), data['correct'], data['total'])
+		for username, data in stats.items()
+	]
+
+	players.sort(key = lambda p: (-p.contests_played, -p.accuracy))
+
+	return players[:limit]
+
+# Method to update rankings for contest user
+def update_ratings(request):
 
 	# Check if contest is invalid
 	response = {} 

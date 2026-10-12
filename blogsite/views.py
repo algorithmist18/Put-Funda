@@ -19,6 +19,7 @@ from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
 from quiz.models import Contest, QuizQuestion, Leaderboard, QuestionOfTheDay, QOTDSubmission
+from quiz.views import fetch_top_players
 import pytz
 from .tokens import account_activation_token, password_reset_token
 from django.core.mail import send_mail
@@ -92,8 +93,9 @@ def homepage(request):
 	# Fetch blogs
 	blog_posts = Post.objects.all().order_by("-time")[0:10]
 
-	# Fetch leaderboard
-	users = Profile.objects.all().order_by("-rating")[0:10]
+	# Fetch leaderboard - ranked by contests played/accuracy for now,
+	# rating (ELO) is set aside to be reintroduced later
+	users = fetch_top_players()
 
 	# Fetch upcoming contests
 	for contest in Contest.objects.all().order_by('-time'):

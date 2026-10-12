@@ -97,13 +97,16 @@
 			<div class="pf-section-label{% if not active_contests and not new_contests and not past_contests %} pf-section-label--first{% endif %}"><span>Leaderboard</span></div>
 			<div class="pf-card">
 				<table class="pf-table">
-					<thead><tr><th>Player</th><th>Rating</th></tr></thead>
+					<thead><tr><th>Player</th><th>Contests played</th><th>Accuracy</th></tr></thead>
 					<tbody>
 						{% for u in users %}
 						<tr>
-							<td>{{ u.user.username }}</td>
-							<td class="rating">{{ u.rating }}</td>
+							<td>{{ u.username }}</td>
+							<td>{{ u.contests_played }}</td>
+							<td>{{ u.accuracy }}%</td>
 						</tr>
+						{% empty %}
+						<tr><td colspan="3" class="pf-note pf-muted">No one has played a contest yet.</td></tr>
 						{% endfor %}
 					</tbody>
 				</table>
