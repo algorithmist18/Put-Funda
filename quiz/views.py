@@ -779,16 +779,6 @@ def play_contest(request):
 			answer = answer, time_taken = time_taken)
 			submission.save()
 
-		else:
-
-			submission = submissions[0]
-
-		# Feedback for the question just answered, shown on the next
-		# render (next question, or the finish screen)
-		args['has_last_answer'] = True
-		args['last_was_correct'] = is_correct(submission, question)
-		args['last_correct_answer'] = question.answer
-
 		# Route to next question
 		message, next_question = fetch_next_question(question, user)
 
