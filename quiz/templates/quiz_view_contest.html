@@ -33,9 +33,9 @@
 		<script type="text/javascript">
 			(function () {
 				var contestUrl = window.location.origin + "{% url 'view_contest' %}?contest_id={{ contest.id }}";
-				var message = "\u{1F389} I just set up a new quiz contest: *{{ contest.name|default:contest.genre|escapejs }}*"
-					+ " ({{ contest.genre|escapejs }})!\n\nThink you can top the leaderboard? Give it a shot \u{1F447}\n"
-					+ contestUrl;
+				var message = "\u{1F389} Join my quiz contest *{{ contest.name|default:contest.genre|escapejs }}*"
+					+ " ({{ contest.genre|escapejs }}) here: " + contestUrl
+					+ " — think you can top the leaderboard? \u{1F3C6}";
 				document.getElementById('whatsapp-share-btn').href = "https://wa.me/?text=" + encodeURIComponent(message);
 			})();
 		</script>
