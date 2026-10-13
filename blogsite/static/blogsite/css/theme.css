@@ -751,6 +751,47 @@
 	border: 1px solid var(--pf-hairline);
 }
 
+.pf-hangman-mask {
+	font-family: 'Courier New', monospace;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: 2px;
+	color: var(--pf-text-muted);
+	margin-top: 10px;
+	word-break: break-all;
+}
+
+.pf-answer-feedback {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	border-radius: 4px;
+	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
+	font-size: 15px;
+	margin-bottom: 16px;
+	animation: pf-feedback-fade 2.5s ease forwards;
+}
+
+.pf-answer-feedback--correct {
+	background: #dcecc8;
+	color: #1f3b16;
+	border: 1.5px solid #4f7a3a;
+}
+
+.pf-answer-feedback--incorrect {
+	background: rgba(110, 16, 25, 0.08);
+	color: #6e1019;
+	border: 1.5px solid #6e1019;
+}
+
+@keyframes pf-feedback-fade {
+	0% { opacity: 1; }
+	70% { opacity: 1; }
+	100% { opacity: 0.35; }
+}
+
 .pf-answer-row {
 	display: flex;
 	align-items: stretch;

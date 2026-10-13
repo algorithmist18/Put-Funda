@@ -16,6 +16,14 @@
 
 		<div class="pf-shell pf-center" style="padding-top: 60px;">
 
+			{% if has_last_answer %}
+				{% if last_was_correct %}
+				<div class="pf-answer-feedback pf-answer-feedback--correct">&#10003; Correct!</div>
+				{% else %}
+				<div class="pf-answer-feedback pf-answer-feedback--incorrect">&#10007; Not quite - it was: {{ last_correct_answer }}</div>
+				{% endif %}
+			{% endif %}
+
 			<div class="pf-section-label pf-section-label--first"><span>Contest complete</span></div>
 			<h1 style="font-style: italic; font-size: 32px; margin-bottom: 14px;">Nicely played.</h1>
 			<p class="pf-note" style="margin-bottom: 24px;">Thank you for participating. You can close this window now.</p>

@@ -1,10 +1,13 @@
 # Turns an uploaded PDF of quiz questions into a flat list of simplified
 # question/answer dicts, using the free-tier Gemini API (google-genai) plus
-# PyMuPDF. One Gemini call per page: each page is rendered to an image and
-# sent with a prompt that (a) skips pages that are just facts/rules rather
-# than an actual question, (b) picks only ONE question per page even if
-# several are present, and (c) writes that question as a short context
-# passage followed by the question itself, not a bare one-liner.
+# PyMuPDF. Pages are processed in batches of BATCH_SIZE: every page image in
+# a batch is sent to Gemini in a single call, with a prompt that (a) finds
+# the questions first, (b) separately finds their answers - which often
+# appear on a later page/slide within the same batch, not the question's own
+# page - matching them up in order rather than letting the model compute or
+# guess an answer itself, (c) skips pages that are just facts/rules, (d)
+# picks only one question per page even if several are present, and (e)
+# writes each kept question as a short context passage, not a bare one-liner.
 
 import json
 import time
@@ -14,42 +17,50 @@ from django.conf import settings
 from google import genai
 from google.genai import types
 
-MAX_PDF_PAGES = 30
+MAX_PDF_PAGES = 300
+
+BATCH_SIZE = 30
 
 PAGE_RENDER_ZOOM = 2.0
 
 EXTRACTION_MODEL = 'gemini-3.1-flash-lite'
 
 EXTRACTION_PROMPT = (
-	"You are helping turn a page from a quiz/trivia document into a single "
-	"quiz question for an app. Look at the page image.\n\n"
-	"First, decide whether the page actually poses a question AND shows its "
-	"answer, both on this same page - as opposed to just facts, rules, "
-	"instructions, section headers, or a question with no answer given "
-	"anywhere on this page. A real question typically ends in a question "
-	"mark and its answer is explicitly written on the page (for example, "
-	"next to 'Answer:' or similar). If the page is purely "
-	"factual/instructional, or poses a question but doesn't show its "
-	"answer on this same page, return an empty list. It is far better to "
-	"return nothing than to invent a question or guess at an answer that "
-	"isn't actually shown.\n\n"
-	"If the page does contain one or more such questions, pick exactly "
-	"ONE - whichever best represents the page's content - even if the "
-	"page has two or three. Never return more than one question for a "
-	"page.\n\n"
-	"Write that one question as a short passage of 2-4 lines: a couple of "
-	"lines giving the context/background needed to understand it (in "
-	"plain, simple language, stripped of any multi-part/branching "
-	"structure), followed by the question itself. It must be answerable "
-	"from the passage alone, without seeing the original page.\n\n"
-	"For the answer: copy it exactly as it is written on the page. Do not "
-	"compute, guess, correct or substitute your own answer, even if you "
-	"believe you know better - use only what the page itself states."
+	"You will be shown several consecutive pages/slides from a quiz "
+	"document, in order (the first image is the earliest page in this "
+	"batch). Many such documents separate questions from their answers: "
+	"the questions appear first, and the correct answers are revealed "
+	"later - often on their own slide(s), such as an answer key - not on "
+	"the question's own page.\n\n"
+	"Work in two passes:\n\n"
+	"PASS 1 - find the questions: go through the pages in order and "
+	"identify every page that poses a real, self-contained question, as "
+	"opposed to a page that's just facts, rules, instructions, section "
+	"headers, or an answer-reveal slide. A real question typically ends "
+	"in a question mark. If a page shows two or three candidate "
+	"questions, pick only the single one that best represents that page "
+	"- never more than one question per page.\n\n"
+	"PASS 2 - find the answers: separately, go back through the pages "
+	"looking for where each question's answer is actually revealed. "
+	"Match answers to questions strictly by order of appearance - the "
+	"first answer you find corresponds to the first question you found, "
+	"the second answer to the second question, and so on. Only keep a "
+	"question if you can find its matching answer somewhere in this "
+	"batch. If a question's answer cannot be found, drop that question "
+	"entirely - never compute, infer, or guess an answer yourself from "
+	"general knowledge.\n\n"
+	"For every kept question, rewrite it as a short passage of 2-4 "
+	"lines: a couple of lines of context/background in plain language "
+	"(stripped of any multi-part/branching structure), followed by the "
+	"question itself, answerable from the passage alone without seeing "
+	"the original pages. For the answer, copy it exactly as written "
+	"wherever it was revealed - do not alter, correct, or compute it.\n\n"
+	"Return the kept questions in the same order they originally "
+	"appeared."
 )
 
 RESPONSE_SCHEMA = {
 	"type": "array",
-	"maxItems": 1,
 	"items": {
 		"type": "object",
 		"properties": {
@@ -71,12 +82,23 @@ def _render_page_to_png(page):
 	return pixmap.tobytes('png')
 
 
+def _batch_ranges(page_count):
+
+	for start in range(0, page_count, BATCH_SIZE):
+		yield start, min(start + BATCH_SIZE, page_count)
+
+
 def extract_questions_from_pdf(pdf_bytes):
 	"""Returns (questions, elapsed_seconds).
 
 	questions is a list of {'question', 'answer'} dicts, at most one per
-	PDF page (pages with no real question - just facts/rules - contribute
-	none).
+	PDF page (pages with no real question - just facts/rules - or whose
+	question has no matched answer anywhere in its batch, contribute none).
+
+	Pages are sent to Gemini BATCH_SIZE at a time (one call per batch, all
+	of that batch's page images in the one call) so the model can match a
+	question to an answer that appears on a later page within the batch,
+	rather than being asked to invent one.
 
 	Raises PdfExtractionError for anything that stops this from producing
 	usable questions (missing API key, unreadable PDF, too many pages,
@@ -122,29 +144,31 @@ def extract_questions_from_pdf(pdf_bytes):
 
 	questions = []
 
-	for page in document:
+	for batch_start, batch_end in _batch_ranges(document.page_count):
 
-		image_part = types.Part.from_bytes(data = _render_page_to_png(page), mime_type = 'image/png')
+		image_parts = [
+			types.Part.from_bytes(data = _render_page_to_png(document[i]), mime_type = 'image/png')
+			for i in range(batch_start, batch_end)
+		]
 
 		try:
 			response = client.models.generate_content(
 				model = EXTRACTION_MODEL,
-				contents = [EXTRACTION_PROMPT, image_part],
+				contents = [EXTRACTION_PROMPT] + image_parts,
 				config = config,
 			)
 		except Exception as ex:
 			raise PdfExtractionError('Gemini could not process the PDF: {}'.format(ex)) from ex
 
 		try:
-			page_questions = json.loads(response.text)
+			batch_questions = json.loads(response.text)
 		except (ValueError, TypeError) as ex:
 			raise PdfExtractionError('Gemini returned an unexpected response.') from ex
 
-		if not isinstance(page_questions, list):
+		if not isinstance(batch_questions, list):
 			continue
 
-		# Only one question per page, even if the model returns more
-		for item in page_questions[:1]:
+		for item in batch_questions:
 
 			if not isinstance(item, dict):
 				continue

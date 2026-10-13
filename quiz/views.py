@@ -681,10 +681,28 @@ def is_correct(submission, question):
 
 		return True 
 
-	# Answer does not match with anything 
-	return False 
+	# Answer does not match with anything
+	return False
 
-# Method to return similarity of two strings 
+# Method to build a hangman-style letter-count hint for a question's
+# answer - an apostrophe per letter, a wider gap between words, and any
+# other punctuation in the answer (e.g. a hyphen) shown as-is
+def hangman_mask(answer):
+
+	tokens = []
+
+	for ch in answer:
+
+		if ch.isalnum():
+			tokens.append("'")
+		elif ch == ' ':
+			tokens.append('   ')
+		else:
+			tokens.append(ch)
+
+	return ' '.join(tokens)
+
+# Method to return similarity of two strings
 def similarity_quotient(str1, str2): 
 
 	# Convert everything to lower case 
@@ -751,30 +769,41 @@ def play_contest(request):
 		# Fetch question 
 		question = QuizQuestion.objects.get(id = question_id) 
 
-		# Check if user has submitted this question before 
-		submissions = Submission.objects.filter(user = user, question = question) 
+		# Check if user has submitted this question before
+		submissions = Submission.objects.filter(user = user, question = question)
 
 		if len(submissions) == 0:
 
-			# Create submission object 
-			submission = Submission(user = user, question = question, 
-			answer = answer, time_taken = time_taken) 
-			submission.save() 
+			# Create submission object
+			submission = Submission(user = user, question = question,
+			answer = answer, time_taken = time_taken)
+			submission.save()
 
-		# Route to next question 
-		message, next_question = fetch_next_question(question, user) 
+		else:
 
-		if message == 'FINISH': 
+			submission = submissions[0]
+
+		# Feedback for the question just answered, shown on the next
+		# render (next question, or the finish screen)
+		args['has_last_answer'] = True
+		args['last_was_correct'] = is_correct(submission, question)
+		args['last_correct_answer'] = question.answer
+
+		# Route to next question
+		message, next_question = fetch_next_question(question, user)
+
+		if message == 'FINISH':
 
 			# Add user game to leaderboard
-			add_player_to_leaderboard(user, contest) 
-			return render(request, 'quiz_exit_window.html', args) 
+			add_player_to_leaderboard(user, contest)
+			return render(request, 'quiz_exit_window.html', args)
 
 		else:
 
 			# Update context
 			args['question'] = next_question
-			return render(request, 'quiz_play_contest.html', args) 
+			args['hangman_mask'] = hangman_mask(next_question.answer)
+			return render(request, 'quiz_play_contest.html', args)
 
 	else: 
 
@@ -790,11 +819,12 @@ def play_contest(request):
 
 			return render(request, 'quiz_contest_instructions.html', args) 
 
-		else: 
+		else:
 
-			return render(request, 'quiz_play_contest.html', args) 
+			args['hangman_mask'] = hangman_mask(question.answer)
+			return render(request, 'quiz_play_contest.html', args)
 
-# Method to return a list of users which participated in the contest	
+# Method to return a list of users which participated in the contest
 def users_in_contest(contest): 
 
 	users_set = set([]) 

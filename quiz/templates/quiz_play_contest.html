@@ -4,6 +4,14 @@
 
 	<div class="pf-section-label pf-section-label--first"><span>Question</span></div>
 
+	{% if has_last_answer %}
+		{% if last_was_correct %}
+		<div class="pf-answer-feedback pf-answer-feedback--correct">&#10003; Correct!</div>
+		{% else %}
+		<div class="pf-answer-feedback pf-answer-feedback--incorrect">&#10007; Not quite - it was: {{ last_correct_answer }}</div>
+		{% endif %}
+	{% endif %}
+
 	<div id="contest" class="pf-card">
 		<form method="post" action="{% url 'play_contest' %}?contest_id={{ contest.id }}&question_id={{ question.id }}">
 			{% csrf_token %}
@@ -11,6 +19,7 @@
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -21,6 +30,7 @@
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -31,6 +41,7 @@
 				<div id="question-image-holder">
 					<div id="question-holder-full">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 				</div>
