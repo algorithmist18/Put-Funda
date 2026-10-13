@@ -1348,6 +1348,7 @@ def view_question_analytics(request):
 			question_stats.append([question, correct_subs, total_subs])
 
 		response['question_stats'] = question_stats
+		response['contest'] = contest
 
 		return render(request, 'quiz_view_analytics.html', response)
 
@@ -1477,16 +1478,14 @@ def view_user_submissions(request):
 		# Fetch user and contest
 		try: 
 			
-			user_object = User.objects.get(username = username) 
-			contest = Contest.objects.get(id = int(contest_id)) 
-	
-			# Redirect to leaderboard if 
-			# contest is active
-			is_active = contest_utils.is_contest_active(contest) 
-			if is_active and user.username is not 'coder': 
-				return redirect('quiz') 
+			user_object = User.objects.get(username = username)
+			contest = Contest.objects.get(id = int(contest_id))
 
-			submissions = fetch_submissions_by_user_contest(user_object, contest) 
+			# Only the host can see another player's individual answers
+			if user != contest.host:
+				return redirect('quiz_home')
+
+			submissions = fetch_submissions_by_user_contest(user_object, contest)
 			response['user'] = user_object
 			response['contest'] = contest 
 			response['submissions'] = submissions 
@@ -1517,13 +1516,11 @@ def view_correct_submissions(request):
 
 		question = QuizQuestion.objects.get(id = int(question_id))
 
-		# Redirect to leaderboard if 
-		# contest is active
-		is_active = contest_utils.is_contest_active(question.contest)  
-		if is_active and user.username is not 'coder': 
-			return redirect('quiz_home')  
-	
-		submissions = fetch_correct_submissions(question) 
+		# Only the host can see who answered what
+		if user != question.contest.host:
+			return redirect('quiz_home')
+
+		submissions = fetch_correct_submissions(question)
 		
 		response['submissions'] = submissions 
 		response['question'] = question 

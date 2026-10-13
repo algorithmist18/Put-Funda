@@ -17,7 +17,13 @@
 				{% for stat in question_stats %}
 				<tr>
 					<td>{{ stat.0.question }}</td>
-					<td><a class="pf-link" href="{% url 'view_correct' %}?question_id={{ stat.0.id }}">{{ stat.0.answer }}</a></td>
+					<td>
+						{% if request.user == contest.host %}
+						<a class="pf-link" href="{% url 'view_correct' %}?question_id={{ stat.0.id }}">{{ stat.0.answer }}</a>
+						{% else %}
+						{{ stat.0.answer }}
+						{% endif %}
+					</td>
 					<td>{{ stat.1 }} / {{ stat.2 }}</td>
 				</tr>
 				{% endfor %}

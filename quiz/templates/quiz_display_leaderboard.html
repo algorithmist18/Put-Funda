@@ -32,10 +32,10 @@
 					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ u.username }}">{{ u.username }}</a>{% if u.played_late %}*{% endif %}</td>
 					<td>{{ u.correct_answers }}</td>
 					<td class="time-taken">{{ u.time_taken }}</td>
-					{% if is_valid_contest %}
-						<td>Submission</td>
-					{% else %}
+					{% if request.user == contest.host %}
 						<td><a class="pf-link" href="{% url 'view_user_submissions' %}?username={{ u.username }}&contest_id={{ contest.id }}">Submission</a></td>
+					{% else %}
+						<td class="pf-muted">&mdash;</td>
 					{% endif %}
 				</tr>
 				{% endfor %}
