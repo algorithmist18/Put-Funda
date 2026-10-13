@@ -374,6 +374,24 @@
 	width: 100%;
 }
 
+.pf-btn--whatsapp {
+	border-color: #25d366;
+	color: #1b8a4c;
+}
+
+.pf-btn--whatsapp:hover {
+	background: #25d366;
+	border-color: #25d366;
+	color: #ffffff;
+	box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.pf-btn--whatsapp svg {
+	width: 17px;
+	height: 17px;
+	fill: currentColor;
+}
+
 /* ---------- Stats row ---------- */
 
 .pf-stats {
