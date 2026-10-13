@@ -70,6 +70,10 @@ class Leaderboard(models.Model):
 	correct_answers = models.IntegerField(default=0, blank=True, null=True)
 	time_taken = models.FloatField(default=0.00, blank=True, null=True)
 
+	# True if this player finished after the contest's valid_for window
+	# had already closed - shown with an asterisk on the leaderboard
+	played_late = models.BooleanField(default = False, blank = True, null = True)
+
 class QuestionOfTheDay(models.Model):
 
 	question = models.TextField()

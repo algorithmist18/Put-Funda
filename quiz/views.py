@@ -35,15 +35,16 @@ from quiz import contest_utils
 
 # Class to represent custom data structure 
 
-class ContestUser: 
+class ContestUser:
 
-	# Variables 
+	# Variables
 
-	def __init__(self, username, correct_answers, time_taken): 
+	def __init__(self, username, correct_answers, time_taken, played_late = False):
 
-		self.username = username 
+		self.username = username
 		self.correct_answers = correct_answers
-		self.time_taken = time_taken 
+		self.time_taken = time_taken
+		self.played_late = played_late
 
 # Class to represent user, rank, old rating and new rating 
 
@@ -839,10 +840,10 @@ def display_leaderboard(request):
 
 		if len(leaderboard_entry) == 1: 
 
-			print('Reading data straight from table') 
-			contest_user = ContestUser(user.username, leaderboard_entry[0].correct_answers, 
-			leaderboard_entry[0].time_taken) 
-			contest_users.append(contest_user) 
+			print('Reading data straight from table')
+			contest_user = ContestUser(user.username, leaderboard_entry[0].correct_answers,
+			leaderboard_entry[0].time_taken, leaderboard_entry[0].played_late)
+			contest_users.append(contest_user)
 
 			# Updating rating history
 			try: 		
@@ -877,18 +878,21 @@ def display_leaderboard(request):
 					correct_answers += 1 
 					time_taken += submission.time_taken 
 
-			contest_user = ContestUser(user.username, correct_answers, time_taken) 
+			# We don't have a per-submission timestamp to know exactly
+			# when they played, so fall back to "is the contest over
+			# right now" as the best available signal
+			contest_user = ContestUser(user.username, correct_answers, time_taken, not is_contest_active)
 			contest_users.append(contest_user)
 
-			# Delete all the leaderboard entries first 
-			for entry in leaderboard_entry: 
-				entry.delete() 
+			# Delete all the leaderboard entries first
+			for entry in leaderboard_entry:
+				entry.delete()
 
 			# Adding to leaderboard table
 			user_from_db = User.objects.get(username=user.username)
-			leaderboard_entry = Leaderboard(user=user_from_db, correct_answers=correct_answers, 
-			time_taken=time_taken, contest=contest) 
-			leaderboard_entry.save() 
+			leaderboard_entry = Leaderboard(user=user_from_db, correct_answers=correct_answers,
+			time_taken=time_taken, contest=contest, played_late=not is_contest_active)
+			leaderboard_entry.save()
 
 			# Updating rating history 
 			try: 
@@ -908,10 +912,11 @@ def display_leaderboard(request):
 	# Sort the submissions
 	contest_users = sorted(sorted(contest_users, key = lambda x: x.time_taken), key = lambda x: x.correct_answers, reverse = True)  
 
-	# Update context 
-	args = {} 
-	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active})
-	return render(request, 'quiz_display_leaderboard.html', args) 
+	# Update context
+	args = {}
+	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active,
+	'any_played_late': any(u.played_late for u in contest_users)})
+	return render(request, 'quiz_display_leaderboard.html', args)
 
 # Method to fetch number of contests user has played from certan contest
 def fetch_no_of_contests_played(start_contest_id, username):
@@ -1251,39 +1256,48 @@ def update_ratings(request):
 		return JsonResponse(response) 
 
 # Method to add players to the leaderboard
-def add_player_to_leaderboard(user, contest): 
+def add_player_to_leaderboard(user, contest):
 
-	user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
-	correct_answers = 0 
-	time_taken = 0 
+	user_submissions = Submission.objects.filter(question__contest = contest, user = user)
+	correct_answers = 0
+	time_taken = 0
 
-	for submission in user_submissions: 
+	for submission in user_submissions:
 
-		given_answer = submission.answer.lower() 
-		correct_answer = submission.question.answer.lower() 
+		given_answer = submission.answer.lower()
+		correct_answer = submission.question.answer.lower()
 
-		if is_correct(submission, submission.question): 
+		if is_correct(submission, submission.question):
 
-			correct_answers += 1 
-			time_taken += submission.time_taken 
+			correct_answers += 1
+			time_taken += submission.time_taken
 
-	print(user.username, contest.id, correct_answers, time_taken) 
+	print(user.username, contest.id, correct_answers, time_taken)
+
+	# This is called the moment a player finishes, so "now" is their
+	# finish time - if the contest's valid_for window had already
+	# closed by then, flag them as a late player for the leaderboard
+	current_time = datetime.datetime.now(pytz.timezone('UTC'))
+	minutes_since_start = (current_time - contest.time).total_seconds() / 60
+	played_late = minutes_since_start > contest.valid_for
 
 	# Check if already present before making inserts
-	already_present = Leaderboard.objects.filter(contest = contest, user = user) 
+	already_present = Leaderboard.objects.filter(contest = contest, user = user)
 
-	if len(list(already_present)) > 0: 
+	if len(list(already_present)) > 0:
 
-		leaderboard_entry = list(already_present)[0] 
+		leaderboard_entry = list(already_present)[0]
 		leaderboard_entry.correct_answers = correct_answers
-		leaderboard_entry.time_taken = time_taken 
+		leaderboard_entry.time_taken = time_taken
+		leaderboard_entry.played_late = played_late
 		leaderboard_entry.save()
 
 	else:
 
-		leaderboard_entry = Leaderboard(contest=contest, user=user, 
-		correct_answers=correct_answers, time_taken=time_taken) 
-		leaderboard_entry.save() 
+		leaderboard_entry = Leaderboard(contest=contest, user=user,
+		correct_answers=correct_answers, time_taken=time_taken,
+		played_late=played_late)
+		leaderboard_entry.save()
 
 # Method to restore ratings for this contest 
 @login_required

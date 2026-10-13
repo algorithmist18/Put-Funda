@@ -29,7 +29,7 @@
 				{% for u in users %}
 				<tr>
 					<td class="rank-row">1</td>
-					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ u.username }}">{{ u.username }}</a></td>
+					<td><a class="pf-link" href="{% url 'show_user' %}?user={{ u.username }}">{{ u.username }}</a>{% if u.played_late %}*{% endif %}</td>
 					<td>{{ u.correct_answers }}</td>
 					<td class="time-taken">{{ u.time_taken }}</td>
 					{% if is_valid_contest %}
@@ -43,6 +43,10 @@
 
 		</table>
 	</div>
+
+	{% if any_played_late %}
+	<p class="pf-note pf-muted" style="margin-top: -6px;">* played after the contest had already ended.</p>
+	{% endif %}
 
 	<script type="text/javascript">
 

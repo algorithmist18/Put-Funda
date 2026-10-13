@@ -153,24 +153,34 @@
 
 		function onEnter() {
 
-			var contestTime = "{{contest.time}}";
-			var tokens = contestTime.split(" ");
-			contestTime = toJSTime(contestTime);
+			var contestTime = toJSTime("{{contest.time}}");
 
 			var x = setInterval(function () {
 
 				var currentTime = new Date().getTime();
 				var distance = contestTime - currentTime;
+				var minutesSinceStart = -distance / (1000 * 60);
 
-				var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-				var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-				var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-				var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+				if (distance > 0) {
 
-				if (distance <= 0) {
-					$("<p>Play contest <a class='pf-link' href='javascript:void(0)' onclick='newWindow()'>here.</a></p>").replaceAll("#contest-show");
-				} else {
+					var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+					var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+					var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+					var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 					$('#time').html(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's');
+
+				} else if (minutesSinceStart <= timeTillContestValid) {
+
+					$("<p>Play contest <a class='pf-link' href='javascript:void(0)' onclick='newWindow()'>here.</a></p>").replaceAll("#contest-show");
+					clearInterval(x);
+
+				} else {
+
+					// Still playable after the window closes - they'll just
+					// show up on the leaderboard marked as a late player
+					$("<p>The contest is over, but you can still play it <a class='pf-link' href='javascript:void(0)' onclick='newWindow()'>here</a> (you'll be marked with an asterisk on the leaderboard). Check leaderboard <a class='pf-link' href='{% url 'leaderboard' %}?contest_id={{contest.id}}'>here.</a> View response details <a class='pf-link' href='{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></p>")
+						.replaceAll("#contest-show");
+					clearInterval(x);
 				}
 
 			}, 1000);
@@ -184,16 +194,6 @@
 
 			window.open("{% url 'play_contest' %}?contest_id={{contest.id}}&question_id={{first_question.id}}&instruction=show", "Play contest",
 				directories = 0, titlebar = 0, toolbar = 0, menubar = 0, width = 400, height = 350);
-		}
-
-		var contestTime = toJSTime("{{contest.time}}");
-		var currentTime = new Date().getTime();
-		var distance = currentTime - contestTime;
-		var minutes = Math.floor((distance / 1000) / 60);
-
-		if (minutes > timeTillContestValid) {
-			$("<p>The contest is over. Check leaderboard <a class='pf-link' href='{% url 'leaderboard' %}?contest_id={{contest.id}}'>here.</a> View response details <a class='pf-link' href='{% url 'question_analytics' %}?contest_id={{contest.id}}'>here</a></p>")
-				.replaceAll("#contest-show");
 		}
 
 		let params = new URLSearchParams(location.search);

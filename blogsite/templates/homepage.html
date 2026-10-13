@@ -84,7 +84,7 @@
 					<tbody>
 						{% for contest in past_contests %}
 						<tr>
-							<td><a class="pf-link" href="{% url 'leaderboard' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }}</a></td>
+							<td><a class="pf-link" href="{% url 'view_contest' %}?contest_id={{ contest.id }}">{{ contest.name|default:contest.genre }}</a></td>
 							<td>{{ contest.genre }}</td>
 							<td>{{ contest.host.username }}</td>
 						</tr>
