@@ -70,6 +70,7 @@ urlpatterns = [
     path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
     path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),
     path('quiz/view_contest', quiz_views.view_contest, name = 'view_contest'),
+    path('c/<int:contest_id>', quiz_views.short_contest_link, name = 'short_contest_link'),
     path('quiz/edit_question', quiz_views.edit_question, name = 'edit_question'),
     path('quiz/delete_question', quiz_views.delete_question, name = 'delete_question'),
     path('quiz/play_contest', quiz_views.play_contest, name = 'play_contest'),

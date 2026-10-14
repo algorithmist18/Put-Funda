@@ -349,6 +349,13 @@ def create_contest(request):
 
 		return render(request, 'quiz_contest_base.html', args) 
 
+# Short, shareable link for a contest (e.g. /c/11) - just redirects to
+# view_contest, so it's clean to drop into a WhatsApp message instead of
+# the long query-string URL
+def short_contest_link(request, contest_id):
+
+	return redirect('{}?contest_id={}'.format(reverse('view_contest'), contest_id))
+
 # Method to view a contest - no login required, so anyone can check a
 # contest's status/leaderboard from a link, same as play_contest
 def view_contest(request):

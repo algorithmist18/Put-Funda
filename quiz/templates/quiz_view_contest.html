@@ -32,7 +32,7 @@
 
 		<script type="text/javascript">
 			(function () {
-				var contestUrl = window.location.origin + "{% url 'view_contest' %}?contest_id={{ contest.id }}";
+				var contestUrl = window.location.origin + "{% url 'short_contest_link' contest.id %}";
 				var message = "\u{1F389} Join my quiz contest *{{ contest.name|default:contest.genre|escapejs }}*"
 					+ " ({{ contest.genre|escapejs }}) here: " + contestUrl
 					+ " — think you can top the leaderboard? \u{1F3C6}";
