@@ -19,35 +19,35 @@
 }
 
 .pf-theme {
-	--pf-navy: #ffffff;
-	--pf-navy-deep: #450a0f;
-	--pf-teal: #450a0f;
-	--pf-teal-light: #6e1019;
-	--pf-cream: #ffffff;
-	--pf-cream-ink: #1c1712;
-	--pf-surface: #ffffff;
-	--pf-surface-hover: #faf1f1;
-	--pf-ink: #201512;
-	--pf-paper: #ffffff;
-	--pf-text: #2a2118;
-	--pf-text-muted: #837a6c;
-	--pf-hairline: rgba(20, 15, 10, 0.14);
+	--pf-navy: #141b26;
+	--pf-navy-deep: #2e0a0d;
+	--pf-teal: #2e0a0d;
+	--pf-teal-light: #d9574f;
+	--pf-cream: #1b2432;
+	--pf-cream-ink: #e8e6e1;
+	--pf-surface: #1d2735;
+	--pf-surface-hover: #253142;
+	--pf-ink: #eceae4;
+	--pf-paper: #121a26;
+	--pf-text: #e8e6e1;
+	--pf-text-muted: #93a0b2;
+	--pf-hairline: rgba(255, 255, 255, 0.12);
 
-	--pf-pink-bg: #fbeee8;
-	--pf-pink-border: #6e1019;
-	--pf-pink-ink: var(--pf-text);
+	--pf-pink-bg: #3a2430;
+	--pf-pink-border: #e08a9b;
+	--pf-pink-ink: #f3d7df;
 
-	--pf-peach-bg: #fdf3d6;
-	--pf-peach-border: #c99a1f;
-	--pf-peach-ink: var(--pf-text);
+	--pf-peach-bg: #3a2e18;
+	--pf-peach-border: #e0b84a;
+	--pf-peach-ink: #f3e2b0;
 
-	--pf-yellow-bg: #fdf6dc;
-	--pf-yellow-border: #d4a017;
-	--pf-yellow-ink: var(--pf-text);
+	--pf-yellow-bg: #3a331a;
+	--pf-yellow-border: #e3c454;
+	--pf-yellow-ink: #f2e6b6;
 
-	--pf-blue-bg: #ecedf6;
-	--pf-blue-border: #5f6690;
-	--pf-blue-ink: var(--pf-text);
+	--pf-blue-bg: #1d2740;
+	--pf-blue-border: #7c88c9;
+	--pf-blue-ink: #cdd3f2;
 
 	background: var(--pf-navy);
 	color: var(--pf-text);
@@ -75,9 +75,13 @@
 	justify-content: space-between;
 	gap: 16px;
 	flex-wrap: wrap;
-	background: var(--pf-navy-deep);
+	background:
+		repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0px, rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 26px),
+		repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.035) 0px, rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 26px),
+		var(--pf-navy-deep);
 	border-bottom: 3px solid var(--pf-teal-light);
 	padding: 32px 28px 24px;
+	overflow: hidden;
 }
 
 .pf-wordmark {
@@ -223,9 +227,10 @@
 	gap: 12px;
 	margin: 30px 0 14px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 17px;
-	letter-spacing: 0.02em;
+	font-weight: 700;
+	font-size: 14px;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
 	color: var(--pf-text-muted);
 }
 
@@ -249,7 +254,7 @@
 	padding: 20px 22px;
 	margin-bottom: 14px;
 	background: var(--pf-surface);
-	box-shadow: 0 1px 2px rgba(20, 15, 10, 0.03), 0 2px 8px rgba(20, 15, 10, 0.04);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.25);
 	transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -260,7 +265,7 @@
 
 .pf-card:hover {
 	transform: translateY(-3px);
-	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.07), 0 8px 20px rgba(20, 15, 10, 0.06);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35), 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .pf-card-label {
@@ -278,7 +283,7 @@
 	font-weight: 600;
 	font-size: 21px;
 	color: var(--pf-teal-light);
-	border-bottom: 1px solid rgba(110, 16, 25, 0.35);
+	border-bottom: 1px solid rgba(217, 87, 79, 0.35);
 	display: inline-block;
 	padding-bottom: 2px;
 	margin-bottom: 10px;
@@ -316,9 +321,9 @@
 }
 
 .pf-tile--correct {
-	background: #dcecc8;
-	border-color: #4f7a3a;
-	color: #1f3b16;
+	background: rgba(130, 200, 120, 0.16);
+	border-color: #6fae5f;
+	color: #b8eab8;
 }
 
 .pf-tile--muted {
@@ -351,7 +356,7 @@
 .pf-btn:hover {
 	border-color: var(--pf-text);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.1);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .pf-btn:active {
@@ -367,7 +372,7 @@
 .pf-btn--accent:hover {
 	background: var(--pf-teal-light);
 	color: #ffffff;
-	box-shadow: 0 4px 12px rgba(110, 16, 25, 0.3);
+	box-shadow: 0 4px 12px rgba(217, 87, 79, 0.3);
 }
 
 .pf-btn--block {
@@ -376,7 +381,7 @@
 
 .pf-btn--whatsapp {
 	border-color: #25d366;
-	color: #1b8a4c;
+	color: #3ddc84;
 }
 
 .pf-btn--whatsapp:hover {
@@ -465,7 +470,7 @@
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
-	text-decoration-color: rgba(110, 16, 25, 0.45);
+	text-decoration-color: rgba(217, 87, 79, 0.45);
 	cursor: pointer;
 	font-weight: 600;
 	transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
@@ -524,7 +529,7 @@
 .pf-theme select:focus {
 	outline: none;
 	border-color: var(--pf-teal-light);
-	box-shadow: 0 0 0 3px rgba(110, 16, 25, 0.18);
+	box-shadow: 0 0 0 3px rgba(217, 87, 79, 0.18);
 }
 
 .pf-field-hint {
@@ -538,7 +543,7 @@
 	margin-top: 6px;
 	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
 	font-size: 12px;
-	color: #6e1019;
+	color: #d9574f;
 }
 
 /* Google's reCAPTCHA widget has a fixed ~304px width we can't restyle
@@ -552,7 +557,7 @@
 
 .pf-alert {
 	border: 1px solid var(--pf-hairline);
-	border-left: 3px solid #6e1019;
+	border-left: 3px solid #d9574f;
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
@@ -562,14 +567,14 @@
 }
 
 .pf-alert--danger {
-	background: rgba(168, 69, 44, 0.06);
-	color: #7a3320;
+	background: rgba(217, 87, 79, 0.1);
+	color: #f0a89f;
 }
 
 .pf-alert--success {
-	border-left-color: #52713f;
-	background: rgba(82, 113, 63, 0.08);
-	color: #3c5230;
+	border-left-color: #6fae5f;
+	background: rgba(130, 200, 120, 0.1);
+	color: #b8eab8;
 }
 
 .pf-divider {
@@ -750,8 +755,8 @@
 }
 
 .pf-qlist-btn--danger:hover {
-	border-color: #6e1019;
-	color: #6e1019;
+	border-color: #d9574f;
+	color: #d9574f;
 }
 
 /* ---------- Quiz play screen ---------- */
@@ -803,7 +808,7 @@
 
 .pf-theme input.pf-answer-input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(110, 16, 25, 0.25);
+	box-shadow: 0 0 0 3px rgba(217, 87, 79, 0.25);
 }
 
 .pf-timer {
@@ -947,7 +952,7 @@
 .pf-like-btn.is-liked {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
-	background: rgba(110, 16, 25, 0.14);
+	background: rgba(217, 87, 79, 0.14);
 }
 
 .pf-comment-link {
