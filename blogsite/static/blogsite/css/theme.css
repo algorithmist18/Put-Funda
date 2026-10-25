@@ -2,7 +2,7 @@
    A self-contained, scoped design system (everything lives under .pf-theme
    so it never bleeds into pages that haven't been rebuilt yet). */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Crimson+Pro:wght@400;500;600;700&display=swap');
 
 /* Without this, an element's own padding/border get added on top of a
    percentage width instead of being carved out of it - e.g. a
@@ -46,7 +46,7 @@
 
 	background: var(--pf-navy);
 	color: var(--pf-text);
-	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 }
@@ -56,7 +56,7 @@
 }
 
 .pf-theme h1, .pf-theme h2, .pf-theme h3, .pf-theme h4 {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	margin: 0;
 }
@@ -78,7 +78,7 @@
 .pf-wordmark {
 	position: relative;
 	display: inline-block;
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: normal;
 	font-weight: 600;
 	font-size: 40px;
@@ -90,7 +90,7 @@
 .pf-tagline {
 	position: relative;
 	margin-top: 6px;
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 500;
 	font-size: 16px;
@@ -106,7 +106,7 @@
 	border: 1.5px solid #c9915a;
 	border-radius: 3px;
 	background: rgba(188, 91, 57, 0.16);
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.08em;
@@ -124,7 +124,7 @@
 	align-items: center;
 	gap: 10px 20px;
 	padding: 15px 28px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
 	font-size: 14px;
 	letter-spacing: 0.01em;
@@ -223,7 +223,7 @@
 	align-items: center;
 	gap: 12px;
 	margin: 34px 0 16px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	letter-spacing: 0.08em;
@@ -266,7 +266,7 @@
 }
 
 .pf-card-label {
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.06em;
@@ -276,7 +276,7 @@
 }
 
 .pf-card-title {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 21px;
@@ -288,7 +288,7 @@
 }
 
 .pf-card-body {
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 15px;
 	line-height: 1.6;
 	color: var(--pf-text);
@@ -313,7 +313,7 @@
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
 	color: var(--pf-ink);
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
 	font-size: 22px;
 }
@@ -337,7 +337,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	letter-spacing: 0.05em;
@@ -418,7 +418,7 @@
 }
 
 .pf-stat-value {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 30px;
 	line-height: 1;
@@ -427,7 +427,7 @@
 
 .pf-stat-label {
 	margin-top: 4px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 11px;
 	letter-spacing: 0.06em;
@@ -448,7 +448,7 @@
 	flex: 1;
 	text-align: center;
 	padding: 11px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	letter-spacing: 0.04em;
@@ -484,7 +484,7 @@
 /* ---------- Body copy ---------- */
 
 .pf-note {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 500;
 	font-size: 16px;
@@ -505,7 +505,7 @@
 .pf-field label {
 	display: block;
 	margin-bottom: 6px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.04em;
@@ -521,7 +521,7 @@
 	border: 1px solid var(--pf-hairline);
 	border-radius: 3px;
 	color: var(--pf-text);
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 15px;
 	padding: 12px 13px;
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -537,14 +537,14 @@
 
 .pf-field-hint {
 	margin-top: 6px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 12px;
 	color: var(--pf-text-muted);
 }
 
 .pf-field-error {
 	margin-top: 6px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 12px;
 	color: #9c3b28;
 }
@@ -564,7 +564,7 @@
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 14px;
 	background: var(--pf-surface);
 }
@@ -587,7 +587,7 @@
 	gap: 12px;
 	margin: 20px 0;
 	color: var(--pf-text-muted);
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.04em;
@@ -607,13 +607,13 @@
 	width: 100%;
 	border: none;
 	border-collapse: collapse;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 14px;
 }
 
 .pf-table th {
 	text-align: left;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.05em;
@@ -676,7 +676,7 @@
 .pf-qlist-num {
 	flex: none;
 	width: 24px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	color: var(--pf-text-muted);
@@ -689,7 +689,7 @@
 }
 
 .pf-qlist-question {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 18px;
 	line-height: 1.5;
@@ -714,7 +714,7 @@
 	border-radius: 3px;
 	padding: 5px 13px;
 	color: var(--pf-text-muted);
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 600;
 	font-size: 12px;
 	letter-spacing: 0.02em;
@@ -750,7 +750,7 @@
 	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 12px;
 	letter-spacing: 0.02em;
@@ -772,7 +772,7 @@
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 26px;
 	line-height: 1.4;
@@ -785,7 +785,7 @@
 }
 
 .pf-hangman-mask {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-size: 22px;
 	font-weight: 500;
@@ -811,7 +811,7 @@
 	color: var(--pf-ink);
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
 	font-size: 18px;
 	padding: 11px 15px;
@@ -831,7 +831,7 @@
 	padding: 0 10px;
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 21px;
 	color: var(--pf-teal-light);
@@ -878,7 +878,7 @@
 }
 
 .pf-post-title {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
 	font-size: 25px;
@@ -887,7 +887,7 @@
 }
 
 .pf-post-meta {
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
 	font-size: 13px;
 	letter-spacing: 0.01em;
@@ -896,7 +896,7 @@
 }
 
 .pf-post-body {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 500;
 	font-size: 17px;
 	line-height: 1.6;
@@ -909,7 +909,7 @@
 	flex-wrap: wrap;
 	gap: 10px;
 	margin-top: 12px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 12px;
 	color: var(--pf-text-muted);
 }
@@ -939,7 +939,7 @@
 	color: var(--pf-text-muted);
 	border-radius: 3px;
 	padding: 6px 14px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	cursor: pointer;
@@ -976,7 +976,7 @@
 	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
@@ -997,7 +997,7 @@
 }
 
 .pf-comments-label {
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 11px;
 	letter-spacing: 0.05em;
@@ -1026,7 +1026,7 @@
 }
 
 .pf-comment-author {
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
 	font-size: 13px;
 	color: var(--pf-text);
@@ -1044,7 +1044,7 @@
 
 .pf-comment-body {
 	margin-top: 2px;
-	font-family: 'Inter', system-ui, sans-serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-size: 13px;
 	line-height: 1.5;
 	color: var(--pf-text-muted);
@@ -1087,7 +1087,7 @@
 }
 
 .pf-error-code {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 700;
 	font-size: 76px;
@@ -1097,7 +1097,7 @@
 }
 
 .pf-error-title {
-	font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
 	font-size: 30px;
 	color: var(--pf-text);
