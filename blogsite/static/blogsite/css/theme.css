@@ -47,6 +47,7 @@
 	background: var(--pf-navy);
 	color: var(--pf-text);
 	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 17px;
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 }
@@ -81,7 +82,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 40px;
+	font-size: 46px;
 	letter-spacing: 0.01em;
 	color: #ffffff;
 	text-decoration: none;
@@ -93,7 +94,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 500;
-	font-size: 16px;
+	font-size: 18px;
 	color: rgba(255, 255, 255, 0.65);
 }
 
@@ -108,7 +109,7 @@
 	background: rgba(188, 91, 57, 0.16);
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: #e8b98f;
@@ -126,7 +127,7 @@
 	padding: 15px 28px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 16px;
 	letter-spacing: 0.01em;
 	border-bottom: 1px solid var(--pf-hairline);
 }
@@ -162,7 +163,7 @@
 	text-decoration: none;
 	text-transform: uppercase;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.07em;
 	padding-bottom: 2px;
 }
@@ -225,7 +226,7 @@
 	margin: 34px 0 16px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -268,7 +269,7 @@
 .pf-card-label {
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -279,7 +280,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 21px;
+	font-size: 24px;
 	color: var(--pf-teal-light);
 	border-bottom: 1px solid rgba(47, 77, 58, 0.35);
 	display: inline-block;
@@ -289,7 +290,7 @@
 
 .pf-card-body {
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 15px;
+	font-size: 17px;
 	line-height: 1.6;
 	color: var(--pf-text);
 }
@@ -306,8 +307,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 50px;
-	height: 50px;
+	min-width: 54px;
+	height: 54px;
 	padding: 0 6px;
 	background: var(--pf-paper);
 	border: 2px solid var(--pf-teal-light);
@@ -315,7 +316,7 @@
 	color: var(--pf-ink);
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 22px;
+	font-size: 25px;
 }
 
 .pf-tile--correct {
@@ -339,7 +340,7 @@
 	gap: 8px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	text-decoration: none;
@@ -348,7 +349,7 @@
 	border: 1.5px solid var(--pf-text-muted);
 	background: transparent;
 	color: var(--pf-text);
-	padding: 12px 24px;
+	padding: 13px 26px;
 	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
@@ -391,8 +392,8 @@
 }
 
 .pf-btn--whatsapp svg {
-	width: 17px;
-	height: 17px;
+	width: 19px;
+	height: 19px;
 	fill: currentColor;
 }
 
@@ -420,7 +421,7 @@
 .pf-stat-value {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 30px;
+	font-size: 34px;
 	line-height: 1;
 	color: var(--pf-teal-light);
 }
@@ -429,7 +430,7 @@
 	margin-top: 4px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 11px;
+	font-size: 13px;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -447,10 +448,10 @@
 .pf-tab {
 	flex: 1;
 	text-align: center;
-	padding: 11px;
+	padding: 12px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	text-decoration: none;
@@ -487,7 +488,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 500;
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 1.6;
 	color: var(--pf-text);
 }
@@ -507,7 +508,7 @@
 	margin-bottom: 6px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -522,7 +523,7 @@
 	border-radius: 3px;
 	color: var(--pf-text);
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 15px;
+	font-size: 17px;
 	padding: 12px 13px;
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -538,14 +539,14 @@
 .pf-field-hint {
 	margin-top: 6px;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 12px;
+	font-size: 14px;
 	color: var(--pf-text-muted);
 }
 
 .pf-field-error {
 	margin-top: 6px;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 12px;
+	font-size: 14px;
 	color: #9c3b28;
 }
 
@@ -565,7 +566,7 @@
 	padding: 12px 14px;
 	margin-bottom: 16px;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 14px;
+	font-size: 16px;
 	background: var(--pf-surface);
 }
 
@@ -589,7 +590,7 @@
 	color: var(--pf-text-muted);
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 }
@@ -608,14 +609,14 @@
 	border: none;
 	border-collapse: collapse;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .pf-table th {
 	text-align: left;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -675,10 +676,10 @@
 
 .pf-qlist-num {
 	flex: none;
-	width: 24px;
+	width: 26px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	color: var(--pf-text-muted);
 	padding-top: 2px;
 }
@@ -691,7 +692,7 @@
 .pf-qlist-question {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 18px;
+	font-size: 21px;
 	line-height: 1.5;
 	color: var(--pf-text);
 	margin-bottom: 10px;
@@ -716,7 +717,7 @@
 	color: var(--pf-text-muted);
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.02em;
 	margin-bottom: 10px;
 }
@@ -752,7 +753,7 @@
 	text-decoration: none;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.02em;
 	text-transform: uppercase;
 	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
@@ -774,7 +775,7 @@
 .pf-question-text {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 26px;
+	font-size: 30px;
 	line-height: 1.4;
 }
 
@@ -787,7 +788,7 @@
 .pf-hangman-mask {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
-	font-size: 22px;
+	font-size: 25px;
 	font-weight: 500;
 	letter-spacing: 3px;
 	color: var(--pf-text-muted);
@@ -813,7 +814,7 @@
 	border-radius: 3px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
-	font-size: 18px;
+	font-size: 20px;
 	padding: 11px 15px;
 }
 
@@ -826,14 +827,14 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 50px;
-	height: 50px;
+	min-width: 54px;
+	height: 54px;
 	padding: 0 10px;
 	border: 2px solid var(--pf-teal-light);
 	border-radius: 3px;
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 21px;
+	font-size: 24px;
 	color: var(--pf-teal-light);
 }
 
@@ -881,7 +882,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 25px;
+	font-size: 28px;
 	color: var(--pf-teal-light);
 	margin-bottom: 4px;
 }
@@ -889,7 +890,7 @@
 .pf-post-meta {
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
-	font-size: 13px;
+	font-size: 15px;
 	letter-spacing: 0.01em;
 	color: var(--pf-text-muted);
 	margin-bottom: 10px;
@@ -898,7 +899,7 @@
 .pf-post-body {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 500;
-	font-size: 17px;
+	font-size: 19px;
 	line-height: 1.6;
 }
 
@@ -910,7 +911,7 @@
 	gap: 10px;
 	margin-top: 12px;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 12px;
+	font-size: 14px;
 	color: var(--pf-text-muted);
 }
 
@@ -924,7 +925,7 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	font-size: 12px;
+	font-size: 14px;
 	opacity: 0.75;
 }
 
@@ -941,7 +942,7 @@
 	padding: 6px 14px;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	cursor: pointer;
 	transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
@@ -957,7 +958,7 @@
 }
 
 .pf-like-icon {
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 1;
 }
 
@@ -978,7 +979,7 @@
 	text-decoration: none;
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
@@ -999,7 +1000,7 @@
 .pf-comments-label {
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 11px;
+	font-size: 13px;
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 	color: var(--pf-text-muted);
@@ -1028,7 +1029,7 @@
 .pf-comment-author {
 	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	color: var(--pf-text);
 	text-decoration: none;
 }
@@ -1038,14 +1039,14 @@
 }
 
 .pf-comment-time {
-	font-size: 11px;
+	font-size: 13px;
 	color: var(--pf-text-muted);
 }
 
 .pf-comment-body {
 	margin-top: 2px;
 	font-family: 'Crimson Pro', Georgia, serif;
-	font-size: 13px;
+	font-size: 15px;
 	line-height: 1.5;
 	color: var(--pf-text-muted);
 }
@@ -1060,13 +1061,13 @@
 .pf-comment-form textarea {
 	flex: 1;
 	min-height: 34px;
-	font-size: 13px;
+	font-size: 15px;
 	resize: vertical;
 }
 
 .pf-comment-form .pf-btn {
-	padding: 8px 16px;
-	font-size: 12px;
+	padding: 9px 18px;
+	font-size: 14px;
 }
 
 /* ---------- Utility ---------- */
@@ -1090,7 +1091,7 @@
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 700;
-	font-size: 76px;
+	font-size: 86px;
 	line-height: 1;
 	color: var(--pf-teal-light);
 	margin-bottom: 12px;
@@ -1099,7 +1100,7 @@
 .pf-error-title {
 	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 30px;
+	font-size: 34px;
 	color: var(--pf-text);
 	margin: 0 0 10px;
 }
