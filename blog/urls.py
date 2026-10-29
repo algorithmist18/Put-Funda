@@ -86,7 +86,6 @@ urlpatterns = [
     path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
     path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
     path('qotd/release', qotd_views.release_qotd, name = 'qotd_release'),
-    path('qotd/suggest', qotd_views.suggest_qotd, name = 'qotd_suggest'),
     path('qotd/review/<int:suggestion_id>', qotd_views.review_qotd_suggestion, name = 'qotd_review_suggestion'),
     path('qotd/randomize', qotd_views.randomize_qotd_queue, name = 'qotd_randomize')
 ]

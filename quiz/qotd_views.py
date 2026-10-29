@@ -25,6 +25,16 @@ def can_user_release(user):
 	return user.is_authenticated and user.username == QOTD_RELEASER_USERNAME
 
 
+def next_queue_date():
+
+	# The day after whatever's already scheduled, so a freshly allocated
+	# suggestion never overwrites today's question or jumps the queue
+	latest_date = QuestionOfTheDay.objects.aggregate(Max('date'))['date__max']
+	today = datetime.date.today()
+
+	return max(latest_date or today, today) + datetime.timedelta(days = 1)
+
+
 def is_qotd_answer_correct(given_answer, qotd):
 
 	if not given_answer:
@@ -84,6 +94,26 @@ def qotd_home(request):
 	if qotd and request.user.is_authenticated:
 		submission = QOTDSubmission.objects.filter(user = request.user, qotd = qotd).first()
 
+	if request.method == 'POST' and 'question' in request.POST:
+
+		# A suggested question, not an answer to today's one - distinguished
+		# by the presence of a 'question' field, which the answer form
+		# doesn't have. Handled (and the request ended) here regardless of
+		# login state, so it can never fall through to the answer-submission
+		# branch below and get mistaken for an answer to today's question.
+		if request.user.is_authenticated:
+			QOTDSuggestion.objects.create(
+				question = request.POST.get('question', '').strip(),
+				answer = request.POST.get('answer', '').strip(),
+				second_answer = request.POST.get('second_answer', '').strip(),
+				third_answer = request.POST.get('third_answer', '').strip(),
+				image_url = request.POST.get('image_url', '').strip(),
+				image = request.FILES.get('image'),
+				submitted_by = request.user,
+			)
+
+		return redirect('qotd_home')
+
 	if request.method == 'POST' and qotd and submission is None:
 
 		# Only create a guest account once someone actually commits to
@@ -100,13 +130,23 @@ def qotd_home(request):
 		update_streak(user.profile, today, answered_correctly)
 
 	profile = request.user.profile if request.user.is_authenticated else None
+	can_release = can_user_release(request.user)
 
 	context = {
 		'qotd': qotd,
 		'submission': submission,
 		'profile': profile,
-		'can_release': can_user_release(request.user),
+		'can_release': can_release,
 	}
+
+	if request.user.is_authenticated:
+		context['my_suggestions'] = QOTDSuggestion.objects.filter(
+			submitted_by = request.user
+		).order_by('-created_at')[:30]
+
+	if can_release:
+		context['pending_suggestions'] = QOTDSuggestion.objects.filter(status = 'pending').order_by('created_at')
+		context['default_allocate_date'] = next_queue_date()
 
 	return render(request, 'qotd_home.html', context)
 
@@ -180,7 +220,6 @@ def release_qotd(request):
 		'today': today,
 		'todays_qotd': QuestionOfTheDay.objects.filter(date = today).first(),
 		'upcoming': QuestionOfTheDay.objects.filter(date__gt = today).order_by('date'),
-		'pending_suggestions': QOTDSuggestion.objects.filter(status = 'pending').order_by('created_at'),
 		'can_release': True,
 	}
 
@@ -188,60 +227,38 @@ def release_qotd(request):
 
 
 @login_required
-def suggest_qotd(request):
-
-	if request.method == 'POST':
-
-		QOTDSuggestion.objects.create(
-			question = request.POST.get('question', '').strip(),
-			answer = request.POST.get('answer', '').strip(),
-			second_answer = request.POST.get('second_answer', '').strip(),
-			third_answer = request.POST.get('third_answer', '').strip(),
-			image_url = request.POST.get('image_url', '').strip(),
-			image = request.FILES.get('image'),
-			submitted_by = request.user,
-		)
-
-		return redirect('qotd_suggest')
-
-	context = {
-		'can_release': can_user_release(request.user),
-		'my_suggestions': QOTDSuggestion.objects.filter(submitted_by = request.user).order_by('-created_at')[:30],
-	}
-
-	return render(request, 'qotd_suggest.html', context)
-
-
-@login_required
 def review_qotd_suggestion(request, suggestion_id):
 
 	if request.user.username != QOTD_RELEASER_USERNAME or request.method != 'POST':
-		return redirect('qotd_release')
+		return redirect('qotd_home')
 
 	suggestion = QOTDSuggestion.objects.filter(id = suggestion_id, status = 'pending').first()
 
 	if suggestion is None:
-		return redirect('qotd_release')
+		return redirect('qotd_home')
 
 	action = request.POST.get('action')
 
-	if action == 'approve':
+	if action == 'allocate':
 
-		# Queued after whatever's already scheduled, so an approval never
-		# overwrites today's question or jumps ahead of the existing queue
-		latest_date = QuestionOfTheDay.objects.aggregate(Max('date'))['date__max']
-		today = datetime.date.today()
-		next_date = max(latest_date or today, today) + datetime.timedelta(days = 1)
+		date_str = request.POST.get('date', '').strip()
 
-		qotd = QuestionOfTheDay.objects.create(
-			date = next_date,
-			question = suggestion.question,
-			answer = suggestion.answer,
-			second_answer = suggestion.second_answer,
-			third_answer = suggestion.third_answer,
-			image = suggestion.image,
-			image_url = suggestion.image_url,
-			created_by = request.user,
+		try:
+			allocate_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+		except ValueError:
+			allocate_date = next_queue_date()
+
+		qotd, created = QuestionOfTheDay.objects.update_or_create(
+			date = allocate_date,
+			defaults = {
+				'question': suggestion.question,
+				'answer': suggestion.answer,
+				'second_answer': suggestion.second_answer,
+				'third_answer': suggestion.third_answer,
+				'image': suggestion.image,
+				'image_url': suggestion.image_url,
+				'created_by': request.user,
+			}
 		)
 
 		suggestion.status = 'approved'
@@ -252,12 +269,12 @@ def review_qotd_suggestion(request, suggestion_id):
 		suggestion.status = 'rejected'
 
 	else:
-		return redirect('qotd_release')
+		return redirect('qotd_home')
 
 	suggestion.reviewed_at = timezone.now()
 	suggestion.save()
 
-	return redirect('qotd_release')
+	return redirect('qotd_home')
 
 
 @login_required
