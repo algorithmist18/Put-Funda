@@ -84,6 +84,7 @@ urlpatterns = [
     path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
     path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
     path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
+    path('qotd/answer', qotd_views.qotd_answer_api, name = 'qotd_answer_api'),
     path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
     path('qotd/release', qotd_views.release_qotd, name = 'qotd_release'),
     path('qotd/review/<int:suggestion_id>', qotd_views.review_qotd_suggestion, name = 'qotd_review_suggestion'),

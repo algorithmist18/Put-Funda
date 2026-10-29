@@ -8,6 +8,7 @@ import random
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -149,6 +150,42 @@ def qotd_home(request):
 		context['default_allocate_date'] = next_queue_date()
 
 	return render(request, 'qotd_home.html', context)
+
+
+def qotd_answer_api(request):
+	"""Answers today's question from a pop-up on another page (the
+	homepage) via fetch, instead of navigating to /qotd - same guest-login
+	and scoring logic as qotd_home's own POST handling, just returning
+	JSON instead of a rendered page."""
+
+	if request.method != 'POST':
+		return JsonResponse({'error': 'Invalid request method.'}, status = 405)
+
+	today = datetime.date.today()
+	qotd = QuestionOfTheDay.objects.filter(date = today).first()
+
+	if qotd is None:
+		return JsonResponse({'error': "There's no question of the day yet."}, status = 404)
+
+	user = ensure_guest_login(request)
+	submission = QOTDSubmission.objects.filter(user = user, qotd = qotd).first()
+
+	if submission is None:
+
+		answer = request.POST.get('answer', '').strip()
+		answered_correctly = is_qotd_answer_correct(answer, qotd)
+
+		submission = QOTDSubmission.objects.create(
+			user = user, qotd = qotd, answer = answer, is_correct = answered_correctly
+		)
+
+		update_streak(user.profile, today, answered_correctly)
+
+	return JsonResponse({
+		'is_correct': submission.is_correct,
+		'your_answer': submission.answer,
+		'answer': qotd.answer,
+	})
 
 
 def qotd_archive(request):

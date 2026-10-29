@@ -1109,3 +1109,46 @@
 .pf-error-shell .pf-note {
 	margin-bottom: 26px;
 }
+
+/* ---------- Modal (e.g. answering the QOTD from the homepage) ---------- */
+
+.pf-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(38, 32, 26, 0.55);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	z-index: 100;
+}
+
+.pf-modal {
+	position: relative;
+	width: 100%;
+	max-width: 480px;
+	max-height: 90vh;
+	overflow-y: auto;
+	background: var(--pf-surface);
+	border-radius: 3px;
+	padding: 26px;
+	box-shadow: 0 12px 40px rgba(38, 32, 26, 0.35);
+}
+
+.pf-modal-close {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	border: none;
+	background: none;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 24px;
+	line-height: 1;
+	color: var(--pf-text-muted);
+	cursor: pointer;
+	padding: 4px;
+}
+
+.pf-modal-close:hover {
+	color: var(--pf-text);
+}

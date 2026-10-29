@@ -19,7 +19,7 @@ from graphos.sources.simple import SimpleDataSource
 from graphos.renderers.gchart import PieChart 
 from django.core.files.storage import FileSystemStorage 
 from quiz.models import Contest, QuizQuestion, Leaderboard, QuestionOfTheDay, QOTDSubmission
-from quiz.views import fetch_top_players
+from quiz.views import fetch_top_players, hangman_mask
 import pytz
 from .tokens import account_activation_token, password_reset_token
 from django.core.mail import send_mail
@@ -129,11 +129,16 @@ def homepage(request):
 			new_contests.append(contest)
 
 	# Today's Question of the Day, shown as a prompt under the leaderboard
+	# (and answerable right there, in a pop-up, without leaving this page)
 	today_qotd = QuestionOfTheDay.objects.filter(date = datetime.date.today()).first()
 	qotd_already_answered = False
+	today_qotd_mask = ''
 
 	if today_qotd and user.is_authenticated:
 		qotd_already_answered = QOTDSubmission.objects.filter(user = user, qotd = today_qotd).exists()
+
+	if today_qotd and not qotd_already_answered:
+		today_qotd_mask = hangman_mask(today_qotd.question)
 
 	# Past Questions of the Day, for the "See past questions" archive link
 	past_qotd_exists = QuestionOfTheDay.objects.filter(date__lt = datetime.date.today()).exists()
@@ -146,6 +151,7 @@ def homepage(request):
 	response['user'] = user
 	response['today_qotd'] = today_qotd
 	response['qotd_already_answered'] = qotd_already_answered
+	response['today_qotd_mask'] = today_qotd_mask
 	response['past_qotd_exists'] = past_qotd_exists
 
 	return render(request, 'homepage.html', response)
