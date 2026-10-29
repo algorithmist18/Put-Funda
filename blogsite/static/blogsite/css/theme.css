@@ -44,6 +44,7 @@
 	--pf-blue-border: #52665f;
 	--pf-blue-ink: var(--pf-text);
 
+	margin: 0;
 	background: var(--pf-navy);
 	color: var(--pf-text);
 	font-family: 'Crimson Pro', Georgia, serif;

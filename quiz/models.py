@@ -97,3 +97,26 @@ class QOTDSubmission(models.Model):
 	class Meta:
 
 		unique_together = ('user', 'qotd')
+
+# A question anyone can propose for a future Question of the Day. Stays
+# 'pending' until the QOTD releaser approves it (turning it into a real
+# QuestionOfTheDay, queued after whatever's already scheduled) or rejects it.
+QOTD_SUGGESTION_STATUS_CHOICES = [
+	('pending', 'Pending'),
+	('approved', 'Approved'),
+	('rejected', 'Rejected'),
+]
+
+class QOTDSuggestion(models.Model):
+
+	question = models.TextField()
+	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
+	image_url = models.URLField(blank = True)
+	answer = models.TextField()
+	second_answer = models.TextField(blank = True)
+	third_answer = models.TextField(blank = True)
+	submitted_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'qotd_suggestions')
+	status = models.CharField(max_length = 10, choices = QOTD_SUGGESTION_STATUS_CHOICES, default = 'pending')
+	created_at = models.DateTimeField(auto_now_add = True)
+	reviewed_at = models.DateTimeField(blank = True, null = True)
+	released_as = models.ForeignKey(QuestionOfTheDay, on_delete = models.SET_NULL, blank = True, null = True)

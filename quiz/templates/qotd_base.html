@@ -18,6 +18,9 @@
 		<div class="pf-metabar">
 			<span class="pf-metabar-links">
 				{% include 'nav_links.html' %}
+				{% if user.is_authenticated %}
+				<a class="pf-link" href="{% url 'qotd_suggest' %}">Suggest a question</a>
+				{% endif %}
 				{% if can_release %}
 				<a class="pf-link" href="{% url 'qotd_release' %}">Release</a>
 				{% endif %}

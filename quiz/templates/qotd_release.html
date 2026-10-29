@@ -2,7 +2,43 @@
 
 {% block content %}
 
-	<div class="pf-section-label pf-section-label--first"><span>Release the question of the day</span></div>
+	{% if pending_suggestions %}
+	<div class="pf-section-label pf-section-label--first"><span>Pending suggestions</span></div>
+
+	{% for suggestion in pending_suggestions %}
+	<div class="pf-card">
+		<p class="pf-card-label">Suggested by {{ suggestion.submitted_by.username }}</p>
+		{% if suggestion.image %}
+		<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ suggestion.image.url }}" alt="">
+		{% elif suggestion.image_url %}
+		<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ suggestion.image_url }}" alt="">
+		{% endif %}
+		<p class="pf-question-text" style="font-size: 18px; margin-bottom: 10px;">{{ suggestion.question }}</p>
+		<div class="pf-answer-pill">Answer &middot; <strong>{{ suggestion.answer }}</strong></div>
+		{% if suggestion.second_answer %}
+		<div class="pf-answer-pill">Also accepts &middot; <strong>{{ suggestion.second_answer }}</strong></div>
+		{% endif %}
+		{% if suggestion.third_answer %}
+		<div class="pf-answer-pill">Also accepts &middot; <strong>{{ suggestion.third_answer }}</strong></div>
+		{% endif %}
+
+		<div style="display: flex; gap: 10px; margin-top: 10px;">
+			<form method="post" action="{% url 'qotd_review_suggestion' suggestion.id %}">
+				{% csrf_token %}
+				<input type="hidden" name="action" value="approve">
+				<button type="submit" class="pf-btn pf-btn--accent">Approve - add to queue</button>
+			</form>
+			<form method="post" action="{% url 'qotd_review_suggestion' suggestion.id %}">
+				{% csrf_token %}
+				<input type="hidden" name="action" value="reject">
+				<button type="submit" class="pf-btn">Reject</button>
+			</form>
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+
+	<div class="pf-section-label{% if not pending_suggestions %} pf-section-label--first{% endif %}"><span>Release the question of the day</span></div>
 
 	<div class="pf-card">
 		<form method="post" action="{% url 'qotd_release' %}" enctype="multipart/form-data">
@@ -63,6 +99,14 @@
 				{% endfor %}
 			</tbody>
 		</table>
+
+		{% if upcoming|length > 1 %}
+		<form method="post" action="{% url 'qotd_randomize' %}" style="margin-top: 14px;">
+			{% csrf_token %}
+			<button type="submit" class="pf-btn">Randomise order of upcoming questions</button>
+		</form>
+		<div class="pf-field-hint" style="margin-top: 6px;">Shuffles which question lands on which day. The dates themselves don't change.</div>
+		{% endif %}
 	</div>
 	{% endif %}
 

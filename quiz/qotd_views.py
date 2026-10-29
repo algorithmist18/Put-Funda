@@ -4,17 +4,25 @@
 # can play it.
 
 import datetime
+import random
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 
 from blogposts.models import Post
 from blogsite.guest_auth import ensure_guest_login
 from quiz.analysis_views import similarity_quotient
-from quiz.models import QuestionOfTheDay, QOTDSubmission
+from quiz.models import QuestionOfTheDay, QOTDSubmission, QOTDSuggestion
 
 QOTD_RELEASER_USERNAME = 'avinashm2427'
+
+
+def can_user_release(user):
+
+	return user.is_authenticated and user.username == QOTD_RELEASER_USERNAME
 
 
 def is_qotd_answer_correct(given_answer, qotd):
@@ -97,7 +105,7 @@ def qotd_home(request):
 		'qotd': qotd,
 		'submission': submission,
 		'profile': profile,
-		'can_release': request.user.username == QOTD_RELEASER_USERNAME,
+		'can_release': can_user_release(request.user),
 	}
 
 	return render(request, 'qotd_home.html', context)
@@ -120,7 +128,10 @@ def qotd_archive(request):
 		for qotd in past_qotds
 	]
 
-	context = {'archive': archive}
+	context = {
+		'archive': archive,
+		'can_release': can_user_release(request.user),
+	}
 
 	return render(request, 'qotd_archive.html', context)
 
@@ -169,6 +180,106 @@ def release_qotd(request):
 		'today': today,
 		'todays_qotd': QuestionOfTheDay.objects.filter(date = today).first(),
 		'upcoming': QuestionOfTheDay.objects.filter(date__gt = today).order_by('date'),
+		'pending_suggestions': QOTDSuggestion.objects.filter(status = 'pending').order_by('created_at'),
+		'can_release': True,
 	}
 
 	return render(request, 'qotd_release.html', context)
+
+
+@login_required
+def suggest_qotd(request):
+
+	if request.method == 'POST':
+
+		QOTDSuggestion.objects.create(
+			question = request.POST.get('question', '').strip(),
+			answer = request.POST.get('answer', '').strip(),
+			second_answer = request.POST.get('second_answer', '').strip(),
+			third_answer = request.POST.get('third_answer', '').strip(),
+			image_url = request.POST.get('image_url', '').strip(),
+			image = request.FILES.get('image'),
+			submitted_by = request.user,
+		)
+
+		return redirect('qotd_suggest')
+
+	context = {
+		'can_release': can_user_release(request.user),
+		'my_suggestions': QOTDSuggestion.objects.filter(submitted_by = request.user).order_by('-created_at')[:30],
+	}
+
+	return render(request, 'qotd_suggest.html', context)
+
+
+@login_required
+def review_qotd_suggestion(request, suggestion_id):
+
+	if request.user.username != QOTD_RELEASER_USERNAME or request.method != 'POST':
+		return redirect('qotd_release')
+
+	suggestion = QOTDSuggestion.objects.filter(id = suggestion_id, status = 'pending').first()
+
+	if suggestion is None:
+		return redirect('qotd_release')
+
+	action = request.POST.get('action')
+
+	if action == 'approve':
+
+		# Queued after whatever's already scheduled, so an approval never
+		# overwrites today's question or jumps ahead of the existing queue
+		latest_date = QuestionOfTheDay.objects.aggregate(Max('date'))['date__max']
+		today = datetime.date.today()
+		next_date = max(latest_date or today, today) + datetime.timedelta(days = 1)
+
+		qotd = QuestionOfTheDay.objects.create(
+			date = next_date,
+			question = suggestion.question,
+			answer = suggestion.answer,
+			second_answer = suggestion.second_answer,
+			third_answer = suggestion.third_answer,
+			image = suggestion.image,
+			image_url = suggestion.image_url,
+			created_by = request.user,
+		)
+
+		suggestion.status = 'approved'
+		suggestion.released_as = qotd
+
+	elif action == 'reject':
+
+		suggestion.status = 'rejected'
+
+	else:
+		return redirect('qotd_release')
+
+	suggestion.reviewed_at = timezone.now()
+	suggestion.save()
+
+	return redirect('qotd_release')
+
+
+@login_required
+def randomize_qotd_queue(request):
+
+	if request.user.username != QOTD_RELEASER_USERNAME or request.method != 'POST':
+		return redirect('qotd_release')
+
+	today = datetime.date.today()
+	upcoming = list(QuestionOfTheDay.objects.filter(date__gt = today).order_by('date'))
+
+	if len(upcoming) >= 2:
+
+		fields = ['question', 'answer', 'second_answer', 'third_answer', 'image', 'image_url']
+		shuffled_content = [{field: getattr(qotd, field) for field in fields} for qotd in upcoming]
+		random.shuffle(shuffled_content)
+
+		for qotd, content in zip(upcoming, shuffled_content):
+
+			for field, value in content.items():
+				setattr(qotd, field, value)
+
+			qotd.save()
+
+	return redirect('qotd_release')

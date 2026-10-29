@@ -1,0 +1,73 @@
+{% extends 'qotd_base.html' %}
+
+{% block content %}
+
+	<div class="pf-section-label pf-section-label--first"><span>Suggest a question</span></div>
+
+	<p class="pf-note" style="margin-bottom: 16px;">
+		Send in a question for Question of the Day. avinashm2427 reviews every suggestion -
+		if it's approved, it gets added to the queue for an upcoming day.
+	</p>
+
+	<div class="pf-card">
+		<form method="post" action="{% url 'qotd_suggest' %}" enctype="multipart/form-data">
+			{% csrf_token %}
+
+			<div class="pf-field">
+				<label for="question">Question</label>
+				<textarea id="question" name="question" rows="4" required></textarea>
+			</div>
+
+			<div class="pf-field">
+				<label for="answer">Answer</label>
+				<input type="text" id="answer" name="answer" required>
+			</div>
+
+			<div class="pf-field">
+				<label for="second_answer">Second answer</label>
+				<input type="text" id="second_answer" name="second_answer">
+				<div class="pf-field-hint">Optional, for when there's more than one accepted answer.</div>
+			</div>
+
+			<div class="pf-field">
+				<label for="third_answer">Third answer</label>
+				<input type="text" id="third_answer" name="third_answer">
+			</div>
+
+			<div class="pf-field">
+				<label for="image_url">Image URL</label>
+				<input type="text" id="image_url" name="image_url">
+			</div>
+
+			<div class="pf-field">
+				<label for="image">Or upload an image</label>
+				<input type="file" id="image" name="image">
+			</div>
+
+			<button type="submit" class="pf-btn pf-btn--accent pf-btn--block">Send for approval</button>
+		</form>
+	</div>
+
+	{% if my_suggestions %}
+	<div class="pf-section-label"><span>Your suggestions</span></div>
+	<div class="pf-card">
+		<table class="pf-table">
+			<thead><tr><th>Question</th><th>Status</th></tr></thead>
+			<tbody>
+				{% for suggestion in my_suggestions %}
+				<tr>
+					<td>{{ suggestion.question|truncatechars:60 }}</td>
+					<td>
+						{% if suggestion.status == 'approved' %}Approved
+						{% elif suggestion.status == 'rejected' %}Not used
+						{% else %}Pending review
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% endif %}
+
+{% endblock %}
