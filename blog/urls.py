@@ -23,7 +23,9 @@ from blogsite import views
 from blogsite import google_auth_views
 from blogposts import views as post_views
 from quiz import views as quiz_views
-from quiz import qotd_views
+# Question of the Day is hidden for now (being saved for a later release) -
+# re-add this import and the commented-out qotd/* paths below to bring it back.
+# from quiz import qotd_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -81,14 +83,16 @@ urlpatterns = [
     path('quiz/updaterating', quiz_views.update_ratings, name = 'update_rating'),
     path('quiz/restorerating', quiz_views.restore_ratings, name='restore_rating'),
     path('quiz/analytics', quiz_views.view_question_analytics, name='question_analytics'),
-    path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
+    path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'),
     path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
-    path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
-    path('qotd/answer', qotd_views.qotd_answer_api, name = 'qotd_answer_api'),
-    path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
-    path('qotd/release', qotd_views.release_qotd, name = 'qotd_release'),
-    path('qotd/review/<int:suggestion_id>', qotd_views.review_qotd_suggestion, name = 'qotd_review_suggestion'),
-    path('qotd/randomize', qotd_views.randomize_qotd_queue, name = 'qotd_randomize')
+    # Question of the Day - hidden for now (see the import note above), to
+    # be released separately later. The views/templates/model are untouched.
+    # path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
+    # path('qotd/answer', qotd_views.qotd_answer_api, name = 'qotd_answer_api'),
+    # path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
+    # path('qotd/release', qotd_views.release_qotd, name = 'qotd_release'),
+    # path('qotd/review/<int:suggestion_id>', qotd_views.review_qotd_suggestion, name = 'qotd_review_suggestion'),
+    # path('qotd/randomize', qotd_views.randomize_qotd_queue, name = 'qotd_randomize'),
 ]
 
 if settings.DEBUG:

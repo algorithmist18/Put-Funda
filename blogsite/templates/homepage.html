@@ -111,67 +111,9 @@
 					</tbody>
 				</table>
 			</div>
-
-			<div class="pf-section-label"><span>Question of the day</span></div>
-			<div class="pf-card pf-card--peach">
-				{% if not today_qotd %}
-				<p class="pf-note pf-mb-0">There's no question of the day yet. Check back soon.</p>
-				{% elif qotd_already_answered %}
-				<p class="pf-note pf-mb-0">
-					You've already played today's question.
-					<a class="pf-link" href="{% url 'qotd_home' %}">See how you did</a>.
-				</p>
-				{% else %}
-				<p class="pf-note" style="margin-bottom: 12px;">A new question is up for grabs today. No account needed to give it a shot.</p>
-				<button type="button" class="pf-btn pf-btn--accent" id="qotd-play-btn">Play today's question</button>
-				{% endif %}
-
-				{% if past_qotd_exists %}
-				<p class="pf-note pf-mb-0" style="margin-top: 10px;">
-					<a class="pf-link" href="{% url 'qotd_archive' %}">See past questions</a>
-				</p>
-				{% endif %}
-			</div>
 		</div>
 
 	</div>
-
-	{% if today_qotd and not qotd_already_answered %}
-	<div class="pf-modal-overlay" id="qotd-modal" style="display: none;">
-		<div class="pf-modal">
-			<button type="button" class="pf-modal-close" id="qotd-modal-close" aria-label="Close">&times;</button>
-
-			<div id="qotd-modal-question">
-				<p class="pf-card-label">Question of the day</p>
-
-				{% if today_qotd.image %}
-				<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ today_qotd.image.url }}" alt="">
-				{% elif today_qotd.image_url %}
-				<img class="pf-question-image" style="margin-bottom: 14px;" src="{{ today_qotd.image_url }}" alt="">
-				{% endif %}
-
-				<p class="pf-question-text">{{ today_qotd.question }}</p>
-				<p class="pf-hangman-mask">{{ today_qotd_mask }}</p>
-
-				<form id="qotd-answer-form">
-					{% csrf_token %}
-					<div class="pf-answer-row">
-						<input class="pf-answer-input" type="text" id="qotd-answer-input" name="answer" autocomplete="off" placeholder="Your answer">
-						<button class="pf-btn pf-btn--accent" type="submit">Submit</button>
-					</div>
-				</form>
-			</div>
-
-			<div id="qotd-modal-result" style="display: none;">
-				<p class="pf-question-text" style="margin-bottom: 14px;">{{ today_qotd.question }}</p>
-				<div class="pf-tile-row">
-					<span class="pf-tile qotd-result-status" style="width: auto; padding: 0 16px;"></span>
-				</div>
-				<p class="pf-note qotd-result-detail" style="margin-top: 14px;"></p>
-			</div>
-		</div>
-	</div>
-	{% endif %}
 
 <script type="text/javascript">
 
@@ -194,87 +136,6 @@
 			}
 		);
 	}
-
-	(function () {
-
-		var playBtn = document.getElementById('qotd-play-btn');
-		var modal = document.getElementById('qotd-modal');
-
-		if (!playBtn || !modal) {
-			return;
-		}
-
-		var closeBtn = document.getElementById('qotd-modal-close');
-		var form = document.getElementById('qotd-answer-form');
-		var input = document.getElementById('qotd-answer-input');
-		var questionBlock = document.getElementById('qotd-modal-question');
-		var resultBlock = document.getElementById('qotd-modal-result');
-
-		function openModal() {
-			modal.style.display = 'flex';
-			input.focus();
-		}
-
-		function closeModal() {
-			modal.style.display = 'none';
-		}
-
-		playBtn.addEventListener('click', openModal);
-		closeBtn.addEventListener('click', closeModal);
-
-		modal.addEventListener('click', function (event) {
-			if (event.target === modal) {
-				closeModal();
-			}
-		});
-
-		document.addEventListener('keydown', function (event) {
-			if (event.key === 'Escape' && modal.style.display !== 'none') {
-				closeModal();
-			}
-		});
-
-		form.addEventListener('submit', function (event) {
-
-			event.preventDefault();
-
-			var csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
-
-			fetch("{% url 'qotd_answer_api' %}", {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-					'X-CSRFToken': csrfToken
-				},
-				body: 'answer=' + encodeURIComponent(input.value)
-			})
-			.then(function (response) { return response.json(); })
-			.then(function (data) {
-
-				if (data.error) {
-					alert(data.error);
-					return;
-				}
-
-				questionBlock.style.display = 'none';
-				resultBlock.style.display = 'block';
-
-				var statusEl = resultBlock.querySelector('.qotd-result-status');
-				statusEl.textContent = data.is_correct ? 'Correct' : 'Not quite';
-				statusEl.className = 'pf-tile qotd-result-status' + (data.is_correct ? ' pf-tile--correct' : '');
-
-				var detail = 'You answered "' + data.your_answer + '".';
-				if (!data.is_correct) {
-					detail += ' The answer was "' + data.answer + '".';
-				}
-				resultBlock.querySelector('.qotd-result-detail').textContent = detail;
-			})
-			.catch(function () {
-				alert('Something went wrong - please try again.');
-			});
-		});
-
-	})();
 
 </script>
 
