@@ -4,16 +4,36 @@
 # can play it.
 
 import datetime
+import random
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 
 from blogposts.models import Post
+from blogsite.guest_auth import ensure_guest_login
 from quiz.analysis_views import similarity_quotient
-from quiz.models import QuestionOfTheDay, QOTDSubmission
+from quiz.models import QuestionOfTheDay, QOTDSubmission, QOTDSuggestion
 
 QOTD_RELEASER_USERNAME = 'avinashm2427'
+
+
+def can_user_release(user):
+
+	return user.is_authenticated and user.username == QOTD_RELEASER_USERNAME
+
+
+def next_queue_date():
+
+	# The day after whatever's already scheduled, so a freshly allocated
+	# suggestion never overwrites today's question or jumps the queue
+	latest_date = QuestionOfTheDay.objects.aggregate(Max('date'))['date__max']
+	today = datetime.date.today()
+
+	return max(latest_date or today, today) + datetime.timedelta(days = 1)
 
 
 def is_qotd_answer_correct(given_answer, qotd):
@@ -66,36 +86,131 @@ def announce_qotd(qotd, releaser):
 	)
 
 
-@login_required
 def qotd_home(request):
 
 	today = datetime.date.today()
 	qotd = QuestionOfTheDay.objects.filter(date = today).first()
-	profile = request.user.profile
 	submission = None
 
-	if qotd:
+	if qotd and request.user.is_authenticated:
 		submission = QOTDSubmission.objects.filter(user = request.user, qotd = qotd).first()
 
+	if request.method == 'POST' and 'question' in request.POST:
+
+		# A suggested question, not an answer to today's one - distinguished
+		# by the presence of a 'question' field, which the answer form
+		# doesn't have. Handled (and the request ended) here regardless of
+		# login state, so it can never fall through to the answer-submission
+		# branch below and get mistaken for an answer to today's question.
+		if request.user.is_authenticated:
+			QOTDSuggestion.objects.create(
+				question = request.POST.get('question', '').strip(),
+				answer = request.POST.get('answer', '').strip(),
+				second_answer = request.POST.get('second_answer', '').strip(),
+				third_answer = request.POST.get('third_answer', '').strip(),
+				image_url = request.POST.get('image_url', '').strip(),
+				image = request.FILES.get('image'),
+				submitted_by = request.user,
+			)
+
+		return redirect('qotd_home')
+
 	if request.method == 'POST' and qotd and submission is None:
+
+		# Only create a guest account once someone actually commits to
+		# playing - not just for browsing the page
+		user = ensure_guest_login(request)
 
 		answer = request.POST.get('answer', '').strip()
 		answered_correctly = is_qotd_answer_correct(answer, qotd)
 
 		submission = QOTDSubmission.objects.create(
-			user = request.user, qotd = qotd, answer = answer, is_correct = answered_correctly
+			user = user, qotd = qotd, answer = answer, is_correct = answered_correctly
 		)
 
-		update_streak(profile, today, answered_correctly)
+		update_streak(user.profile, today, answered_correctly)
+
+	profile = request.user.profile if request.user.is_authenticated else None
+	can_release = can_user_release(request.user)
 
 	context = {
 		'qotd': qotd,
 		'submission': submission,
 		'profile': profile,
-		'can_release': request.user.username == QOTD_RELEASER_USERNAME,
+		'can_release': can_release,
 	}
 
+	if request.user.is_authenticated:
+		context['my_suggestions'] = QOTDSuggestion.objects.filter(
+			submitted_by = request.user
+		).order_by('-created_at')[:30]
+
+	if can_release:
+		context['pending_suggestions'] = QOTDSuggestion.objects.filter(status = 'pending').order_by('created_at')
+		context['default_allocate_date'] = next_queue_date()
+
 	return render(request, 'qotd_home.html', context)
+
+
+def qotd_answer_api(request):
+	"""Answers today's question from a pop-up on another page (the
+	homepage) via fetch, instead of navigating to /qotd - same guest-login
+	and scoring logic as qotd_home's own POST handling, just returning
+	JSON instead of a rendered page."""
+
+	if request.method != 'POST':
+		return JsonResponse({'error': 'Invalid request method.'}, status = 405)
+
+	today = datetime.date.today()
+	qotd = QuestionOfTheDay.objects.filter(date = today).first()
+
+	if qotd is None:
+		return JsonResponse({'error': "There's no question of the day yet."}, status = 404)
+
+	user = ensure_guest_login(request)
+	submission = QOTDSubmission.objects.filter(user = user, qotd = qotd).first()
+
+	if submission is None:
+
+		answer = request.POST.get('answer', '').strip()
+		answered_correctly = is_qotd_answer_correct(answer, qotd)
+
+		submission = QOTDSubmission.objects.create(
+			user = user, qotd = qotd, answer = answer, is_correct = answered_correctly
+		)
+
+		update_streak(user.profile, today, answered_correctly)
+
+	return JsonResponse({
+		'is_correct': submission.is_correct,
+		'your_answer': submission.answer,
+		'answer': qotd.answer,
+	})
+
+
+def qotd_archive(request):
+
+	today = datetime.date.today()
+	past_qotds = QuestionOfTheDay.objects.filter(date__lt = today).order_by('-date')[:30]
+
+	my_submissions = {}
+
+	if request.user.is_authenticated:
+
+		submissions = QOTDSubmission.objects.filter(user = request.user, qotd__in = past_qotds)
+		my_submissions = {submission.qotd_id: submission for submission in submissions}
+
+	archive = [
+		{'qotd': qotd, 'my_submission': my_submissions.get(qotd.id)}
+		for qotd in past_qotds
+	]
+
+	context = {
+		'archive': archive,
+		'can_release': can_user_release(request.user),
+	}
+
+	return render(request, 'qotd_archive.html', context)
 
 
 @login_required
@@ -142,6 +257,83 @@ def release_qotd(request):
 		'today': today,
 		'todays_qotd': QuestionOfTheDay.objects.filter(date = today).first(),
 		'upcoming': QuestionOfTheDay.objects.filter(date__gt = today).order_by('date'),
+		'can_release': True,
 	}
 
 	return render(request, 'qotd_release.html', context)
+
+
+@login_required
+def review_qotd_suggestion(request, suggestion_id):
+
+	if request.user.username != QOTD_RELEASER_USERNAME or request.method != 'POST':
+		return redirect('qotd_home')
+
+	suggestion = QOTDSuggestion.objects.filter(id = suggestion_id, status = 'pending').first()
+
+	if suggestion is None:
+		return redirect('qotd_home')
+
+	action = request.POST.get('action')
+
+	if action == 'allocate':
+
+		date_str = request.POST.get('date', '').strip()
+
+		try:
+			allocate_date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+		except ValueError:
+			allocate_date = next_queue_date()
+
+		qotd, created = QuestionOfTheDay.objects.update_or_create(
+			date = allocate_date,
+			defaults = {
+				'question': suggestion.question,
+				'answer': suggestion.answer,
+				'second_answer': suggestion.second_answer,
+				'third_answer': suggestion.third_answer,
+				'image': suggestion.image,
+				'image_url': suggestion.image_url,
+				'created_by': request.user,
+			}
+		)
+
+		suggestion.status = 'approved'
+		suggestion.released_as = qotd
+
+	elif action == 'reject':
+
+		suggestion.status = 'rejected'
+
+	else:
+		return redirect('qotd_home')
+
+	suggestion.reviewed_at = timezone.now()
+	suggestion.save()
+
+	return redirect('qotd_home')
+
+
+@login_required
+def randomize_qotd_queue(request):
+
+	if request.user.username != QOTD_RELEASER_USERNAME or request.method != 'POST':
+		return redirect('qotd_release')
+
+	today = datetime.date.today()
+	upcoming = list(QuestionOfTheDay.objects.filter(date__gt = today).order_by('date'))
+
+	if len(upcoming) >= 2:
+
+		fields = ['question', 'answer', 'second_answer', 'third_answer', 'image', 'image_url']
+		shuffled_content = [{field: getattr(qotd, field) for field in fields} for qotd in upcoming]
+		random.shuffle(shuffled_content)
+
+		for qotd, content in zip(upcoming, shuffled_content):
+
+			for field, value in content.items():
+				setattr(qotd, field, value)
+
+			qotd.save()
+
+	return redirect('qotd_release')

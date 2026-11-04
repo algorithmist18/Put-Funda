@@ -18,11 +18,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView
 from blogsite import views
 from blogsite import google_auth_views
 from blogposts import views as post_views
 from quiz import views as quiz_views
-from quiz import qotd_views
+# Question of the Day is hidden for now (being saved for a later release) -
+# re-add this import and the commented-out qotd/* paths below to bring it back.
+# from quiz import qotd_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -30,7 +33,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    # Both names point at the same view/path - 'index' is kept only
+    # because every base template still links the wordmark via
+    # {% url 'index' %}; the real landing page now lives at '/' (it used
+    # to be a separate, mostly-duplicate view at /home).
+    path('', views.homepage, name='index'),
+    path('', views.homepage, name='home'),
+    path('home', RedirectView.as_view(url='/', permanent=False)),
     path('questions', views.questions, name='questions'),
     path('ask', views.ask, name='ask'),
     path('view', views.list_questions, name = 'view'),
@@ -42,7 +51,6 @@ urlpatterns = [
     path('register', views.register, name = 'register'),
     path('login', views.login_view, name = 'login'),
     path('google-login', google_auth_views.google_login, name = 'google_login'),
-    path('home', views.homepage, name = 'home'),
     path('logout', views.logout_view, name = 'logout'),
     path('users', views.show_user, name='show_user'),
     path('edit', views.edit_profile, name = 'edit'),
@@ -64,19 +72,27 @@ urlpatterns = [
     path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
     path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),
     path('quiz/view_contest', quiz_views.view_contest, name = 'view_contest'),
+    path('c/<int:contest_id>', quiz_views.short_contest_link, name = 'short_contest_link'),
     path('quiz/edit_question', quiz_views.edit_question, name = 'edit_question'),
     path('quiz/delete_question', quiz_views.delete_question, name = 'delete_question'),
     path('quiz/play_contest', quiz_views.play_contest, name = 'play_contest'),
     path('quiz/leaderboard', quiz_views.display_leaderboard, name = 'leaderboard'),
     path('quiz/edit_contest', quiz_views.edit_contest, name = 'edit_contest'),
+    path('quiz/delete_contest', quiz_views.delete_contest, name = 'delete_contest'),
     path('quiz/date-check', quiz_views.is_valid_date, name = 'is_valid_date'),
     path('quiz/updaterating', quiz_views.update_ratings, name = 'update_rating'),
     path('quiz/restorerating', quiz_views.restore_ratings, name='restore_rating'),
     path('quiz/analytics', quiz_views.view_question_analytics, name='question_analytics'),
-    path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'), 
+    path('quiz/submissions', quiz_views.view_user_submissions, name = 'view_user_submissions'),
     path('quiz/correctsub', quiz_views.view_correct_submissions, name = 'view_correct'),
-    path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
-    path('qotd/release', qotd_views.release_qotd, name = 'qotd_release')
+    # Question of the Day - hidden for now (see the import note above), to
+    # be released separately later. The views/templates/model are untouched.
+    # path('qotd', qotd_views.qotd_home, name = 'qotd_home'),
+    # path('qotd/answer', qotd_views.qotd_answer_api, name = 'qotd_answer_api'),
+    # path('qotd/archive', qotd_views.qotd_archive, name = 'qotd_archive'),
+    # path('qotd/release', qotd_views.release_qotd, name = 'qotd_release'),
+    # path('qotd/review/<int:suggestion_id>', qotd_views.review_qotd_suggestion, name = 'qotd_review_suggestion'),
+    # path('qotd/randomize', qotd_views.randomize_qotd_queue, name = 'qotd_randomize'),
 ]
 
 if settings.DEBUG:

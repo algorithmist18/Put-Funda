@@ -2,6 +2,10 @@
 
 {% block content %}
 
+	<p class="pf-note" style="margin-bottom: 16px;">
+		<a class="pf-link" href="{% url 'qotd_home' %}">Submitted suggestions are reviewed from the Question of the day page</a>
+	</p>
+
 	<div class="pf-section-label pf-section-label--first"><span>Release the question of the day</span></div>
 
 	<div class="pf-card">
@@ -63,6 +67,14 @@
 				{% endfor %}
 			</tbody>
 		</table>
+
+		{% if upcoming|length > 1 %}
+		<form method="post" action="{% url 'qotd_randomize' %}" style="margin-top: 14px;">
+			{% csrf_token %}
+			<button type="submit" class="pf-btn">Randomise order of upcoming questions</button>
+		</form>
+		<div class="pf-field-hint" style="margin-top: 6px;">Shuffles which question lands on which day. The dates themselves don't change.</div>
+		{% endif %}
 	</div>
 	{% endif %}
 

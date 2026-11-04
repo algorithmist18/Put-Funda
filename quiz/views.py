@@ -10,8 +10,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required 
 from quiz.forms import QuizForm
-from quiz.models import QuizQuestion, Contest, Submission, RatingHistory, Leaderboard
+from quiz.models import QuizQuestion, Contest, Submission, RatingHistory, Leaderboard, CONTEST_GENRE_CHOICES
 from blogsite.models import Profile
+from blogsite.guest_auth import ensure_guest_login
 from .models import User 
 from django.dispatch import receiver
 from django.contrib.auth.forms import AuthenticationForm
@@ -34,15 +35,16 @@ from quiz import contest_utils
 
 # Class to represent custom data structure 
 
-class ContestUser: 
+class ContestUser:
 
-	# Variables 
+	# Variables
 
-	def __init__(self, username, correct_answers, time_taken): 
+	def __init__(self, username, correct_answers, time_taken, played_late = False):
 
-		self.username = username 
+		self.username = username
 		self.correct_answers = correct_answers
-		self.time_taken = time_taken 
+		self.time_taken = time_taken
+		self.played_late = played_late
 
 # Class to represent user, rank, old rating and new rating 
 
@@ -62,15 +64,14 @@ def compare(x):
 
 	return x.correct_answers, -x.time_taken 
 
-# Method to redirect to homepage 
+# Method to redirect to homepage - no login required, so anyone can
+# browse/play contests from here, not just from the blogsite homepage
+def homepage(request):
 
-@login_required
-def homepage(request): 
-
-	# Fetch all contests 
-	user = request.user 
-	user_contests = Contest.objects.filter(host = user) 
-	all_contests = Contest.objects.all() 
+	# Fetch all contests
+	user = request.user
+	user_contests = Contest.objects.filter(host = user) if user.is_authenticated else []
+	all_contests = Contest.objects.all()
 
 	# Contests 
 	contests = [] 
@@ -219,6 +220,7 @@ def schedule_quiz(request):
 		valid_for = request.POST.get('valid-for')
 		time_per_question = request.POST.get('seconds-per-question')
 		tsv_file = request.FILES.get('tsv-question-file')
+		pdf_file = request.FILES.get('pdf-question-file')
 
 		contestTime = date + ' ' + time + ':00'
 
@@ -241,22 +243,36 @@ def schedule_quiz(request):
 		contest.save() 
 		contest_id = contest.id 
 
-		# Parse the questions if file is present
-		if tsv_file is not None: 
+		# Parse the questions if a file is present. A PDF takes priority if
+		# both are somehow uploaded at once - the form only offers one or
+		# the other.
+		if pdf_file is not None:
 
-			# Add questions from tsv file 
-			result, err = parse_csv_file(contest, tsv_file)  
-			
+			result, err, elapsed_seconds = parse_pdf_file(contest, pdf_file)
+
 			if result == True:
-				print('Successfully inserted questions from TSV!') 
-			else: 
-				print("Exception has occurred") 
+				print('Successfully inserted questions from PDF!')
+				return HttpResponseRedirect('view_contest?contest_id={}&msg=pdf_success&secs={}'.format(contest_id, round(elapsed_seconds, 1)))
+			else:
+				print('Exception has occurred while parsing PDF file')
+				print(err)
+				return HttpResponseRedirect('view_contest?contest_id={}&msg=pdf_error'.format(contest_id))
 
-		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
+		elif tsv_file is not None:
+
+			# Add questions from tsv file
+			result, err = parse_csv_file(contest, tsv_file)
+
+			if result == True:
+				print('Successfully inserted questions from TSV!')
+			else:
+				print("Exception has occurred")
+
+		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id))
 
 	else:
 
-		return render(request, 'quiz_schedule.html') 
+		return render(request, 'quiz_schedule.html', {'genre_choices': CONTEST_GENRE_CHOICES})
 
 # Method to check if a contest is valid or not 
 def is_valid_contest(contest): 
@@ -333,23 +349,35 @@ def create_contest(request):
 
 		return render(request, 'quiz_contest_base.html', args) 
 
-# Method to view a contest 
-@login_required
-def view_contest(request): 
+# Short, shareable link for a contest (e.g. /c/11) - just redirects to
+# view_contest, so it's clean to drop into a WhatsApp message instead of
+# the long query-string URL
+def short_contest_link(request, contest_id):
 
-	user = request.user 
-	contest_id = request.GET.get('contest_id') 
-	contest = Contest.objects.get(id = contest_id) 
+	return redirect('{}?contest_id={}'.format(reverse('view_contest'), contest_id))
+
+# Method to view a contest - no login required, so anyone can check a
+# contest's status/leaderboard from a link, same as play_contest
+def view_contest(request):
+
+	user = request.user
+	contest_id = request.GET.get('contest_id')
+	contest = Contest.objects.get(id = contest_id)
 	questions = QuizQuestion.objects.filter(contest = contest)
 
-	args = {'user' : user, 'contest' : contest, 'questions' : questions}  
+	args = {'user' : user, 'contest' : contest, 'questions' : questions}
 
-	if len(questions) > 0: 
-		args['first_question'] = questions[0] 
+	if len(questions) > 0:
+		args['first_question'] = questions[0]
 	else:
 		args['first_question'] = 'No questions yet.'
 
-	submissions = Submission.objects.filter(user = user)
+	# An anonymous visitor can't have played anything yet - and filtering
+	# Submission by an AnonymousUser raises, since it isn't a real User row
+	if user.is_authenticated:
+		submissions = Submission.objects.filter(user = user)
+	else:
+		submissions = []
 
 	flag = False 
 
@@ -446,8 +474,8 @@ def edit_contest(request):
 		# Cannot edit it again
 		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'contest_past'))
 
-	# Populate context 
-	args = {'user' : user, 'contest' : contest}  
+	# Populate context
+	args = {'user' : user, 'contest' : contest, 'genre_choices' : CONTEST_GENRE_CHOICES}
 
 	# Proceed to handle request 
 	if request.method == 'POST': 
@@ -572,12 +600,43 @@ def delete_question(request):
 
 		return HttpResponseRedirect('view_contest?contest_id={}'.format(contest_id)) 
 
-	else: 
+	else:
 
-		return render(request, 'quiz_delete_question.html', args) 
+		return render(request, 'quiz_delete_question.html', args)
 
-# Method to fetch next question 
-def fetch_next_question(question, user): 
+# Method to delete a contest (and all its questions/submissions/leaderboard
+# entries - these all cascade off Contest in quiz/models.py)
+@login_required
+def delete_contest(request):
+
+	user = request.user
+	contest_id = request.GET.get('contest_id')
+
+	contest = Contest.objects.get(id = contest_id)
+
+	# Check if user is the host
+	if user != contest.host:
+
+		url = reverse('quiz_home')
+		return HttpResponseRedirect(url)
+
+	args = {'user' : user, 'contest' : contest}
+
+	if request.method == 'POST':
+
+		action = request.POST.get('action')
+
+		if action == 'Confirm delete':
+			contest.delete()
+
+		return HttpResponseRedirect(reverse('quiz_home'))
+
+	else:
+
+		return render(request, 'quiz_delete_contest.html', args)
+
+# Method to fetch next question
+def fetch_next_question(question, user):
 
 	contest = question.contest 
 	questions = QuizQuestion.objects.filter(contest = contest)  
@@ -629,10 +688,28 @@ def is_correct(submission, question):
 
 		return True 
 
-	# Answer does not match with anything 
-	return False 
+	# Answer does not match with anything
+	return False
 
-# Method to return similarity of two strings 
+# Method to build a hangman-style letter-count hint for a question's
+# answer - an apostrophe per letter, a wider gap between words, and any
+# other punctuation in the answer (e.g. a hyphen) shown as-is
+def hangman_mask(answer):
+
+	tokens = []
+
+	for ch in answer:
+
+		if ch.isalnum():
+			tokens.append("'")
+		elif ch == ' ':
+			tokens.append('   ')
+		else:
+			tokens.append(ch)
+
+	return ' '.join(tokens)
+
+# Method to return similarity of two strings
 def similarity_quotient(str1, str2): 
 
 	# Convert everything to lower case 
@@ -646,11 +723,11 @@ def similarity_quotient(str1, str2):
 
 	return similarity
 
-@login_required
-def play_contest(request): 
+def play_contest(request):
 
-	# Fetch data from request 
-	user = request.user 
+	# Fetch data from request - bootstraps a throwaway guest account for
+	# an unregistered visitor, since submissions need a real user row
+	user = ensure_guest_login(request)
 	question_id = request.GET.get('question_id')
 	contest_id = request.GET.get('contest_id') 
 	instruction = request.GET.get('instruction') 
@@ -659,11 +736,17 @@ def play_contest(request):
 	if question_id is None or contest_id is None:
 		return redirect('quiz_home') 
 
-	# Fetch data from database call 
-	contest = Contest.objects.get(id = contest_id) 
-	question = QuizQuestion.objects.get(id = question_id) 
-	submissions = Submission.objects.filter(user = user, question = question) 
-	contest_questions = QuizQuestion.objects.filter(contest = contest) 
+	# Fetch data from database call
+	contest = Contest.objects.get(id = contest_id)
+
+	# A host already knows the answers - send them to the contest's own
+	# page instead of letting them play it
+	if user == contest.host:
+		return redirect('{}?contest_id={}'.format(reverse('view_contest'), contest.id))
+
+	question = QuizQuestion.objects.get(id = question_id)
+	submissions = Submission.objects.filter(user = user, question = question)
+	contest_questions = QuizQuestion.objects.filter(contest = contest)
 
 	# TODO: If it has been ten minutes since contest started - leave 
 	if len(submissions) == len(contest_questions): 
@@ -693,30 +776,31 @@ def play_contest(request):
 		# Fetch question 
 		question = QuizQuestion.objects.get(id = question_id) 
 
-		# Check if user has submitted this question before 
-		submissions = Submission.objects.filter(user = user, question = question) 
+		# Check if user has submitted this question before
+		submissions = Submission.objects.filter(user = user, question = question)
 
 		if len(submissions) == 0:
 
-			# Create submission object 
-			submission = Submission(user = user, question = question, 
-			answer = answer, time_taken = time_taken) 
-			submission.save() 
+			# Create submission object
+			submission = Submission(user = user, question = question,
+			answer = answer, time_taken = time_taken)
+			submission.save()
 
-		# Route to next question 
-		message, next_question = fetch_next_question(question, user) 
+		# Route to next question
+		message, next_question = fetch_next_question(question, user)
 
-		if message == 'FINISH': 
+		if message == 'FINISH':
 
 			# Add user game to leaderboard
-			add_player_to_leaderboard(user, contest) 
-			return render(request, 'quiz_exit_window.html', args) 
+			add_player_to_leaderboard(user, contest)
+			return render(request, 'quiz_exit_window.html', args)
 
 		else:
 
 			# Update context
 			args['question'] = next_question
-			return render(request, 'quiz_play_contest.html', args) 
+			args['hangman_mask'] = hangman_mask(next_question.answer)
+			return render(request, 'quiz_play_contest.html', args)
 
 	else: 
 
@@ -732,11 +816,12 @@ def play_contest(request):
 
 			return render(request, 'quiz_contest_instructions.html', args) 
 
-		else: 
+		else:
 
-			return render(request, 'quiz_play_contest.html', args) 
+			args['hangman_mask'] = hangman_mask(question.answer)
+			return render(request, 'quiz_play_contest.html', args)
 
-# Method to return a list of users which participated in the contest	
+# Method to return a list of users which participated in the contest
 def users_in_contest(contest): 
 
 	users_set = set([]) 
@@ -747,9 +832,9 @@ def users_in_contest(contest):
 
 	return users_set 
 
-# Method to return leaderboard for a contest 
-@login_required
-def display_leaderboard(request): 
+# Method to return leaderboard for a contest - no login required, so
+# anyone (including a guest who just played) can check standings
+def display_leaderboard(request):
 
 	# Fetch required data 
 	original_user = request.user 
@@ -782,10 +867,10 @@ def display_leaderboard(request):
 
 		if len(leaderboard_entry) == 1: 
 
-			print('Reading data straight from table') 
-			contest_user = ContestUser(user.username, leaderboard_entry[0].correct_answers, 
-			leaderboard_entry[0].time_taken) 
-			contest_users.append(contest_user) 
+			print('Reading data straight from table')
+			contest_user = ContestUser(user.username, leaderboard_entry[0].correct_answers,
+			leaderboard_entry[0].time_taken, leaderboard_entry[0].played_late)
+			contest_users.append(contest_user)
 
 			# Updating rating history
 			try: 		
@@ -820,18 +905,21 @@ def display_leaderboard(request):
 					correct_answers += 1 
 					time_taken += submission.time_taken 
 
-			contest_user = ContestUser(user.username, correct_answers, time_taken) 
+			# We don't have a per-submission timestamp to know exactly
+			# when they played, so fall back to "is the contest over
+			# right now" as the best available signal
+			contest_user = ContestUser(user.username, correct_answers, time_taken, not is_contest_active)
 			contest_users.append(contest_user)
 
-			# Delete all the leaderboard entries first 
-			for entry in leaderboard_entry: 
-				entry.delete() 
+			# Delete all the leaderboard entries first
+			for entry in leaderboard_entry:
+				entry.delete()
 
 			# Adding to leaderboard table
 			user_from_db = User.objects.get(username=user.username)
-			leaderboard_entry = Leaderboard(user=user_from_db, correct_answers=correct_answers, 
-			time_taken=time_taken, contest=contest) 
-			leaderboard_entry.save() 
+			leaderboard_entry = Leaderboard(user=user_from_db, correct_answers=correct_answers,
+			time_taken=time_taken, contest=contest, played_late=not is_contest_active)
+			leaderboard_entry.save()
 
 			# Updating rating history 
 			try: 
@@ -851,10 +939,11 @@ def display_leaderboard(request):
 	# Sort the submissions
 	contest_users = sorted(sorted(contest_users, key = lambda x: x.time_taken), key = lambda x: x.correct_answers, reverse = True)  
 
-	# Update context 
-	args = {} 
-	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active})
-	return render(request, 'quiz_display_leaderboard.html', args) 
+	# Update context
+	args = {}
+	args.update({'user': original_user, 'contest': contest, 'users': contest_users, 'is_contest_active': is_contest_active,
+	'any_played_late': any(u.played_late for u in contest_users)})
+	return render(request, 'quiz_display_leaderboard.html', args)
 
 # Method to fetch number of contests user has played from certan contest
 def fetch_no_of_contests_played(start_contest_id, username):
@@ -865,10 +954,54 @@ def fetch_no_of_contests_played(start_contest_id, username):
 	for submission in submission_list: 
 		list_of_contest_ids.append(submission.question.contest.id) 
 
-	return len(set(list_of_contest_ids)) 
+	return len(set(list_of_contest_ids))
 
-# Method to update rankings for contest user 
-def update_ratings(request): 
+class TopPlayer:
+
+	def __init__(self, username, contests_played, correct, total):
+
+		self.username = username
+		self.contests_played = contests_played
+		self.correct = correct
+		self.total = total
+		self.accuracy = round(100 * correct / total, 1) if total else 0
+
+# Method to rank players by number of distinct contests played, with
+# their overall accuracy - used for the homepage leaderboard while
+# rating (ELO) is set aside (see Profile.rating) to be reintroduced later
+def fetch_top_players(limit = 10):
+
+	stats = {}
+
+	submissions = Submission.objects.select_related('question', 'user', 'user__profile')
+
+	for submission in submissions:
+
+		if submission.user.profile.is_guest:
+			continue
+
+		username = submission.user.username
+
+		if username not in stats:
+			stats[username] = {'contests': set(), 'correct': 0, 'total': 0}
+
+		stats[username]['contests'].add(submission.question.contest_id)
+		stats[username]['total'] += 1
+
+		if is_correct(submission, submission.question):
+			stats[username]['correct'] += 1
+
+	players = [
+		TopPlayer(username, len(data['contests']), data['correct'], data['total'])
+		for username, data in stats.items()
+	]
+
+	players.sort(key = lambda p: (-p.contests_played, -p.accuracy))
+
+	return players[:limit]
+
+# Method to update rankings for contest user
+def update_ratings(request):
 
 	# Check if contest is invalid
 	response = {} 
@@ -1150,39 +1283,48 @@ def update_ratings(request):
 		return JsonResponse(response) 
 
 # Method to add players to the leaderboard
-def add_player_to_leaderboard(user, contest): 
+def add_player_to_leaderboard(user, contest):
 
-	user_submissions = Submission.objects.filter(question__contest = contest, user = user) 
-	correct_answers = 0 
-	time_taken = 0 
+	user_submissions = Submission.objects.filter(question__contest = contest, user = user)
+	correct_answers = 0
+	time_taken = 0
 
-	for submission in user_submissions: 
+	for submission in user_submissions:
 
-		given_answer = submission.answer.lower() 
-		correct_answer = submission.question.answer.lower() 
+		given_answer = submission.answer.lower()
+		correct_answer = submission.question.answer.lower()
 
-		if is_correct(submission, submission.question): 
+		if is_correct(submission, submission.question):
 
-			correct_answers += 1 
-			time_taken += submission.time_taken 
+			correct_answers += 1
+			time_taken += submission.time_taken
 
-	print(user.username, contest.id, correct_answers, time_taken) 
+	print(user.username, contest.id, correct_answers, time_taken)
+
+	# This is called the moment a player finishes, so "now" is their
+	# finish time - if the contest's valid_for window had already
+	# closed by then, flag them as a late player for the leaderboard
+	current_time = datetime.datetime.now(pytz.timezone('UTC'))
+	minutes_since_start = (current_time - contest.time).total_seconds() / 60
+	played_late = minutes_since_start > contest.valid_for
 
 	# Check if already present before making inserts
-	already_present = Leaderboard.objects.filter(contest = contest, user = user) 
+	already_present = Leaderboard.objects.filter(contest = contest, user = user)
 
-	if len(list(already_present)) > 0: 
+	if len(list(already_present)) > 0:
 
-		leaderboard_entry = list(already_present)[0] 
+		leaderboard_entry = list(already_present)[0]
 		leaderboard_entry.correct_answers = correct_answers
-		leaderboard_entry.time_taken = time_taken 
+		leaderboard_entry.time_taken = time_taken
+		leaderboard_entry.played_late = played_late
 		leaderboard_entry.save()
 
 	else:
 
-		leaderboard_entry = Leaderboard(contest=contest, user=user, 
-		correct_answers=correct_answers, time_taken=time_taken) 
-		leaderboard_entry.save() 
+		leaderboard_entry = Leaderboard(contest=contest, user=user,
+		correct_answers=correct_answers, time_taken=time_taken,
+		played_late=played_late)
+		leaderboard_entry.save()
 
 # Method to restore ratings for this contest 
 @login_required
@@ -1233,6 +1375,7 @@ def view_question_analytics(request):
 			question_stats.append([question, correct_subs, total_subs])
 
 		response['question_stats'] = question_stats
+		response['contest'] = contest
 
 		return render(request, 'quiz_view_analytics.html', response)
 
@@ -1308,14 +1451,39 @@ def parse_csv_file(contest, csv_file):
 		print(ex) 
 		return False, ex 
 
-	except KeyError as error: 
+	except KeyError as error:
 
-		print("Key error while parsing csv file") 
-		message = "Key error while parsing csv file" 
-		print(error) 
+		print("Key error while parsing csv file")
+		message = "Key error while parsing csv file"
+		print(error)
 		return False, error
 
-	return True, "" 
+	return True, ""
+
+
+# Method to read a PDF of convoluted/multi-part questions and add
+# simplified questions to a contest, via Gemini (see
+# quiz/pdf_question_extractor.py)
+def parse_pdf_file(contest, pdf_file):
+	"""Returns (ok, err, elapsed_seconds). elapsed_seconds is None on failure."""
+
+	from quiz.pdf_question_extractor import extract_questions_from_pdf, PdfExtractionError
+
+	try:
+		questions, elapsed_seconds = extract_questions_from_pdf(pdf_file.read())
+	except PdfExtractionError as ex:
+		print('PDF extraction failed')
+		print(ex)
+		return False, ex, None
+
+	if not questions:
+		return False, 'No questions could be found in that PDF.', None
+
+	for item in questions:
+		quiz_question = QuizQuestion(contest = contest, question = item['question'], answer = item['answer'])
+		quiz_question.save()
+
+	return True, "", elapsed_seconds
 
 
 
@@ -1337,16 +1505,14 @@ def view_user_submissions(request):
 		# Fetch user and contest
 		try: 
 			
-			user_object = User.objects.get(username = username) 
-			contest = Contest.objects.get(id = int(contest_id)) 
-	
-			# Redirect to leaderboard if 
-			# contest is active
-			is_active = contest_utils.is_contest_active(contest) 
-			if is_active and user.username is not 'coder': 
-				return redirect('quiz') 
+			user_object = User.objects.get(username = username)
+			contest = Contest.objects.get(id = int(contest_id))
 
-			submissions = fetch_submissions_by_user_contest(user_object, contest) 
+			# Only the host can see another player's individual answers
+			if user != contest.host:
+				return redirect('quiz_home')
+
+			submissions = fetch_submissions_by_user_contest(user_object, contest)
 			response['user'] = user_object
 			response['contest'] = contest 
 			response['submissions'] = submissions 
@@ -1377,13 +1543,11 @@ def view_correct_submissions(request):
 
 		question = QuizQuestion.objects.get(id = int(question_id))
 
-		# Redirect to leaderboard if 
-		# contest is active
-		is_active = contest_utils.is_contest_active(question.contest)  
-		if is_active and user.username is not 'coder': 
-			return redirect('quiz_home')  
-	
-		submissions = fetch_correct_submissions(question) 
+		# Only the host can see who answered what
+		if user != question.contest.host:
+			return redirect('quiz_home')
+
+		submissions = fetch_correct_submissions(question)
 		
 		response['submissions'] = submissions 
 		response['question'] = question 

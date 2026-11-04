@@ -8,11 +8,29 @@ from django import forms
 
 # Create your models here.
 
+# Picked from a dropdown when scheduling/editing a contest (quiz_schedule.html,
+# quiz_edit_contest.html) instead of free-typed. Contests from before this
+# existed may still hold other genre text - that's fine, Django's `choices`
+# is a form/admin hint, not a database constraint, so old values keep working.
+CONTEST_GENRE_CHOICES = [
+	('General', 'General'),
+	('Entertainment', 'Entertainment'),
+	('Sports', 'Sports'),
+	('Literature', 'Literature'),
+	('India', 'India'),
+	('Pop Culture', 'Pop Culture'),
+	('Sports & Entertainment', 'Sports & Entertainment'),
+	('Arts', 'Arts'),
+	('Music', 'Music'),
+	('Movies', 'Movies'),
+	('Other', 'Other'),
+]
+
 class Contest(models.Model):
 
 	host = models.ForeignKey(User, on_delete = models.CASCADE)
 	time = models.DateTimeField()
-	genre = models.CharField(max_length = 20, default = 'General')
+	genre = models.CharField(max_length = 30, default = 'General', choices = CONTEST_GENRE_CHOICES)
 	name = models.CharField(max_length = 100, blank = True, default = '')
 	description = models.CharField(max_length = 300, blank = True, default = '')
 	has_rating_updated = models.BooleanField(default = False, blank = True, null = True)
@@ -52,6 +70,10 @@ class Leaderboard(models.Model):
 	correct_answers = models.IntegerField(default=0, blank=True, null=True)
 	time_taken = models.FloatField(default=0.00, blank=True, null=True)
 
+	# True if this player finished after the contest's valid_for window
+	# had already closed - shown with an asterisk on the leaderboard
+	played_late = models.BooleanField(default = False, blank = True, null = True)
+
 class QuestionOfTheDay(models.Model):
 
 	question = models.TextField()
@@ -75,3 +97,26 @@ class QOTDSubmission(models.Model):
 	class Meta:
 
 		unique_together = ('user', 'qotd')
+
+# A question anyone can propose for a future Question of the Day. Stays
+# 'pending' until the QOTD releaser approves it (turning it into a real
+# QuestionOfTheDay, queued after whatever's already scheduled) or rejects it.
+QOTD_SUGGESTION_STATUS_CHOICES = [
+	('pending', 'Pending'),
+	('approved', 'Approved'),
+	('rejected', 'Rejected'),
+]
+
+class QOTDSuggestion(models.Model):
+
+	question = models.TextField()
+	image = models.ImageField(upload_to = 'images/', max_length = 200, blank = True, null = True)
+	image_url = models.URLField(blank = True)
+	answer = models.TextField()
+	second_answer = models.TextField(blank = True)
+	third_answer = models.TextField(blank = True)
+	submitted_by = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'qotd_suggestions')
+	status = models.CharField(max_length = 10, choices = QOTD_SUGGESTION_STATUS_CHOICES, default = 'pending')
+	created_at = models.DateTimeField(auto_now_add = True)
+	reviewed_at = models.DateTimeField(blank = True, null = True)
+	released_as = models.ForeignKey(QuestionOfTheDay, on_delete = models.SET_NULL, blank = True, null = True)

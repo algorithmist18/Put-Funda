@@ -1,14 +1,8 @@
-/* Put Funda — "Late Edition" theme
+/* Put Funda — "Warm Editorial" theme
    A self-contained, scoped design system (everything lives under .pf-theme
    so it never bleeds into pages that haven't been rebuilt yet). */
 
-@font-face {
-	font-family: 'Adobe Caslon Pro';
-	src: url('../fonts/AdobeCaslonPro-Regular.woff2') format('woff2');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Crimson+Pro:wght@400;500;600;700&display=swap');
 
 /* Without this, an element's own padding/border get added on top of a
    percentage width instead of being carved out of it - e.g. a
@@ -19,39 +13,42 @@
 }
 
 .pf-theme {
-	--pf-navy: #f7f2e6;
-	--pf-navy-deep: #0e0c0a;
-	--pf-teal: #0e0c0a;
-	--pf-teal-light: #b8552f;
-	--pf-cream: #ffffff;
-	--pf-cream-ink: #1c1712;
-	--pf-surface: #fffdf8;
-	--pf-surface-hover: #f2ece0;
-	--pf-ink: #201512;
-	--pf-paper: #ffffff;
-	--pf-text: #2a2118;
-	--pf-text-muted: #837a6c;
-	--pf-hairline: rgba(20, 15, 10, 0.14);
+	--pf-navy: #f6f1e7;
+	--pf-navy-deep: #26201a;
+	--pf-teal: #24402c;
+	--pf-teal-light: #2f4d3a;
+	--pf-rust: #bc5b39;
+	--pf-cream: #fffdf7;
+	--pf-cream-ink: #26201a;
+	--pf-surface: #fffdf7;
+	--pf-surface-hover: #f2ecd9;
+	--pf-ink: #2b2520;
+	--pf-paper: #fffdf7;
+	--pf-text: #2b2520;
+	--pf-text-muted: #8a7e68;
+	--pf-hairline: rgba(43, 37, 32, 0.16);
 
-	--pf-pink-bg: #fbeee8;
-	--pf-pink-border: #b8552f;
+	--pf-pink-bg: #f6e7df;
+	--pf-pink-border: #bc5b39;
 	--pf-pink-ink: var(--pf-text);
 
-	--pf-peach-bg: #faf1de;
-	--pf-peach-border: #a3792a;
+	--pf-peach-bg: #f6ecd4;
+	--pf-peach-border: #c08a2e;
 	--pf-peach-ink: var(--pf-text);
 
-	--pf-yellow-bg: #f9e9de;
-	--pf-yellow-border: #97584f;
+	--pf-yellow-bg: #f8f0d9;
+	--pf-yellow-border: #c9a227;
 	--pf-yellow-ink: var(--pf-text);
 
-	--pf-blue-bg: #ecedf6;
-	--pf-blue-border: #5f6690;
+	--pf-blue-bg: #e9ece3;
+	--pf-blue-border: #52665f;
 	--pf-blue-ink: var(--pf-text);
 
+	margin: 0;
 	background: var(--pf-navy);
 	color: var(--pf-text);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 17px;
 	min-height: 100vh;
 	-webkit-font-smoothing: antialiased;
 }
@@ -61,8 +58,8 @@
 }
 
 .pf-theme h1, .pf-theme h2, .pf-theme h3, .pf-theme h4 {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
 	margin: 0;
 }
 
@@ -76,17 +73,17 @@
 	gap: 16px;
 	flex-wrap: wrap;
 	background: var(--pf-navy-deep);
-	border-bottom: 3px solid var(--pf-teal-light);
+	border-bottom: 3px solid var(--pf-rust);
 	padding: 32px 28px 24px;
 }
 
 .pf-wordmark {
 	position: relative;
 	display: inline-block;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: normal;
-	font-weight: 700;
-	font-size: 40px;
+	font-weight: 600;
+	font-size: 46px;
 	letter-spacing: 0.01em;
 	color: #ffffff;
 	text-decoration: none;
@@ -95,9 +92,10 @@
 .pf-tagline {
 	position: relative;
 	margin-top: 6px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
-	font-size: 16px;
+	font-weight: 500;
+	font-size: 18px;
 	color: rgba(255, 255, 255, 0.65);
 }
 
@@ -107,14 +105,15 @@
 	align-items: center;
 	gap: 6px;
 	padding: 7px 14px;
-	border: 1.5px solid var(--pf-teal-light);
-	border-radius: 999px;
-	background: rgba(184, 85, 47, 0.16);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
+	border: 1.5px solid #c9915a;
+	border-radius: 3px;
+	background: rgba(188, 91, 57, 0.16);
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
 	font-size: 14px;
-	letter-spacing: 0.02em;
-	color: #f0a480;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #e8b98f;
 }
 
 /* ---------- Meta bar ---------- */
@@ -127,10 +126,10 @@
 	align-items: center;
 	gap: 10px 20px;
 	padding: 15px 28px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 500;
 	font-size: 16px;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.01em;
 	border-bottom: 1px solid var(--pf-hairline);
 }
 
@@ -163,6 +162,10 @@
 	margin-right: 22px;
 	white-space: nowrap;
 	text-decoration: none;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 0.07em;
 	padding-bottom: 2px;
 }
 
@@ -221,11 +224,12 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin: 30px 0 14px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 17px;
-	letter-spacing: 0.02em;
+	margin: 34px 0 16px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 }
 
@@ -244,50 +248,51 @@
 .pf-card {
 	position: relative;
 	border: 1px solid var(--pf-hairline);
-	border-top: 3px solid var(--pf-teal-light);
-	border-radius: 4px;
+	border-left: 2px solid transparent;
+	border-radius: 3px;
 	padding: 20px 22px;
 	margin-bottom: 14px;
 	background: var(--pf-surface);
-	box-shadow: 0 1px 2px rgba(20, 15, 10, 0.03), 0 2px 8px rgba(20, 15, 10, 0.04);
-	transition: transform 0.15s ease, box-shadow 0.15s ease;
+	box-shadow: 0 1px 2px rgba(43, 37, 32, 0.03);
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.pf-card--pink { border-top-color: var(--pf-pink-border); background: var(--pf-pink-bg); }
-.pf-card--peach { border-top-color: var(--pf-peach-border); background: var(--pf-peach-bg); }
-.pf-card--yellow { border-top-color: var(--pf-yellow-border); background: var(--pf-yellow-bg); }
-.pf-card--blue { border-top-color: var(--pf-blue-border); background: var(--pf-blue-bg); }
+.pf-card--pink { border-left-color: var(--pf-pink-border); background: var(--pf-pink-bg); }
+.pf-card--peach { border-left-color: var(--pf-peach-border); background: var(--pf-peach-bg); }
+.pf-card--yellow { border-left-color: var(--pf-yellow-border); background: var(--pf-yellow-bg); }
+.pf-card--blue { border-left-color: var(--pf-blue-border); background: var(--pf-blue-bg); }
 
 .pf-card:hover {
-	transform: translateY(-3px);
-	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.07), 0 8px 20px rgba(20, 15, 10, 0.06);
+	border-left-color: var(--pf-teal-light);
+	box-shadow: 0 2px 8px rgba(43, 37, 32, 0.06);
 }
 
 .pf-card-label {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
 	font-size: 14px;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 	margin-bottom: 4px;
 }
 
 .pf-card-title {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 21px;
+	font-size: 24px;
 	color: var(--pf-teal-light);
-	border-bottom: 1px solid rgba(184, 85, 47, 0.35);
+	border-bottom: 1px solid rgba(47, 77, 58, 0.35);
 	display: inline-block;
 	padding-bottom: 2px;
 	margin-bottom: 10px;
 }
 
 .pf-card-body {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 16px;
-	line-height: 1.55;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 17px;
+	line-height: 1.6;
 	color: var(--pf-text);
 }
 
@@ -303,22 +308,22 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 50px;
-	height: 50px;
+	min-width: 54px;
+	height: 54px;
 	padding: 0 6px;
 	background: var(--pf-paper);
 	border: 2px solid var(--pf-teal-light);
-	border-radius: 4px;
+	border-radius: 3px;
 	color: var(--pf-ink);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 700;
-	font-size: 22px;
+	font-size: 25px;
 }
 
 .pf-tile--correct {
-	background: #dcecc8;
-	border-color: #4f7a3a;
-	color: #1f3b16;
+	background: #e3ead1;
+	border-color: #3f6b47;
+	color: #1d3620;
 }
 
 .pf-tile--muted {
@@ -334,24 +339,25 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 17px;
-	letter-spacing: 0.01em;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
 	text-decoration: none;
 	cursor: pointer;
-	border-radius: 4px;
+	border-radius: 3px;
 	border: 1.5px solid var(--pf-text-muted);
 	background: transparent;
 	color: var(--pf-text);
-	padding: 12px 24px;
+	padding: 13px 26px;
 	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .pf-btn:hover {
 	border-color: var(--pf-text);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 10px rgba(20, 15, 10, 0.1);
+	box-shadow: 0 4px 10px rgba(43, 37, 32, 0.1);
 }
 
 .pf-btn:active {
@@ -367,11 +373,29 @@
 .pf-btn--accent:hover {
 	background: var(--pf-teal-light);
 	color: #ffffff;
-	box-shadow: 0 4px 12px rgba(184, 85, 47, 0.3);
+	box-shadow: 0 4px 12px rgba(47, 77, 58, 0.3);
 }
 
 .pf-btn--block {
 	width: 100%;
+}
+
+.pf-btn--whatsapp {
+	border-color: #25d366;
+	color: #1b8a4c;
+}
+
+.pf-btn--whatsapp:hover {
+	background: #25d366;
+	border-color: #25d366;
+	color: #ffffff;
+	box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+}
+
+.pf-btn--whatsapp svg {
+	width: 19px;
+	height: 19px;
+	fill: currentColor;
 }
 
 /* ---------- Stats row ---------- */
@@ -396,19 +420,20 @@
 }
 
 .pf-stat-value {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
-	font-size: 30px;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
+	font-size: 34px;
 	line-height: 1;
 	color: var(--pf-teal-light);
 }
 
 .pf-stat-label {
 	margin-top: 4px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
 	font-size: 13px;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 }
 
@@ -424,11 +449,12 @@
 .pf-tab {
 	flex: 1;
 	text-align: center;
-	padding: 11px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 16px;
-	letter-spacing: 0.01em;
+	padding: 12px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
 	text-decoration: none;
 	color: var(--pf-text-muted);
 	background: var(--pf-navy);
@@ -447,7 +473,9 @@
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 3px;
-	text-decoration-color: rgba(184, 85, 47, 0.45);
+	text-decoration-color: rgba(47, 77, 58, 0.45);
+	cursor: pointer;
+	font-weight: 600;
 	transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
 }
 
@@ -458,9 +486,10 @@
 /* ---------- Body copy ---------- */
 
 .pf-note {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
-	font-size: 16px;
+	font-weight: 500;
+	font-size: 18px;
 	line-height: 1.6;
 	color: var(--pf-text);
 }
@@ -478,10 +507,11 @@
 .pf-field label {
 	display: block;
 	margin-bottom: 6px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 13px;
-	letter-spacing: 0.02em;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 }
 
@@ -493,8 +523,8 @@
 	border: 1px solid var(--pf-hairline);
 	border-radius: 3px;
 	color: var(--pf-text);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 16px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 17px;
 	padding: 12px 13px;
 	transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -504,21 +534,21 @@
 .pf-theme select:focus {
 	outline: none;
 	border-color: var(--pf-teal-light);
-	box-shadow: 0 0 0 3px rgba(184, 85, 47, 0.18);
+	box-shadow: 0 0 0 3px rgba(47, 77, 58, 0.18);
 }
 
 .pf-field-hint {
 	margin-top: 6px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 12px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 14px;
 	color: var(--pf-text-muted);
 }
 
 .pf-field-error {
 	margin-top: 6px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 12px;
-	color: #a8452c;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 14px;
+	color: #9c3b28;
 }
 
 /* Google's reCAPTCHA widget has a fixed ~304px width we can't restyle
@@ -532,24 +562,25 @@
 
 .pf-alert {
 	border: 1px solid var(--pf-hairline);
-	border-left: 3px solid #a8452c;
+	border-left: 3px solid var(--pf-text-muted);
 	border-radius: 2px;
 	padding: 12px 14px;
 	margin-bottom: 16px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 14px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 16px;
 	background: var(--pf-surface);
 }
 
 .pf-alert--danger {
-	background: rgba(168, 69, 44, 0.06);
-	color: #7a3320;
+	border-left-color: #9c3b28;
+	background: rgba(156, 59, 40, 0.07);
+	color: #8a3623;
 }
 
 .pf-alert--success {
-	border-left-color: #52713f;
-	background: rgba(82, 113, 63, 0.08);
-	color: #3c5230;
+	border-left-color: #3f6b47;
+	background: rgba(63, 107, 71, 0.08);
+	color: #274a30;
 }
 
 .pf-divider {
@@ -558,10 +589,11 @@
 	gap: 12px;
 	margin: 20px 0;
 	color: var(--pf-text-muted);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 13px;
-	letter-spacing: 0.02em;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
 }
 
 .pf-divider::before,
@@ -577,16 +609,17 @@
 	width: 100%;
 	border: none;
 	border-collapse: collapse;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 15px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 16px;
 }
 
 .pf-table th {
 	text-align: left;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
 	font-size: 14px;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 	padding: 9px 10px;
 	border-bottom: 2px solid var(--pf-teal-light);
@@ -607,6 +640,17 @@
 		display: block;
 		overflow-x: auto;
 		-webkit-overflow-scrolling: touch;
+	}
+
+	/* Claw back some width so a table's content fits the card without
+	   needing that overflow-x scroll in the first place */
+	.pf-card {
+		padding: 16px 14px;
+	}
+
+	.pf-table th,
+	.pf-table td {
+		padding: 8px 6px;
 	}
 }
 
@@ -633,10 +677,10 @@
 
 .pf-qlist-num {
 	flex: none;
-	width: 24px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	width: 26px;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 700;
-	font-size: 13px;
+	font-size: 15px;
 	color: var(--pf-text-muted);
 	padding-top: 2px;
 }
@@ -647,9 +691,9 @@
 }
 
 .pf-qlist-question {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 18px;
+	font-size: 21px;
 	line-height: 1.5;
 	color: var(--pf-text);
 	margin-bottom: 10px;
@@ -669,17 +713,19 @@
 	align-items: center;
 	gap: 6px;
 	border: 1.5px solid var(--pf-hairline);
-	border-radius: 999px;
+	border-radius: 3px;
 	padding: 5px 13px;
 	color: var(--pf-text-muted);
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 13px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 600;
+	font-size: 14px;
+	letter-spacing: 0.02em;
 	margin-bottom: 10px;
 }
 
 .pf-answer-pill strong {
 	color: var(--pf-text);
-	font-weight: 600;
+	font-weight: 700;
 }
 
 .pf-qlist-actions {
@@ -702,13 +748,15 @@
 	display: inline-flex;
 	align-items: center;
 	border: 1.5px solid var(--pf-hairline);
-	border-radius: 999px;
+	border-radius: 3px;
 	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 13px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 14px;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
 	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
@@ -719,16 +767,16 @@
 }
 
 .pf-qlist-btn--danger:hover {
-	border-color: #a8452c;
-	color: #a8452c;
+	border-color: #9c3b28;
+	color: #9c3b28;
 }
 
 /* ---------- Quiz play screen ---------- */
 
 .pf-question-text {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-weight: 600;
-	font-size: 26px;
+	font-size: 30px;
 	line-height: 1.4;
 }
 
@@ -737,6 +785,18 @@
 	border-radius: 3px;
 	border: 1px solid var(--pf-hairline);
 }
+
+.pf-hangman-mask {
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-style: italic;
+	font-size: 25px;
+	font-weight: 500;
+	letter-spacing: 3px;
+	color: var(--pf-text-muted);
+	margin-top: 10px;
+	word-break: break-all;
+}
+
 
 .pf-answer-row {
 	display: flex;
@@ -752,30 +812,30 @@
 	background: var(--pf-paper);
 	color: var(--pf-ink);
 	border: 2px solid var(--pf-teal-light);
-	border-radius: 4px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 400;
+	border-radius: 3px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 500;
 	font-size: 20px;
 	padding: 11px 15px;
 }
 
 .pf-theme input.pf-answer-input:focus {
 	outline: none;
-	box-shadow: 0 0 0 3px rgba(184, 85, 47, 0.25);
+	box-shadow: 0 0 0 3px rgba(47, 77, 58, 0.25);
 }
 
 .pf-timer {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 50px;
-	height: 50px;
+	min-width: 54px;
+	height: 54px;
 	padding: 0 10px;
 	border: 2px solid var(--pf-teal-light);
-	border-radius: 4px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 400;
-	font-size: 21px;
+	border-radius: 3px;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
+	font-size: 24px;
 	color: var(--pf-teal-light);
 }
 
@@ -783,9 +843,17 @@
 
 .pf-grid {
 	display: grid;
-	grid-template-columns: 1fr 320px;
+	grid-template-columns: 1fr 380px;
 	gap: 28px;
 	align-items: start;
+}
+
+/* Grid items default to min-width: auto, meaning they won't shrink
+   below their content's intrinsic width - a wide table inside a column
+   can blow out past the column (and the page) even with its own
+   overflow-x: auto. This overrides that per-item floor. */
+.pf-grid > * {
+	min-width: 0;
 }
 
 @media (max-width: 760px) {
@@ -812,16 +880,16 @@
 }
 
 .pf-post-title {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 600;
-	font-size: 25px;
+	font-size: 28px;
 	color: var(--pf-teal-light);
 	margin-bottom: 4px;
 }
 
 .pf-post-meta {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'Crimson Pro', Georgia, serif;
 	font-weight: 500;
 	font-size: 15px;
 	letter-spacing: 0.01em;
@@ -830,8 +898,9 @@
 }
 
 .pf-post-body {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 17px;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-weight: 500;
+	font-size: 19px;
 	line-height: 1.6;
 }
 
@@ -842,8 +911,8 @@
 	flex-wrap: wrap;
 	gap: 10px;
 	margin-top: 12px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 13px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 14px;
 	color: var(--pf-text-muted);
 }
 
@@ -857,7 +926,7 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	font-size: 12px;
+	font-size: 14px;
 	opacity: 0.75;
 }
 
@@ -870,11 +939,11 @@
 	border: 1.5px solid var(--pf-hairline);
 	background: transparent;
 	color: var(--pf-text-muted);
-	border-radius: 999px;
+	border-radius: 3px;
 	padding: 6px 14px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 14px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
 	cursor: pointer;
 	transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
 }
@@ -890,14 +959,14 @@
 }
 
 .pf-like-icon {
-	font-size: 16px;
+	font-size: 18px;
 	line-height: 1;
 }
 
 .pf-like-btn.is-liked {
 	border-color: var(--pf-teal-light);
 	color: var(--pf-teal-light);
-	background: rgba(184, 85, 47, 0.14);
+	background: rgba(47, 77, 58, 0.14);
 }
 
 .pf-comment-link {
@@ -905,13 +974,13 @@
 	align-items: center;
 	gap: 6px;
 	border: 1.5px solid var(--pf-hairline);
-	border-radius: 999px;
+	border-radius: 3px;
 	padding: 6px 14px;
 	color: var(--pf-text-muted);
 	text-decoration: none;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 14px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
 	transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
@@ -930,10 +999,11 @@
 }
 
 .pf-comments-label {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 12px;
-	letter-spacing: 0.02em;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 13px;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
 	color: var(--pf-text-muted);
 	margin-bottom: 8px;
 }
@@ -958,9 +1028,9 @@
 }
 
 .pf-comment-author {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 600;
-	font-size: 13px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-weight: 700;
+	font-size: 15px;
 	color: var(--pf-text);
 	text-decoration: none;
 }
@@ -970,14 +1040,14 @@
 }
 
 .pf-comment-time {
-	font-size: 11px;
+	font-size: 13px;
 	color: var(--pf-text-muted);
 }
 
 .pf-comment-body {
 	margin-top: 2px;
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-size: 13px;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 15px;
 	line-height: 1.5;
 	color: var(--pf-text-muted);
 }
@@ -992,13 +1062,13 @@
 .pf-comment-form textarea {
 	flex: 1;
 	min-height: 34px;
-	font-size: 13px;
+	font-size: 15px;
 	resize: vertical;
 }
 
 .pf-comment-form .pf-btn {
-	padding: 8px 16px;
-	font-size: 13px;
+	padding: 9px 18px;
+	font-size: 14px;
 }
 
 /* ---------- Utility ---------- */
@@ -1019,23 +1089,66 @@
 }
 
 .pf-error-code {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 	font-style: italic;
 	font-weight: 700;
-	font-size: 76px;
+	font-size: 86px;
 	line-height: 1;
 	color: var(--pf-teal-light);
 	margin-bottom: 12px;
 }
 
 .pf-error-title {
-	font-family: 'Adobe Caslon Pro', Georgia, 'Times New Roman', serif;
-	font-weight: 700;
-	font-size: 30px;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-weight: 600;
+	font-size: 34px;
 	color: var(--pf-text);
 	margin: 0 0 10px;
 }
 
 .pf-error-shell .pf-note {
 	margin-bottom: 26px;
+}
+
+/* ---------- Modal (e.g. answering the QOTD from the homepage) ---------- */
+
+.pf-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(38, 32, 26, 0.55);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	z-index: 100;
+}
+
+.pf-modal {
+	position: relative;
+	width: 100%;
+	max-width: 480px;
+	max-height: 90vh;
+	overflow-y: auto;
+	background: var(--pf-surface);
+	border-radius: 3px;
+	padding: 26px;
+	box-shadow: 0 12px 40px rgba(38, 32, 26, 0.35);
+}
+
+.pf-modal-close {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	border: none;
+	background: none;
+	font-family: 'Crimson Pro', Georgia, serif;
+	font-size: 24px;
+	line-height: 1;
+	color: var(--pf-text-muted);
+	cursor: pointer;
+	padding: 4px;
+}
+
+.pf-modal-close:hover {
+	color: var(--pf-text);
 }

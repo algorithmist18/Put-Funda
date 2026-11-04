@@ -47,3 +47,9 @@ requests>=2.25,<3
 # without this, /static/... 404s in production and every page (including
 # the error pages) renders unstyled
 whitenoise>=5.3,<7.0
+
+# PDF-to-contest import (quiz/pdf_question_extractor.py): renders PDF
+# pages to images (pymupdf) and sends them to the free-tier Gemini API
+# (google-genai) to extract and simplify quiz questions
+google-genai>=1.0,<3.0
+pymupdf>=1.24,<2.0

@@ -11,6 +11,7 @@
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -21,6 +22,7 @@
 				<div id="question-image-holder" style="display: flex; gap: 20px; align-items: flex-start;">
 					<div id="question-holder" style="flex: 1;">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 					<div id="image-holder" style="width: 35%;">
@@ -31,6 +33,7 @@
 				<div id="question-image-holder">
 					<div id="question-holder-full">
 						<p class="pf-question-text">{{ question.question|safe }}</p>
+						<p class="pf-hangman-mask">{{ hangman_mask }}</p>
 					</div>
 					<input id="time_taken" type="hidden" name="time_taken" value="0"/>
 				</div>

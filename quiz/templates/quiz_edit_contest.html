@@ -20,8 +20,12 @@
 			</div>
 
 			<div class="pf-field">
-				<label>Genre</label>
-				<input type="text" name="genre" placeholder="Genre" value="{{ contest.genre }}">
+				<label for="genre">Genre</label>
+				<select id="genre" name="genre">
+					{% for value, label in genre_choices %}
+					<option value="{{ value }}"{% if value == contest.genre %} selected{% endif %}>{{ label }}</option>
+					{% endfor %}
+				</select>
 			</div>
 
 			<div class="pf-field">
