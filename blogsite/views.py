@@ -13,11 +13,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import Comment, User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-import datetime, collections
+import datetime, collections, json
 from datetime import timezone
-from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.gchart import PieChart 
-from django.core.files.storage import FileSystemStorage 
+from django.core.files.storage import FileSystemStorage
 from quiz.models import Contest, QuizQuestion, Leaderboard
 from quiz.views import fetch_top_players
 import pytz
@@ -27,7 +25,7 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from .forms import ResetPasswordForm, ForgotPasswordForm
 
 # Create your views here.
@@ -148,7 +146,7 @@ def activate(request, uidb64, token):
 	print(uidb64, token) 
 	try:
 		
-		uid = force_text(urlsafe_base64_decode(uidb64))
+		uid = force_str(urlsafe_base64_decode(uidb64))
 		print('UID = ', uid) 
 		user = User.objects.get(pk = uid)
 
@@ -173,7 +171,7 @@ def allow_reset_password(request, uidb64, token):
 	print(uidb64, token) 
 	try:
 		
-		uid = force_text(urlsafe_base64_decode(uidb64))
+		uid = force_str(urlsafe_base64_decode(uidb64))
 		print('UID = ', uid) 
 		user = User.objects.get(pk = uid)
 
@@ -750,31 +748,20 @@ def questions_by_user(username):
 
 	return questionList, genreList 
 
-# Method to create a chart object from given list 
+# Builds the [[label, count], ...] rows for the genre-breakdown pie chart on
+# a profile page - rendered client-side with Google Charts (see
+# user_display.html), rather than through a server-side charting library.
+def create_chart(array, name = 'Genre'):
 
-def create_chart(array, name = 'Genre'): 
-
-	arrayCount = collections.Counter(array) 
-
-	# Creating a pie chart 
+	arrayCount = collections.Counter(array)
 
 	data = [[name, 'Count']]
-	count = 0 
 
-	for key in arrayCount: 
+	for key in arrayCount:
 
-		data.append([key, arrayCount[key]]) 
-		count += 1 
+		data.append([key, arrayCount[key]])
 
-	# Create a data source object 
-
-	dataSource = SimpleDataSource(data = data) 
-
-	# Chart object 
-
-	chart = PieChart(dataSource, options = {'title' : 'Genres', 'width': 450, 'height': 250}) 
-
-	return chart 
+	return data
 
 @login_required
 def show_user(request):
@@ -799,14 +786,14 @@ def show_user(request):
 		question_list.append(question)
 		genre_lists.append(question.title)
 
-	# Creating a pie chart 
+	# Creating a pie chart
 
-	chart = create_chart(genre_lists, name = 'Genre') 
+	chart_data = json.dumps(create_chart(genre_lists, name = 'Genre'))
 
 	genre_lists = set(genre_lists)
 
-	args = {'user' : user, 'q_list' : question_list, 'no_of_questions' : len(questions), 
-			'genres' : genre_lists,'chart' : chart, 'org_user' : logged_in_user} 
+	args = {'user' : user, 'q_list' : question_list, 'no_of_questions' : len(questions),
+			'genres' : genre_lists, 'chart_data' : chart_data, 'org_user' : logged_in_user}
 
 	if request.method == 'POST':
 

@@ -1,28 +1,27 @@
 # Importing libraries
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils import six 
 
-class AccountActivationTokenGen(PasswordResetTokenGenerator): 
+class AccountActivationTokenGen(PasswordResetTokenGenerator):
 
-	def _make_hash_value(self, user, timestamp): 
+	def _make_hash_value(self, user, timestamp):
 
 		return (
 
-			six.text_type(user.pk) + 
-			six.text_type(timestamp) + 
-			six.text_type(user.profile.email_confirmed)  
+			str(user.pk) +
+			str(timestamp) +
+			str(user.profile.email_confirmed)
 		)
 
 
-class PasswordResetToken(PasswordResetTokenGenerator): 
+class PasswordResetToken(PasswordResetTokenGenerator):
 
-	def _make_hash_value(self, user, timestamp): 
+	def _make_hash_value(self, user, timestamp):
 
 		return (
 
-			six.text_type(user.pk) +
-			six.text_type(timestamp) +
-			six.text_type(user.username) 
+			str(user.pk) +
+			str(timestamp) +
+			str(user.username)
 		)
 
 account_activation_token = AccountActivationTokenGen() 

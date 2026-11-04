@@ -45,7 +45,31 @@ SECRET_KEY = get_env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'algorithmist.pythonanywhere.com', 'qnondrum.pythonanywhere.com', 'www.putfunda.com']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'algorithmist.pythonanywhere.com',
+    'qnondrum.pythonanywhere.com',
+    'www.putfunda.com',
+    '.vercel.app',  # every Vercel deployment/preview URL, e.g. put-funda.vercel.app
+]
+
+# EXTRA_ALLOWED_HOST lets a custom domain (or anything else) be added without
+# a code change - set it in the deployment platform's env vars.
+_extra_allowed_host = os.environ.get('EXTRA_ALLOWED_HOST')
+
+if _extra_allowed_host:
+    ALLOWED_HOSTS.append(_extra_allowed_host)
+
+# Required for POST requests (login, forms) to work behind HTTPS - Django
+# rejects the CSRF check otherwise since the Origin header won't match
+# ALLOWED_HOSTS alone. Needs the scheme, unlike ALLOWED_HOSTS.
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.vercel.app',
+    'https://www.putfunda.com',
+]
+
+if _extra_allowed_host:
+    CSRF_TRUSTED_ORIGINS.append('https://{}'.format(_extra_allowed_host))
 
 
 # Application definition
@@ -57,10 +81,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'graphos',
     'blogsite',
     'blogposts',
-    'captcha',
+    'django_recaptcha',
     'quiz',
     'ckeditor'
 ]
@@ -98,34 +121,50 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Database backend is selected via DB_ENGINE:
-#   'sqlite'  -> local file database, no server needed (good for local dev)
-#   'mysql'   -> the production MySQL configuration (the default)
-DB_ENGINE = os.environ.get('DB_ENGINE', 'mysql').lower()
+# On Vercel, connection details come from DATABASE_URL (or POSTGRES_URL on
+# older Vercel Postgres integrations) rather than the separate DB_* vars
+# below - a Postgres env var takes priority over DB_ENGINE when present, so
+# PythonAnywhere/local-dev setups that don't set it are unaffected.
+_database_url = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
 
-if DB_ENGINE == 'sqlite':
+if _database_url:
+
+    import dj_database_url
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': get_env('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
-        }
+        'default': dj_database_url.parse(_database_url, conn_max_age=600)
     }
 
 else:
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': get_env('DB_NAME', 'qnondrum$default'),
-            'USER': get_env('DB_USER', 'qnondrum'),
-            'PASSWORD': get_env('DB_PASSWORD'),
-            'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
-            'PORT': int(get_env('DB_PORT', '3306')),
+    # Database backend is selected via DB_ENGINE:
+    #   'sqlite'  -> local file database, no server needed (good for local dev)
+    #   'mysql'   -> PythonAnywhere's MySQL (the default)
+    DB_ENGINE = os.environ.get('DB_ENGINE', 'mysql').lower()
+
+    if DB_ENGINE == 'sqlite':
+
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': get_env('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
+            }
         }
-    }
+
+    else:
+
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': get_env('DB_NAME', 'qnondrum$default'),
+                'USER': get_env('DB_USER', 'qnondrum'),
+                'PASSWORD': get_env('DB_PASSWORD'),
+                'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
+                'PORT': int(get_env('DB_PORT', '3306')),
+            }
+        }
 
 
 # Password validation
@@ -156,22 +195,38 @@ TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
-USE_L10N = True
+# USE_L10N was removed in Django 5.0 - localized formatting is always on now
 
 USE_TZ = True
 
+# Explicit since Django 3.2+ warns (and later versions may error) without
+# it. AutoField (not the newer BigAutoField) matches every existing
+# migration's primary key type, so this changes nothing about the schema.
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-"""
-# Add these new lines
-"""
-#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
+
+# On Vercel, image uploads need somewhere that isn't the (ephemeral) local
+# filesystem - switches to Vercel Blob once BLOB_READ_WRITE_TOKEN is set,
+# which Vercel injects automatically once Blob storage is connected to the
+# project. Local dev and PythonAnywhere don't set it, so they keep using
+# FileSystemStorage above.
+if os.environ.get('BLOB_READ_WRITE_TOKEN'):
+    STORAGES['default']['BACKEND'] = 'blogsite.vercel_blob_storage.VercelBlobStorage'
 
 
 # For serving files uploaded by user (development)
