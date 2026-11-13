@@ -5,11 +5,9 @@
 # in 3.0) - that's been fixed, and the other removed-API usages picked up
 # along the way (force_text -> force_str, old-style url()) are fixed too.
 #
-# This file is enough to run locally with DB_ENGINE=sqlite. For production
-# on Vercel it reads DATABASE_URL (Vercel Postgres/Neon) instead - see
-# blog/settings.py. For PythonAnywhere (DB_ENGINE=mysql) also install
-# requirements-mysql.txt — it needs MySQL's client dev headers on the
-# system and is kept separate so it doesn't block a plain local setup.
+# This file is enough to run anywhere: local dev falls back to a SQLite
+# file with no setup needed, and production (Vercel) reads DATABASE_URL
+# (Vercel Postgres/Neon) instead - see blog/settings.py.
 
 Django>=5.2,<5.3
 

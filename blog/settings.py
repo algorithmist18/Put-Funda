@@ -122,10 +122,10 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# On Vercel, connection details come from DATABASE_URL (or POSTGRES_URL on
-# older Vercel Postgres integrations) rather than the separate DB_* vars
-# below - a Postgres env var takes priority over DB_ENGINE when present, so
-# PythonAnywhere/local-dev setups that don't set it are unaffected.
+# Connection details come from DATABASE_URL (or POSTGRES_URL on older Vercel
+# Postgres integrations) - set automatically once Postgres/Neon is connected
+# to the Vercel project. Without it (plain local dev), falls back to a local
+# SQLite file - no separate database server, no password, to set up.
 _database_url = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
 
 if _database_url:
@@ -138,32 +138,12 @@ if _database_url:
 
 else:
 
-    # Database backend is selected via DB_ENGINE:
-    #   'sqlite'  -> local file database, no server needed (good for local dev)
-    #   'mysql'   -> PythonAnywhere's MySQL (the default)
-    DB_ENGINE = os.environ.get('DB_ENGINE', 'mysql').lower()
-
-    if DB_ENGINE == 'sqlite':
-
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': get_env('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
-            }
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': get_env('DB_NAME', os.path.join(BASE_DIR, 'db.sqlite3')),
         }
-
-    else:
-
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.mysql',
-                'NAME': get_env('DB_NAME', 'qnondrum$default'),
-                'USER': get_env('DB_USER', 'qnondrum'),
-                'PASSWORD': get_env('DB_PASSWORD'),
-                'HOST': get_env('DB_HOST', 'qnondrum.mysql.pythonanywhere-services.com'),
-                'PORT': int(get_env('DB_PORT', '3306')),
-            }
-        }
+    }
 
 
 # Password validation
