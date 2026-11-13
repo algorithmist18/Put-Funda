@@ -1,12 +1,6 @@
 {% extends 'home.html' %}
 {% block content %}
 
-	{% if user.is_authenticated and not user.profile.is_guest and not user.profile.email_confirmed %}
-	<div class="pf-alert pf-alert--danger pf-center">
-		Please confirm your email <a class="pf-link" href="#" onclick="sendActivationMail()">here</a>.
-	</div>
-	{% endif %}
-
 	<div class="pf-grid">
 
 		<div>
@@ -124,17 +118,6 @@
 
 		let rating = Number(ratings[i].innerHTML);
 		ratings[i].innerHTML = rating.toFixed(0);
-	}
-
-	function sendActivationMail() {
-
-		$.get("{% url 'mail_activate' %}", {},
-
-			function (data) {
-
-				console.log(data['message']);
-			}
-		);
 	}
 
 </script>

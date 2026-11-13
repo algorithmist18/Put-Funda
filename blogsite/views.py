@@ -13,22 +13,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
 from .models import Comment, User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-import datetime, collections
+import datetime, collections, json
 from datetime import timezone
-from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.gchart import PieChart 
-from django.core.files.storage import FileSystemStorage 
+from django.core.files.storage import FileSystemStorage
 from quiz.models import Contest, QuizQuestion, Leaderboard
 from quiz.views import fetch_top_players
 import pytz
-from .tokens import account_activation_token, password_reset_token
-from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
-from .forms import ResetPasswordForm, ForgotPasswordForm
 
 # Create your views here.
 def index(request):
@@ -141,194 +132,6 @@ def homepage(request):
 
 	return render(request, 'homepage.html', response)
 		
-# Activating a user 
-def activate(request, uidb64, token): 
-
-	"""Check the activation token sent via mail."""
-	print(uidb64, token) 
-	try:
-		
-		uid = force_text(urlsafe_base64_decode(uidb64))
-		print('UID = ', uid) 
-		user = User.objects.get(pk = uid)
-
-	except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
-		
-		#messages.add_message(request, messages.WARNING, str(e))
-		print('Caught exception') 
-		user = None
-
-	if user is not None and account_activation_token.check_token(user, token):
-		
-		user.profile.email_confirmed = True
-		user.save()
-		login(request, user)  # log the user in
-
-	return redirect('home') 
-
-# Activating a user 
-def allow_reset_password(request, uidb64, token): 
-
-	"""Check the activation token sent via mail."""
-	print(uidb64, token) 
-	try:
-		
-		uid = force_text(urlsafe_base64_decode(uidb64))
-		print('UID = ', uid) 
-		user = User.objects.get(pk = uid)
-
-	except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
-		
-		#messages.add_message(request, messages.WARNING, str(e))
-		print('Caught exception') 
-		user = None
-
-	if user is not None and password_reset_token.check_token(user, token):
-		
-		#user.profile.reset_password = True
-		user.save()
-		login(request, user)  # log the user in
-
-	return redirect('reset') 
-
-# Method to send the activation mail
-def send_activation_mail(request): 
-
-	if request.method == 'GET':
-
-		user = request.user
-		site = get_current_site(request) 
-		email = user.email
-
-		message = render_to_string('activate_account_mail.html', {
-
-			'user': user,
-			'protocol': 'http',
-			'domain': site.domain, 
-			'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-			'token': account_activation_token.make_token(user) 
-		})
-
-		print("Email ID", email)
-		
-		try:
-		
-			send_mail('Confirm your Email ID', message, 'putfundaofficial@gmail.com', [email], html_message = message)
-			return JsonResponse({'message': 'Mail has sent, successfully!'})
-		
-		except:
-		
-			return JsonResponse({'message': 'Mail has been sent, successfully!'})
-
-	else:
-
-		return redirect('home') 
-
-# Method rendering a forgot-password page 
-def forgot_password(request): 
-
-	print('forgot-password')
-	form = ForgotPasswordForm()
-
-	if request.method == 'GET':
-	
-		return render(request, 'forgot-password.html', {'form': form})
-	
-	else:
-
-		email = request.POST.get('email')
-		user_list = list(User.objects.filter(email = email)) 
-		print(user_list)
-		if len(user_list) > 0: 
-
-			user = user_list[0] 
-
-			# Taking the first user
-			if user is not None and user.profile.email_confirmed: 
-
-				# Send mail
-				site = get_current_site(request) 
-				response = send_password_reset_mail(user, site, email)
-				return render(request, 'forgot-password.html', {'message': 'Mail sent successfully!'})
-
-			else:
-
-				return render(request, 'forgot-password.html', {'message': 'Email has not been registered for a valid user'}) 
-
-		else:
-
-			return render(request, 'forgot-password.html', {'message': 'Email has no been registered for a valid user'}) 
-
-	return redirect('home') 
-
-# Method to send password reset mail
-def send_password_reset_mail(user, site, email): 
-
-	if not user.profile.email_confirmed: 
-
-		return render(request, 'forgot-password.html', {'user': user, 'msg': 'Your email is not confirmed, cannot send link!'}) 
-
-	message = render_to_string('reset_password_mail.html', {
-
-		'user': user,
-		'protocol': 'http',
-		'domain': site.domain, 
-		'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-		'token': password_reset_token.make_token(user) 
-	})
-	
-	try: 
-	
-		send_mail('Reset your password', message, 'putfundaofficial@gmail.com', [email], html_message = message)
-		response = {}
-		response['message'] = 'Mail sent successfully!' 
-		return JsonResponse(response)
-	
-	except:
-	
-		response = {}
-		response['message'] = 'There was an error sending the mail.\nPlease try again later.'
-		return JsonResponse(response)
-
-# Method for reseting a password
-def reset_password(request): 
-
-	user = request.user 
-	print(user) 
-
-	if request.method == 'POST': 
-
-		form = ResetPasswordForm(request.POST)
-	
-		if form.is_valid():
-			
-		#	user = form.save() 
-		#	user.refresh_from_db()
-		#	user.save()
-			print(user) 
-			raw_password = form.cleaned_data.get('password2')
-			
-			user.set_password(raw_password)
-			authenticate(username = user.username, password = raw_password)
-			user.save() 
-
-			if user is not None: 
-				
-				#login(request, user)	
-				#print('Logged in.')		
-				request.user = user
-				return redirect('login') 
-			
-			else:
-
-				# TODO: Failure case
-				return redirect('home') 
-
-	else:
-
-		form = ResetPasswordForm()
-		return render(request, 'reset-password.html', {'form': form, 'user': user}) 
-
 # Function for registering a user
 def register(request):
 
@@ -750,31 +553,20 @@ def questions_by_user(username):
 
 	return questionList, genreList 
 
-# Method to create a chart object from given list 
+# Builds the [[label, count], ...] rows for the genre-breakdown pie chart on
+# a profile page - rendered client-side with Google Charts (see
+# user_display.html), rather than through a server-side charting library.
+def create_chart(array, name = 'Genre'):
 
-def create_chart(array, name = 'Genre'): 
-
-	arrayCount = collections.Counter(array) 
-
-	# Creating a pie chart 
+	arrayCount = collections.Counter(array)
 
 	data = [[name, 'Count']]
-	count = 0 
 
-	for key in arrayCount: 
+	for key in arrayCount:
 
-		data.append([key, arrayCount[key]]) 
-		count += 1 
+		data.append([key, arrayCount[key]])
 
-	# Create a data source object 
-
-	dataSource = SimpleDataSource(data = data) 
-
-	# Chart object 
-
-	chart = PieChart(dataSource, options = {'title' : 'Genres', 'width': 450, 'height': 250}) 
-
-	return chart 
+	return data
 
 @login_required
 def show_user(request):
@@ -799,14 +591,14 @@ def show_user(request):
 		question_list.append(question)
 		genre_lists.append(question.title)
 
-	# Creating a pie chart 
+	# Creating a pie chart
 
-	chart = create_chart(genre_lists, name = 'Genre') 
+	chart_data = json.dumps(create_chart(genre_lists, name = 'Genre'))
 
 	genre_lists = set(genre_lists)
 
-	args = {'user' : user, 'q_list' : question_list, 'no_of_questions' : len(questions), 
-			'genres' : genre_lists,'chart' : chart, 'org_user' : logged_in_user} 
+	args = {'user' : user, 'q_list' : question_list, 'no_of_questions' : len(questions),
+			'genres' : genre_lists, 'chart_data' : chart_data, 'org_user' : logged_in_user}
 
 	if request.method == 'POST':
 

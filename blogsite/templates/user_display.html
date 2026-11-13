@@ -1,9 +1,21 @@
 {% extends 'home.html' %}
 {% block content %}
 
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script type="text/javascript">
-		google.load("visualization", "1", {packages: ["corechart"]});
+		google.charts.load('current', {packages: ['corechart']});
+		google.charts.setOnLoadCallback(function () {
+
+			var chartDiv = document.getElementById('chart-div');
+
+			if (!chartDiv) {
+				return;
+			}
+
+			var data = google.visualization.arrayToDataTable({{ chart_data|safe }});
+			var chart = new google.visualization.PieChart(chartDiv);
+			chart.draw(data, {title: 'Genres', width: 450, height: 250});
+		});
 	</script>
 
 	<div class="pf-grid">
@@ -27,7 +39,7 @@
 			</div>
 
 			<div class="pf-section-label"><span>Genre breakdown</span></div>
-			<div class="pf-card" id="chart-div">{{ chart.as_html }}</div>
+			<div class="pf-card" id="chart-div"></div>
 		</div>
 
 		<div>

@@ -1,52 +1,51 @@
 # Put Funda dependencies
 #
-# The project is pinned to Django 2.x: blogsite/tokens.py imports
-# django.utils.six, which was removed in Django 3.0.
+# Pinned to Django 5.2 LTS (supports Python 3.10-3.14). Previously pinned to
+# Django 2.x because blogsite/tokens.py imported django.utils.six (removed
+# in 3.0) - that's been fixed, and the other removed-API usages picked up
+# along the way (force_text -> force_str, old-style url()) are fixed too.
 #
 # This file is enough to run locally with DB_ENGINE=sqlite. For production
-# (DB_ENGINE=mysql) also install requirements-mysql.txt — it needs MySQL's
-# client dev headers on the system and is kept separate so it doesn't block
-# a plain local setup.
+# on Vercel it reads DATABASE_URL (Vercel Postgres/Neon) instead - see
+# blog/settings.py. For PythonAnywhere (DB_ENGINE=mysql) also install
+# requirements-mysql.txt — it needs MySQL's client dev headers on the
+# system and is kept separate so it doesn't block a plain local setup.
 
-Django>=2.2,<3.0
+Django>=5.2,<5.3
+
+# Postgres driver + DATABASE_URL parsing, used when DATABASE_URL is set
+# (Vercel/Neon production) - see blog/settings.py
+psycopg[binary]>=3.1,<4.0
+dj-database-url>=2.0,<3.0
+
+# Vercel Blob storage client, used when BLOB_READ_WRITE_TOKEN is set
+# (production) - see blogsite/vercel_blob_storage.py. Pre-1.0 and pinned
+# tightly since its API may still shift between releases.
+vercel-sdk>=0.0.8,<0.1.0
 
 # Loads a local .env file (see .env.example) so settings.py doesn't need
 # environment variables exported by hand every session
-python-dotenv>=0.19,<1.0
+python-dotenv>=1.0,<2.0
 
 # Rich-text editor for blog posts
-django-ckeditor>=6.0,<6.3
-
-# reCAPTCHA field/widget used on the registration form
-django-recaptcha>=2.0,<3.0
-
-# Charting (genre distribution on profile pages)
-# NOTE: install as "django-graphos", not "graphos" — the "graphos" name on
-# PyPI has since been taken over by an unrelated terminal graph-visualization
-# tool. django-graphos is the correct package: it provides the `graphos`
-# module with `graphos.sources.simple` and `graphos.renderers.gchart` used
-# in blogsite/views.py.
-django-graphos>=0.3,<0.4
-
-# registration.views.RegistrationView (blogsite/user_auth_views.py)
-django-registration-redux>=2.8,<3.0
+django-ckeditor>=6.7,<7.0
 
 # Timezone data
 pytz
 
 # Required by django.db.models.ImageField (blogsite.Profile.picture,
 # quiz.QuizQuestion.image)
-Pillow>=8.0,<10.0
+Pillow>=10.0,<12.0
 
 # Verifies Google Identity Services ID tokens for Google sign-in
 # (blogsite/google_auth_views.py)
-google-auth>=1.35,<3
+google-auth>=2.0,<3.0
 requests>=2.25,<3
 
 # Serves static files (CSS, fonts) directly from Django when DEBUG=False -
 # without this, /static/... 404s in production and every page (including
 # the error pages) renders unstyled
-whitenoise>=5.3,<7.0
+whitenoise>=6.0,<7.0
 
 # PDF-to-contest import (quiz/pdf_question_extractor.py): renders PDF
 # pages to images (pymupdf) and sends them to the free-tier Gemini API

@@ -19,9 +19,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 import datetime, collections
-from graphos.sources.simple import SimpleDataSource
-from graphos.renderers.gchart import PieChart 
-from django.core.files.storage import FileSystemStorage 
+from django.core.files.storage import FileSystemStorage
 from django.db.models import Min, Max, Count, Q 
 from functools import cmp_to_key 
 from django.urls import reverse 
