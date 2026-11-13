@@ -87,6 +87,15 @@ INSTALLED_APPS = [
     'ckeditor'
 ]
 
+# Since Django 4.0, SecurityMiddleware sends Cross-Origin-Opener-Policy:
+# same-origin on every response by default. That blocks the popup/relay
+# window Google Identity Services opens for the Sign-In button from
+# talking back to this page - which is exactly what leaves the button
+# stuck on a blank accounts.google.com/gsi/transform page forever. This
+# didn't matter on the old Django 2.2 (the setting didn't exist yet), so
+# it only broke once the Django upgrade turned the header on.
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
