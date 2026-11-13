@@ -21,6 +21,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 from blogsite import views
 from blogsite import google_auth_views
+from blogsite import ops_views
 from blogposts import views as post_views
 from quiz import views as quiz_views
 # Question of the Day is hidden for now (being saved for a later release) -
@@ -39,6 +40,9 @@ urlpatterns = [
     # to be a separate, mostly-duplicate view at /home).
     path('', views.homepage, name='index'),
     path('', views.homepage, name='home'),
+    # TEMPORARY - see blogsite/ops_views.py. Remove this line and that
+    # file once migrations are confirmed applied in production.
+    path('run-migrate-once-7f3a9c/', ops_views.run_migrate_once, name = 'run_migrate_once'),
     path('home', RedirectView.as_view(url='/', permanent=False)),
     path('questions', views.questions, name='questions'),
     path('ask', views.ask, name='ask'),
