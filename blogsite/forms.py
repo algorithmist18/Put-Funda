@@ -2,8 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms.widgets import TextInput
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV2Checkbox
 
 class RegisterForm(UserCreationForm):
 	
@@ -25,15 +23,3 @@ class RegisterForm(UserCreationForm):
 			raise forms.ValidationError('Invalid email, already taken')
 
 		return email
-
-class ForgotPasswordForm(): 
-
-	email = forms.CharField(max_length = 50) 
-	captcha = ReCaptchaField() 
-
-class ResetPasswordForm(UserCreationForm): 
-
-	class Meta:
-
-		model = User 
-		fields = ('password1', 'password2')

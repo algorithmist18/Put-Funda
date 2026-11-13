@@ -83,7 +83,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blogsite',
     'blogposts',
-    'django_recaptcha',
     'quiz',
     'ckeditor'
 ]
@@ -254,16 +253,6 @@ CKEDITOR_CONFIGS = {'default' : {'height' : 600, 'width' : 400} }
 # it just stops a single returning guest being recreated needlessly.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 90  # 90 days
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = get_env('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_HOST_USER = get_env('EMAIL_HOST_USER', 'putfundaofficial@gmail.com')
-EMAIL_HOST_PASSWORD = get_env('EMAIL_HOST_PASSWORD')
-EMAIL_PORT = int(get_env('EMAIL_PORT', '587'))
-
-# Properties for re-captcha
-RECAPTCHA_PRIVATE_KEY = get_env('RECAPTCHA_PRIVATE_KEY')
-RECAPTCHA_PUBLIC_KEY = get_env('RECAPTCHA_PUBLIC_KEY')
 
 # Google Sign-In (Google Identity Services). Optional: left blank, the
 # Google sign-in button simply doesn't render. See .env.example for how
