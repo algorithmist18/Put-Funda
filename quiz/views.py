@@ -191,9 +191,14 @@ def is_valid_date(request):
 		contestTime = request.GET.get('contestTime')
 		contestTime += ':00'
 
-		validDate, message = time_diff(contestTime = contestTime, contest_id = contest_id)  
+		try:
+			validDate, message = time_diff(contestTime = contestTime, contest_id = contest_id)
+		except ValueError:
+			validDate = 'NO'
+			message = 'Pick both a date and a time.'
+
 		response['validDate'] = validDate
-		response['message'] = message 
+		response['message'] = message
 
 		return JsonResponse(response) 
 
