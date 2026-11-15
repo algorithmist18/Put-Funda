@@ -88,7 +88,7 @@
 			var time = $('#time').val();
 			var contestTime = date + ' ' + time;
 
-			if (time != null && date != null) {
+			if (date && time) {
 
 				$.get("{% url 'is_valid_date' %}", {contestTime: contestTime},
 
