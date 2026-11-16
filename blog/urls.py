@@ -68,6 +68,7 @@ urlpatterns = [
     path('blogposts/delete_post', post_views.delete_post, name = 'delete_post'),
     path('blogposts/like_post', post_views.like_post, name = 'like_post'),
     path('quiz/', quiz_views.homepage, name = 'quiz_home'),
+    path('quiz/upload-ticket', quiz_views.upload_ticket, name = 'quiz_upload_ticket'),
     path('quiz/schedule', quiz_views.schedule_quiz, name = 'schedule_quiz'),
     path('quiz/contest', quiz_views.create_contest, name = 'create_contest'),
     path('quiz/view_contest', quiz_views.view_contest, name = 'view_contest'),

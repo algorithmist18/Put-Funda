@@ -30,6 +30,9 @@ import csv
 from quiz.rating_system import update_rating
 from quiz.analysis_views import fetch_submissions_by_user_contest, fetch_correct_submissions
 from quiz import contest_utils
+from quiz.upload_tickets import make_upload_ticket
+from django.conf import settings
+import requests
 
 # Class to represent custom data structure 
 
@@ -175,7 +178,52 @@ def time_diff(contestTime, contest_id):
 	# All OK 
 	return validDate, message
 
-# Method to check date validation 
+# Issues a short-lived ticket (see quiz/upload_tickets.py) that lets the
+# schedule/edit-contest page upload a question file straight to Vercel
+# Blob via api/blob-upload-token.js, instead of through this Django app -
+# see BLOB_UPLOAD_TICKET_SECRET in blog/settings.py for why.
+
+@login_required
+def upload_ticket(request):
+
+	secret = settings.BLOB_UPLOAD_TICKET_SECRET
+
+	if not secret:
+		return JsonResponse({'error': 'Direct-to-blob uploads are not configured on this deployment.'}, status = 500)
+
+	ttl_seconds = 600
+
+	return JsonResponse({
+		'ticket': make_upload_ticket(secret, ttl_seconds),
+		'expiresInSeconds': ttl_seconds,
+	})
+
+
+def fetch_blob_file(blob_url):
+	"""Downloads a file previously uploaded to Vercel Blob (see upload_ticket
+	above) into an in-memory, file-like object with the same .read() that a
+	normal Django UploadedFile has - so parse_pdf_file/parse_csv_file don't
+	need to care which path a question file came in through."""
+
+	response = requests.get(blob_url, timeout = 30)
+	response.raise_for_status()
+
+	return io.BytesIO(response.content)
+
+
+def delete_blob_file(blob_url):
+	"""Best-effort cleanup of a question file uploaded via upload_ticket -
+	it's only ever needed for the few seconds it takes to parse it into
+	questions, not kept around afterwards."""
+
+	try:
+		from vercel.blob import delete
+		delete([blob_url])
+	except Exception:
+		pass
+
+
+# Method to check date validation
 
 def is_valid_date(request):
 
@@ -224,6 +272,17 @@ def schedule_quiz(request):
 		time_per_question = request.POST.get('seconds-per-question')
 		tsv_file = request.FILES.get('tsv-question-file')
 		pdf_file = request.FILES.get('pdf-question-file')
+		tsv_blob_url = request.POST.get('tsv-blob-url')
+		pdf_blob_url = request.POST.get('pdf-blob-url')
+
+		# A file uploaded straight to Vercel Blob (see upload_ticket above)
+		# arrives here as a URL instead of a normal Django UploadedFile -
+		# fetch_blob_file() wraps it so the rest of this view doesn't need
+		# to care which path it came in through.
+		if pdf_file is None and pdf_blob_url:
+			pdf_file = fetch_blob_file(pdf_blob_url)
+		elif tsv_file is None and tsv_blob_url:
+			tsv_file = fetch_blob_file(tsv_blob_url)
 
 		contestTime = date + ' ' + time + ':00'
 
@@ -253,6 +312,9 @@ def schedule_quiz(request):
 
 			result, err, elapsed_seconds = parse_pdf_file(contest, pdf_file)
 
+			if pdf_blob_url:
+				delete_blob_file(pdf_blob_url)
+
 			if result == True:
 				print('Successfully inserted questions from PDF!')
 				return HttpResponseRedirect('view_contest?contest_id={}&msg=pdf_success&secs={}'.format(contest_id, round(elapsed_seconds, 1)))
@@ -265,6 +327,9 @@ def schedule_quiz(request):
 
 			# Add questions from tsv file
 			result, err = parse_csv_file(contest, tsv_file)
+
+			if tsv_blob_url:
+				delete_blob_file(tsv_blob_url)
 
 			if result == True:
 				print('Successfully inserted questions from TSV!')
@@ -492,6 +557,10 @@ def edit_contest(request):
 		valid_for = request.POST.get('valid-for')
 		time_per_question = request.POST.get('seconds-per-question')
 		csv_file = request.FILES.get('tsv-question-file')
+		csv_blob_url = request.POST.get('tsv-blob-url')
+
+		if csv_file is None and csv_blob_url:
+			csv_file = fetch_blob_file(csv_blob_url)
 
 		# TODO: Check if timings clash
 
@@ -507,14 +576,18 @@ def edit_contest(request):
 		contest.save() 
 
 		# Parse the questions if file is present
-		if csv_file is not None: 
+		if csv_file is not None:
 
-			# Add questions from tsv file 
-			result, err = parse_csv_file(contest, tsv_file)  
+			# Add questions from tsv file
+			result, err = parse_csv_file(contest, csv_file)
+
+			if csv_blob_url:
+				delete_blob_file(csv_blob_url)
+
 			if result == True:
-				print('Successfully inserted questions from TSV!') 
+				print('Successfully inserted questions from TSV!')
 			else:
-				print("Exception has occurred") 
+				print("Exception has occurred")
 		# Redirect with acknowledgement 
 		return HttpResponseRedirect('view_contest?contest_id={}&msg={}'.format(contest_id, 'edit_success'))
 	

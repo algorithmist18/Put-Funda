@@ -6,7 +6,7 @@
 	<p class="pf-note" style="margin-bottom: 16px;">Edit the quiz contest here.</p>
 
 	<div class="pf-card" id="quiz-edit">
-		<form method="post" action="{% url 'edit_contest' %}?contest_id={{ contest.id }}&user={{ user.username }}">
+		<form id="edit-contest-form" method="post" action="{% url 'edit_contest' %}?contest_id={{ contest.id }}&user={{ user.username }}">
 			{% csrf_token %}
 
 			<div class="pf-field">
@@ -55,11 +55,78 @@
 				<input id="question-file" type="file" name="tsv-question-file">
 			</div>
 
-			<button type="submit" name="Schedule" class="pf-btn pf-btn--accent">Save</button>
+			<button type="submit" name="Schedule" id="edit-contest-submit" class="pf-btn pf-btn--accent">Save</button>
 		</form>
 	</div>
 
 	<p class="pf-note pf-muted" style="margin-top: 12px;">The time will be considered invalid if it is within 15 minutes (before/after) another contest.</p>
+
+	<script type="module">
+
+		// A question file (CSV) is uploaded straight to Vercel Blob from
+		// the browser, instead of through this form's own POST - Vercel's
+		// serverless functions (this app included) reject any request over
+		// 4.5MB, which a large CSV would otherwise hit. See
+		// api/blob-upload-token.js and quiz/upload_tickets.py for the
+		// other two pieces of this.
+		import { upload } from 'https://esm.sh/@vercel/blob@2.9.0/client';
+
+		var form = document.getElementById('edit-contest-form');
+		var submitButton = document.getElementById('edit-contest-submit');
+		var tsvInput = document.getElementById('question-file');
+
+		form.addEventListener('submit', async function (event) {
+
+			if (tsvInput.files.length === 0) {
+				return; // no file to upload directly - let the form submit as-is
+			}
+
+			event.preventDefault();
+
+			var file = tsvInput.files[0];
+
+			submitButton.disabled = true;
+			submitButton.textContent = 'Uploading your file...';
+
+			try {
+
+				var ticketResponse = await fetch("{% url 'quiz_upload_ticket' %}");
+
+				if (!ticketResponse.ok) {
+					throw new Error('Could not start the upload. Please try again.');
+				}
+
+				var ticketData = await ticketResponse.json();
+
+				var blob = await upload('quiz-uploads/' + file.name, file, {
+					access: 'public',
+					handleUploadUrl: '/api/blob-upload-token',
+					clientPayload: ticketData.ticket,
+					contentType: file.type || 'application/octet-stream',
+				});
+
+				var hiddenField = document.createElement('input');
+				hiddenField.type = 'hidden';
+				hiddenField.name = 'tsv-blob-url';
+				hiddenField.value = blob.url;
+				form.appendChild(hiddenField);
+
+				// Disabled inputs are left out of the submitted form data -
+				// this is what actually keeps the file's bytes out of the
+				// request Django/Vercel sees.
+				tsvInput.disabled = true;
+
+				form.submit();
+
+			} catch (error) {
+
+				alert('File upload failed: ' + error.message);
+				submitButton.disabled = false;
+				submitButton.textContent = 'Save';
+			}
+		});
+
+	</script>
 
 	<script type="text/javascript">
 

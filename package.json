@@ -1,0 +1,8 @@
+{
+  "name": "put-funda",
+  "private": true,
+  "description": "Only exists so Vercel installs @vercel/blob for api/blob-upload-token.js - see that file. The rest of this app is Python/Django (requirements.txt), not Node.",
+  "dependencies": {
+    "@vercel/blob": "2.9.0"
+  }
+}
