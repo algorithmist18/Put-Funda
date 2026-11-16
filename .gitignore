@@ -4,3 +4,4 @@ manage.py
 media
 .env
 staticfiles
+node_modules

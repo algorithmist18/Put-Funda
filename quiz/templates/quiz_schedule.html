@@ -68,19 +68,81 @@
 
 	<p class="pf-note pf-muted" style="margin-top: 12px;">The time will be considered invalid if it is within 15 minutes (before/after) another contest.</p>
 
-	<script type="text/javascript">
+	<script type="module">
 
-		function onSubmit() {
+		// A question file (PDF/CSV) is uploaded straight to Vercel Blob
+		// from the browser, instead of through this form's own POST -
+		// Vercel's serverless functions (this app included) reject any
+		// request over 4.5MB, which a large PDF/CSV would otherwise hit.
+		// See api/blob-upload-token.js and quiz/upload_tickets.py for the
+		// other two pieces of this.
+		import { upload } from 'https://esm.sh/@vercel/blob@2.9.0/client';
 
-			$('#quiz-schedule form').submit(function () {
+		var form = document.querySelector('#quiz-schedule form');
+		var submitButton = document.getElementById('schedule-submit');
+		var pdfInput = document.getElementById('pdf-question-file');
+		var tsvInput = document.getElementById('question-file');
 
-				if ($('#pdf-question-file')[0].files.length > 0) {
-					$('#schedule-submit').prop('disabled', true).text('Reading your PDF, this can take a few minutes for longer files...');
+		form.addEventListener('submit', async function (event) {
+
+			var isPdf = pdfInput.files.length > 0;
+			var isTsv = !isPdf && tsvInput.files.length > 0;
+
+			if (!isPdf && !isTsv) {
+				return; // no file to upload directly - let the form submit as-is
+			}
+
+			event.preventDefault();
+
+			var file = isPdf ? pdfInput.files[0] : tsvInput.files[0];
+
+			submitButton.disabled = true;
+			submitButton.textContent = isPdf
+				? 'Reading your PDF, this can take a few minutes for longer files...'
+				: 'Uploading your file...';
+
+			try {
+
+				var ticketResponse = await fetch("{% url 'quiz_upload_ticket' %}");
+
+				if (!ticketResponse.ok) {
+					throw new Error('Could not start the upload. Please try again.');
 				}
-			});
-		}
 
-		$(document).ready(onSubmit);
+				var ticketData = await ticketResponse.json();
+
+				var blob = await upload('quiz-uploads/' + file.name, file, {
+					access: 'public',
+					handleUploadUrl: '/api/blob-upload-token',
+					clientPayload: ticketData.ticket,
+					contentType: file.type || 'application/octet-stream',
+				});
+
+				var hiddenField = document.createElement('input');
+				hiddenField.type = 'hidden';
+				hiddenField.name = isPdf ? 'pdf-blob-url' : 'tsv-blob-url';
+				hiddenField.value = blob.url;
+				form.appendChild(hiddenField);
+
+				// Disabled inputs are left out of the submitted form data -
+				// this is what actually keeps the file's bytes out of the
+				// request Django/Vercel sees.
+				pdfInput.disabled = true;
+				tsvInput.disabled = true;
+
+				form.submit();
+
+			} catch (error) {
+
+				alert('File upload failed: ' + error.message);
+				submitButton.disabled = false;
+				submitButton.textContent = 'Schedule';
+			}
+		});
+
+	</script>
+
+	<script type="text/javascript">
 
 		function validateContestTime() {
 

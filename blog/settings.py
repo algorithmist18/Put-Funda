@@ -253,3 +253,15 @@ GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')
 # a contest (quiz/pdf_question_extractor.py). Optional: left blank, PDF
 # import just shows an error instead of working.
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+
+# Shared secret used to sign short-lived "upload tickets" (see
+# quiz/upload_tickets.py) that authorize a browser to upload a contest's
+# question file (PDF/CSV) directly to Vercel Blob from api/blob-upload-token.js,
+# bypassing the 4.5MB request body limit Vercel enforces on serverless
+# functions. Verified by that Node function, so it must be set to the same
+# value in the deployment platform's env vars (any long random string - it
+# has nothing to do with BLOB_READ_WRITE_TOKEN). Left blank, direct-to-blob
+# upload is disabled and schedule/edit-contest file uploads simply go
+# through Django as before (fine locally, but will hit the 4.5MB limit on
+# Vercel for a large file).
+BLOB_UPLOAD_TICKET_SECRET = os.environ.get('BLOB_UPLOAD_TICKET_SECRET', '')
